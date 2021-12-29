@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 namespace SocketCANSharp
 {
     /// <summary>
-    /// Represents a CAN ID based filter. Filter matches when 'Received CanId' & CanMask == CanId & CanMask.
+    /// Represents a CAN ID based filter. Filter matches when 'Received CanId' &amp; CanMask == CanId &amp; CanMask.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct CanFilter

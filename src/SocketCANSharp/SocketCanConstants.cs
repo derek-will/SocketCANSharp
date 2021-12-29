@@ -34,6 +34,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace SocketCANSharp
 {
+    /// <summary>
+    /// Set of SocketCAN constants
+    /// </summary>
     public static class SocketCanConstants
     {
         /// <summary>
