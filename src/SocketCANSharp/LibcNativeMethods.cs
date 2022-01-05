@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -473,5 +474,19 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, J1939Filter[] filters, int optionValueSize);
+
+        /// <summary>
+        /// Returns a pointer to an array of IfNameIndex objects. Each IfNameIndex object includes information about one of the network interfaces on the local system.
+        /// </summary>
+        /// <returns>Pointer to an array of IfNameIndex objects</returns>
+        [DllImport("libc", EntryPoint="if_nameindex", SetLastError=true)]
+        public static extern IntPtr IfNameIndex();
+
+        /// <summary>
+        /// Frees the dynamically allocated data structure returned by IfNameIndex().
+        /// </summary>
+        /// <param name="ptr">Pointer to an array of IfNameIndex objects</param>
+        [DllImport("libc", EntryPoint="if_freenameindex", SetLastError=true)]
+        public static extern void IfFreeNameIndex(IntPtr ptr);
     }
 }
