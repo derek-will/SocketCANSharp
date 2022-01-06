@@ -34,8 +34,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
+using SocketCANSharp.Network;
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace SocketCANSharpTest
 {
@@ -71,6 +74,20 @@ namespace SocketCANSharpTest
             finally
             {
                 LibcNativeMethods.IfFreeNameIndex(ptr);
+            }
+        }
+
+        [Test]
+        public void GetListOfCanNetworkInterfaces_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+            foreach (var canInterface in collection)
+            {
+                Console.WriteLine(canInterface);
+                Assert.Greater(canInterface.Index, 0);
+                Assert.IsNotNull(canInterface.Name);
             }
         }
     }
