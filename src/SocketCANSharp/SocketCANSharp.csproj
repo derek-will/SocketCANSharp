@@ -21,6 +21,7 @@
     <PackageTags>CAN-bus;ISO-TP;ISO15765;J1939</PackageTags>
     <!--<PackageReleaseNotes></PackageReleaseNotes>-->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
