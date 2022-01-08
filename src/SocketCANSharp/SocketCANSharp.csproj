@@ -15,7 +15,7 @@
     <Description>.NET managed wrapper for SocketCAN on Linux</Description>
     <Summary>.NET managed wrapper for SocketCAN on Linux</Summary>
     <Copyright>Copyright © Derek Will 2021</Copyright>
-    <PackageLicenseExpression>BSD 3-Clause</PackageLicenseExpression>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/derek-will/SocketCANSharp</PackageProjectUrl>
     <!--<PackageIconUrl></PackageIconUrl>-->
     <PackageTags>CAN-bus;ISO-TP;ISO15765;J1939</PackageTags>
