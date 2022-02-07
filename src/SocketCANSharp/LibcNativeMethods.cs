@@ -356,6 +356,18 @@ namespace SocketCANSharp
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref uint optionValue, int optionValueSize);
 
         /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_RAW socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_RAW</param>
+        /// <param name="optionName">SOL_CAN_RAW socket option</param>
+        /// <param name="optionValue">Unsigned integer value</param>
+        /// <param name="optionValueSize">Size of an unsigned integer</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref uint optionValue, ref int optionValueSize);
+
+        /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
         /// </summary>
         /// <param name="socketHandle">CAN_RAW socket handle</param>
@@ -378,6 +390,18 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref int optionValue, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_RAW socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_RAW</param>
+        /// <param name="optionName">SOL_CAN_RAW socket option</param>
+        /// <param name="optionValue">Signed Integer Value</param>
+        /// <param name="optionValueSize">Size of signed integer</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref int optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.

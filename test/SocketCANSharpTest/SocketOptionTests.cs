@@ -63,7 +63,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_RAW_ERR_FILTER_Test()
+        public void SocketOption_Set_CAN_RAW_ERR_FILTER_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -74,7 +74,24 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_RAW_LOOPBACK_Test()
+        public void SocketOption_Get_CAN_RAW_ERR_FILTER_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            uint err_mask = ((uint)CanErrorClass.CAN_ERR_TX_TIMEOUT | (uint)CanErrorClass.CAN_ERR_BUSOFF);
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_ERR_FILTER, ref err_mask, Marshal.SizeOf(err_mask));
+            Assert.AreEqual(0, result);
+
+            err_mask = 0;
+            int len = Marshal.SizeOf(err_mask);
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_ERR_FILTER, ref err_mask, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual((uint)CanErrorClass.CAN_ERR_TX_TIMEOUT | (uint)CanErrorClass.CAN_ERR_BUSOFF, err_mask);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_RAW_LOOPBACK_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -82,6 +99,23 @@ namespace SocketCANSharpTest
             int loopback = 1;
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_LOOPBACK, ref loopback, Marshal.SizeOf(loopback));
             Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_CAN_RAW_LOOPBACK_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int loopback = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_LOOPBACK, ref loopback, Marshal.SizeOf(loopback));
+            Assert.AreEqual(0, result);
+
+            loopback = 0;
+            int len = Marshal.SizeOf(loopback);
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_LOOPBACK, ref loopback, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, loopback);
         }
 
         [Test]
