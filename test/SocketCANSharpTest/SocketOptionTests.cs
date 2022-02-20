@@ -649,5 +649,63 @@ namespace SocketCANSharpTest
             Assert.AreEqual(1, value);
             Assert.AreEqual(4, len);
         }
+
+        [Test]
+        public void SocketOption_Set_SO_SNDBUF_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int value = 8192;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDBUF, ref value, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_SO_SNDBUF_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int value = 8192;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDBUF, ref value, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            value = 0;
+            int len = Marshal.SizeOf(typeof(int));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDBUF, ref value, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(16384, value); // the kernel doubles whatever we send it in setsockopt and this doubled value is what is returned by getsockopt
+            Assert.AreEqual(4, len);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_RCVBUF_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int value = 8192;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVBUF, ref value, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_SO_RCVBUF_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int value = 8192;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVBUF, ref value, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            value = 0;
+            int len = Marshal.SizeOf(typeof(int));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVBUF, ref value, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(16384, value); // the kernel doubles whatever we send it in setsockopt and this doubled value is what is returned by getsockopt
+            Assert.AreEqual(4, len);
+        }
     }
 }

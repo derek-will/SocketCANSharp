@@ -133,15 +133,23 @@ namespace SocketCANSharp
         /// <summary>
         /// Permits sending of broadcast messages, if it is supported by the underlying protocol. 
         /// </summary>
-        SO_BROADCAST =   6,
+        SO_BROADCAST    =  6,
+        /// <summary>
+        /// Reports the size, in bytes, of the send buffer of the socket. The kernel doubles the value supplied in the call to setsockopt and this doubled value is what is returned when getsockopt is called. 
+        /// </summary>
+        SO_SNDBUF       =  7,
+        /// <summary>
+        /// Reports the size, in bytes, of the receive buffer of the socket. The kernel doubles the value supplied in the call to setsockopt and this doubled value is what is returned when getsockopt is called. 
+        /// </summary>
+        SO_RCVBUF       =  8,
         /// <summary>
         /// Sets the timeout value to wait for an input function (read, recv, etc.) to complete. Set to 0 to wait indefinitely.
         /// </summary>
-        SO_RCVTIMEO  =   20,
+        SO_RCVTIMEO     = 20,
         /// <summary>
         /// Sets the timeout value to wait for an output function (write, send, etc.) to complete. Set to 0 to wait indefinitely.
         /// </summary>
-        SO_SNDTIMEO  =   21,
+        SO_SNDTIMEO     = 21,
     }
 
     /// <summary>
