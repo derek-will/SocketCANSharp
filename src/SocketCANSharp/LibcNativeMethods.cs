@@ -380,6 +380,18 @@ namespace SocketCANSharp
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, CanFilter[] filters, int optionValueSize);
 
         /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_RAW socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_RAW</param>
+        /// <param name="optionName">SOL_CAN_RAW socket option</param>
+        /// <param name="filters">Array of CAN Filters</param>
+        /// <param name="optionValueSize">Size of CAN Filter Array in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, [In, Out] CanFilter[] filters, ref int optionValueSize);
+
+        /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
         /// </summary>
         /// <param name="socketHandle">CAN_RAW socket handle</param>
@@ -416,6 +428,18 @@ namespace SocketCANSharp
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, ref int optionValue, int optionValueSize);
 
         /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="socketLevel">SOL_SOCKET</param>
+        /// <param name="optionName">SOL_SOCKET socket option</param>
+        /// <param name="optionValue">Signed Integer Value</param>
+        /// <param name="optionValueSize">Size of signed integer</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, ref int optionValue, ref int optionValueSize);
+
+        /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
         /// </summary>
         /// <param name="socketHandle">Socket handle</param>
@@ -426,6 +450,18 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, Timeval timeval, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="socketLevel">SOL_SOCKET</param>
+        /// <param name="optionName">SOL_SOCKET socket option</param>
+        /// <param name="timeval">Time interval object</param>
+        /// <param name="optionValueSize">Size of Time interval object in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, [In, Out] Timeval timeval, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -440,6 +476,18 @@ namespace SocketCANSharp
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, ref uint optionValue, int optionValueSize);
 
         /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_ISOTP Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_ISOTP</param>
+        /// <param name="optionName">SOL_CAN_ISOTP socket option</param>
+        /// <param name="optionValue">Unsigned Integer Value</param>
+        /// <param name="optionValueSize">Size of unsigned integer</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, ref uint optionValue, ref int optionValueSize);
+
+        /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
         /// </summary>
         /// <param name="socketHandle">CAN_ISOTP Socket handle</param>
@@ -450,6 +498,18 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpFlowControlOptions fcOptions, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_ISOTP Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_ISOTP</param>
+        /// <param name="optionName">SOL_CAN_ISOTP socket option</param>
+        /// <param name="fcOptions">ISO-TP Flow Control Options object</param>
+        /// <param name="optionValueSize">Size of ISO-TP Flow Control Options object in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpFlowControlOptions fcOptions, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -464,6 +524,18 @@ namespace SocketCANSharp
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpLinkLayerOptions llOptions, int optionValueSize);
 
         /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_ISOTP Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_ISOTP</param>
+        /// <param name="optionName">SOL_CAN_ISOTP socket option</param>
+        /// <param name="llOptions">ISO-TP Link Layer Options object</param>
+        /// <param name="optionValueSize">Size of ISO-TP Link Layer Options object in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpLinkLayerOptions llOptions, ref int optionValueSize);
+
+        /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
         /// </summary>
         /// <param name="socketHandle">CAN_ISOTP Socket handle</param>
@@ -474,6 +546,18 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpOptions tpOptions, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_ISOTP Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_ISOTP</param>
+        /// <param name="optionName">SOL_CAN_ISOTP socket option</param>
+        /// <param name="tpOptions">ISO-TP Options object</param>
+        /// <param name="optionValueSize">Size of ISO-TP Options object in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpOptions tpOptions, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -488,6 +572,18 @@ namespace SocketCANSharp
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, ref int optionValue, int optionValueSize);
         
         /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_J1939 Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_J1939</param>
+        /// <param name="optionName">SOL_CAN_J1939 socket option</param>
+        /// <param name="optionValue">Signed Integer Value</param>
+        /// <param name="optionValueSize">Size of signed integer</param>
+        /// <returns>0 or 1 on success depending on option name and value, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, ref int optionValue, ref int optionValueSize);
+
+        /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
         /// </summary>
         /// <param name="socketHandle">CAN_J1939 Socket handle</param>
@@ -498,6 +594,18 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
         public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, J1939Filter[] filters, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_J1939 Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_J1939</param>
+        /// <param name="optionName">SOL_CAN_J1939 socket option</param>
+        /// <param name="filters">Array of J1939 Filters</param>
+        /// <param name="optionValueSize">Size of array of J1939 Filters in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, [In, Out] J1939Filter[] filters, ref int optionValueSize);
 
         /// <summary>
         /// Returns a pointer to an array of IfNameIndex objects. Each IfNameIndex object includes information about one of the network interfaces on the local system.

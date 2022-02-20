@@ -57,6 +57,16 @@ namespace SocketCANSharp
         /// CAN FD specific flags (BRS, ESI, etc.) to use when transmitting CAN FD Frames.
         /// </summary>
         public CanFdFlags TxFlags { get; set; }
+        
+        /// <summary>
+        /// Initializes a new instance of the CanIsoTpLinkLayerOptions class using all default values.
+        /// </summary>
+        public CanIsoTpLinkLayerOptions()
+        {
+            Mtu = 0;
+            TxDataLength = 0;
+            TxFlags = CanFdFlags.None;
+        }
 
         /// <summary>
         /// Initializes a new instance of the CanIsoTpLinkLayerOptions class using the specified MTU and Transmit Data Length. No CAN FD specific flags are set.

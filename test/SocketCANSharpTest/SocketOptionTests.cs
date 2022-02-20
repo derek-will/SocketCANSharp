@@ -50,7 +50,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_RAW_FILTER_Test()
+        public void SocketOption_Set_CAN_RAW_FILTER_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -60,6 +60,29 @@ namespace SocketCANSharpTest
             var canFilterArray = new CanFilter[] { canFilter1, canFilter2 };
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FILTER, canFilterArray, Marshal.SizeOf(typeof(CanFilter)) * canFilterArray.Length);
             Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_CAN_RAW_FILTER_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var canFilter1 = new CanFilter(0x700, 0x700);
+            var canFilter2 = new CanFilter(0x600, 0x600);
+            var canFilterArray = new CanFilter[] { canFilter1, canFilter2 };
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FILTER, canFilterArray, Marshal.SizeOf(typeof(CanFilter)) * canFilterArray.Length);
+            Assert.AreEqual(0, result);
+
+            canFilterArray = new CanFilter[] { new CanFilter(), new CanFilter() };
+            int len = Marshal.SizeOf(typeof(CanFilter)) * canFilterArray.Length;
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FILTER, canFilterArray, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(2, canFilterArray.Length);
+            Assert.AreEqual(0x700, canFilterArray[0].CanId);
+            Assert.AreEqual(0x700, canFilterArray[0].CanMask);
+            Assert.AreEqual(0x600, canFilterArray[1].CanId);
+            Assert.AreEqual(0x600, canFilterArray[1].CanMask);
         }
 
         [Test]
@@ -119,7 +142,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_RAW_RECV_OWN_MSGS_Test()
+        public void SocketOption_Set_CAN_RAW_RECV_OWN_MSGS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -130,7 +153,24 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_RAW_FD_FRAMES_Test()
+        public void SocketOption_Get_CAN_RAW_RECV_OWN_MSGS_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int recv_own_msgs = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_RECV_OWN_MSGS, ref recv_own_msgs, Marshal.SizeOf(recv_own_msgs));
+            Assert.AreEqual(0, result);
+
+            recv_own_msgs = 0;
+            int len = Marshal.SizeOf(recv_own_msgs);
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_RECV_OWN_MSGS, ref recv_own_msgs, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, recv_own_msgs);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_RAW_FD_FRAMES_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -141,7 +181,24 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_RAW_JOIN_FILTERS_Test()
+        public void SocketOption_Get_CAN_RAW_FD_FRAMES_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int can_fd_enabled = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));
+            Assert.AreEqual(0, result);
+
+            can_fd_enabled = 0;
+            int len = Marshal.SizeOf(can_fd_enabled);
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, can_fd_enabled);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_RAW_JOIN_FILTERS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -157,7 +214,29 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_SNDTIMEO_Test()
+        public void SocketOption_Get_CAN_RAW_JOIN_FILTERS_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var canFilter1 = new CanFilter(0x700, 0x700);
+            var canFilter2 = new CanFilter(0x600, 0x600);
+            var canFilterArray = new CanFilter[] { canFilter1, canFilter2 };
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FILTER, canFilterArray, Marshal.SizeOf(typeof(CanFilter)) * canFilterArray.Length);
+            Assert.AreEqual(0, result);
+            int join_filter = 1;
+            result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_JOIN_FILTERS, ref join_filter, Marshal.SizeOf(join_filter));
+            Assert.AreEqual(0, result);
+
+            join_filter = 0;
+            int len = Marshal.SizeOf(join_filter);
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_JOIN_FILTERS, ref join_filter, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, join_filter);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_SNDTIMEO_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -168,7 +247,26 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_RCVTIMEO_Test()
+        public void SocketOption_Get_SO_SNDTIMEO_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var timeval = new Timeval(2, 100000);
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDTIMEO, timeval, Marshal.SizeOf(typeof(Timeval)));
+            Assert.AreEqual(0, result);
+
+            timeval = new Timeval(0, 0);
+            int len = Marshal.SizeOf(typeof(Timeval));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDTIMEO, timeval, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(16, len);
+            Assert.AreEqual(100000, timeval.Microseconds);
+            Assert.AreEqual(2, timeval.Seconds);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_RCVTIMEO_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -179,7 +277,26 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_ISOTP_OPTS_Test()
+        public void SocketOption_Get_SO_RCVTIMEO_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var timeval = new Timeval(3, 0);
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVTIMEO, timeval, Marshal.SizeOf(typeof(Timeval)));
+            Assert.AreEqual(0, result);
+
+            timeval = new Timeval(0, 0);
+            int len = Marshal.SizeOf(typeof(Timeval));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVTIMEO, timeval, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(16, len);
+            Assert.AreEqual(0, timeval.Microseconds);
+            Assert.AreEqual(3, timeval.Seconds);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_ISOTP_OPTS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -194,7 +311,30 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_ISOTP_RECV_FC_Test()
+        public void SocketOption_Get_CAN_ISOTP_OPTS_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var canIsoTpOpts = new CanIsoTpOptions()
+            {
+                Flags = IsoTpFlags.CAN_ISOTP_TX_PADDING | IsoTpFlags.CAN_ISOTP_WAIT_TX_DONE,
+                TxPadByte = 0xDD,
+            };
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_OPTS, canIsoTpOpts, Marshal.SizeOf(typeof(CanIsoTpOptions)));
+            Assert.AreEqual(0, result);
+
+            canIsoTpOpts = new CanIsoTpOptions();
+            int len = Marshal.SizeOf(typeof(CanIsoTpOptions));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_OPTS, canIsoTpOpts, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(12, len);
+            Assert.AreEqual(IsoTpFlags.CAN_ISOTP_TX_PADDING | IsoTpFlags.CAN_ISOTP_WAIT_TX_DONE, canIsoTpOpts.Flags);
+            Assert.AreEqual(0xDD, canIsoTpOpts.TxPadByte);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_ISOTP_RECV_FC_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -210,29 +350,89 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_CAN_ISOTP_TX_STMIN_Test()
+        public void SocketOption_Get_CAN_ISOTP_RECV_FC_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var canIsoTpFcOpts = new CanIsoTpFlowControlOptions()
+            {
+                BlockSize = 2,
+                Stmin = 10,
+                WftMax = 60,
+            };
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_RECV_FC, canIsoTpFcOpts, Marshal.SizeOf(typeof(CanIsoTpFlowControlOptions)));
+            Assert.AreEqual(0, result);
+
+            canIsoTpFcOpts = new CanIsoTpFlowControlOptions();
+            int len = Marshal.SizeOf(typeof(CanIsoTpFlowControlOptions));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_RECV_FC, canIsoTpFcOpts, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual((byte)2, canIsoTpFcOpts.BlockSize);
+            Assert.AreEqual((byte)10, canIsoTpFcOpts.Stmin);
+            Assert.AreEqual((byte)60, canIsoTpFcOpts.WftMax);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_ISOTP_TX_STMIN_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             Assert.IsFalse(socketHandle.IsInvalid);
 
             uint stmin = 100;
-            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_TX_STMIN, ref stmin, Marshal.SizeOf(typeof(uint)));
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_TX_STMIN, ref stmin, Marshal.SizeOf(typeof(int)));
             Assert.AreEqual(0, result);
         }
 
         [Test]
-        public void SocketOption_CAN_ISOTP_RX_STMIN_Test()
+        public void SocketOption_Get_CAN_ISOTP_TX_STMIN_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             Assert.IsFalse(socketHandle.IsInvalid);
 
             uint stmin = 100;
-            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_RX_STMIN, ref stmin, Marshal.SizeOf(typeof(uint)));
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_TX_STMIN, ref stmin, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            stmin = 0;
+            int len = Marshal.SizeOf(typeof(int));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_TX_STMIN, ref stmin, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(100, stmin);
+            Assert.AreEqual(4, len);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_ISOTP_RX_STMIN_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            uint stmin = 100;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_RX_STMIN, ref stmin, Marshal.SizeOf(typeof(int)));
             Assert.AreEqual(0, result);
         }
 
         [Test]
-        public void SocketOption_CAN_ISOTP_LL_OPTS_Test()
+        public void SocketOption_Get_CAN_ISOTP_RX_STMIN_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            uint stmin = 100;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_RX_STMIN, ref stmin, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            stmin = 0;
+            int len = Marshal.SizeOf(typeof(int));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_RX_STMIN, ref stmin, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(100, stmin);
+            Assert.AreEqual(4, len);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_ISOTP_LL_OPTS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -243,7 +443,25 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_J1939_PROMISC_Test()
+        public void SocketOption_Get_CAN_ISOTP_LL_OPTS_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var canIsoTpLlOpts = new CanIsoTpLinkLayerOptions(16, 8);
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_LL_OPTS, canIsoTpLlOpts, Marshal.SizeOf(typeof(CanIsoTpLinkLayerOptions)));
+            Assert.AreEqual(0, result);
+
+            canIsoTpLlOpts = new CanIsoTpLinkLayerOptions();
+            int len = Marshal.SizeOf(typeof(CanIsoTpLinkLayerOptions));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_LL_OPTS, canIsoTpLlOpts, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(16, canIsoTpLlOpts.Mtu);
+            Assert.AreEqual(8, canIsoTpLlOpts.TxDataLength);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_J1939_PROMISC_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -258,7 +476,29 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_J1939_FILTER_Test()
+        public void SocketOption_Get_SO_J1939_PROMISC_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int enable = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_PROMISC, ref enable, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(1, result);
+
+            int len = Marshal.SizeOf(typeof(int));
+            enable = 0;
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_PROMISC, ref enable, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(4, len);
+            Assert.AreEqual(1, enable);
+
+            enable = 0;
+            result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_PROMISC, ref enable, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_J1939_FILTER_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -280,7 +520,36 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_J1939_SEND_PRIO_Test()
+        public void SocketOption_Get_SO_J1939_FILTER_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var filter = new J1939Filter()
+            {
+                Name = 0x00000000,
+                NameMask = 0xFFFFFFFFFFFFFFFF,
+                PGN = 0x40000,
+                PGNMask = 0xFFFFFFFF,
+                Address = 0xFF,
+                AddressMask = 0xFF,
+            };
+
+            var filters = new J1939Filter[] { filter };
+            var optionValueSize = Marshal.SizeOf(typeof(J1939Filter)) * filters.Length;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_FILTER, filters, optionValueSize);
+            Assert.AreEqual(0, result);
+
+            filters = new J1939Filter[] { new J1939Filter() };
+            optionValueSize = Marshal.SizeOf(typeof(J1939Filter)) * filters.Length;
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_FILTER, filters, ref optionValueSize);
+            Assert.AreEqual(-1, result); // per net/can/j1939/socket.c --> This option name is not supported by getsockopt
+            int errno = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+            Assert.AreEqual(92, errno); // ENOPROTOOPT
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_J1939_SEND_PRIO_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -291,7 +560,25 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_J1939_ERRQUEUE_Test()
+        public void SocketOption_Get_SO_J1939_SEND_PRIO_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int prio = 4;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_SEND_PRIO, ref prio, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(result, 0);
+
+            int len = Marshal.SizeOf(typeof(int));
+            prio = 0;
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_SEND_PRIO, ref prio, ref len);
+            Assert.AreEqual(result, 0);
+            Assert.AreEqual(4, prio);
+            Assert.AreEqual(4, len);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_J1939_ERRQUEUE_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -306,7 +593,36 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void SocketOption_SO_BROADCAST_Test()
+        public void SocketOption_Get_SO_J1939_ERRQUEUE_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int enable = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_ERRQUEUE, ref enable, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(1, result);
+
+            int len = Marshal.SizeOf(typeof(int));
+            enable = 0;
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_ERRQUEUE, ref enable, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(4, len);
+            Assert.AreEqual(1, enable);
+
+            enable = 0;
+            result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_ERRQUEUE, ref enable, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            len = Marshal.SizeOf(typeof(int));
+            enable = 1;
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_ERRQUEUE, ref enable, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(4, len);
+            Assert.AreEqual(0, enable);
+        }
+
+        [Test]
+        public void SocketOption_Set_SO_BROADCAST_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             Assert.IsFalse(socketHandle.IsInvalid);
@@ -314,6 +630,24 @@ namespace SocketCANSharpTest
             int value = 1;
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_BROADCAST, ref value, Marshal.SizeOf(typeof(int)));
             Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_SO_BROADCAST_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int value = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_BROADCAST, ref value, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            value = 0;
+            int len = Marshal.SizeOf(typeof(int));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_BROADCAST, ref value, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, value);
+            Assert.AreEqual(4, len);
         }
     }
 }
