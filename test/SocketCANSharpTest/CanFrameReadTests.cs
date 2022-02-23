@@ -170,5 +170,39 @@ namespace SocketCANSharpTest
             Assert.AreEqual(2, readFrame.Length);
             Assert.IsTrue(writeFrame.Data.SequenceEqual(readFrame.Data));
         }
+
+        [Test]
+        public void CanFrameRead_NonBlocking_Success_Test()
+        {
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            int arg = 1;
+            ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCan(ifr.IfIndex);
+
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            var readFrame = new CanFrame();
+            int nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, Marshal.SizeOf(typeof(CanFrame)));
+            Assert.AreEqual(-1, nReadBytes);
+            Assert.AreEqual(11, System.Runtime.InteropServices.Marshal.GetLastWin32Error()); // EAGAIN / EWOULDBLOCK
+
+            var writeFrame = new CanFrame(0x123, new byte[] { 0x11, 0x22 });
+            int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFrame)));
+            Assert.AreEqual(16, nWriteBytes); 
+
+            readFrame = new CanFrame();
+            nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, Marshal.SizeOf(typeof(CanFrame)));
+            
+            Assert.AreEqual(16, nReadBytes);
+            Assert.AreEqual(0x123, readFrame.CanId);
+            Assert.AreEqual(2, readFrame.Length);
+            Assert.IsTrue(writeFrame.Data.SequenceEqual(readFrame.Data));
+        }
     }
 }

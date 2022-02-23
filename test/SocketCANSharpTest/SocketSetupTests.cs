@@ -50,17 +50,6 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void GetInterfaceIndex_vcan0_Test()
-        {
-            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
-            Assert.IsFalse(socketHandle.IsInvalid);
-
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-        }
-
-        [Test]
         public void BindAddress_CAN_RAW_on_vcan0_Interface_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);

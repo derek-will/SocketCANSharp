@@ -52,6 +52,10 @@ namespace SocketCANSharp
         /// </summary>
         public const int SIOCGIFINDEX = 0x8933;
         /// <summary>
+        /// Used to enable or disable non-blocking mode on a socket.
+        /// </summary>
+        public const int FIONBIO = 0x5421; // ioctls.h
+        /// <summary>
         /// Valid bits in CAN ID in standard frame format (SFF).
         /// </summary>
         public const uint CAN_SFF_MASK = 0x000007FF;

@@ -58,6 +58,16 @@ namespace SocketCANSharp
         /// </summary>
         /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
         /// <param name="request">Request Code</param>
+        /// <param name="arg">Integer Argument</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="ioctl", SetLastError=true)]
+        public static extern int Ioctl(SafeSocketHandle socketHandle, int request, ref int arg);
+
+        /// <summary>
+        /// Manipulates the underlying device parameters of special files.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="request">Request Code</param>
         /// <param name="ifreq">Interface Request structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="ioctl", SetLastError=true)]
