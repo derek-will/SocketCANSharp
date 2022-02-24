@@ -51,7 +51,7 @@ namespace SocketCANSharp
         /// <summary>
         /// CAN frame to send.
         /// </summary>
-        public CanFrame Frame;
+        public CanFrame Frame { get; set; }
 
         /// <summary>
         /// Instantiates a new Broadcast Manager Message using the supplied header and CAN frame.
