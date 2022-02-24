@@ -40,17 +40,17 @@ namespace SocketCANSharp
     public static class SocketCanConstants
     {
         /// <summary>
-        /// Address Family CAN - Per socket.h
+        /// Address Family CAN
         /// </summary>
-        public const int AF_CAN = 29;
+        public const int AF_CAN = 29; // socket.h
         /// <summary>
-        /// Protocol Family CAN - Per socket.h
+        /// Protocol Family CAN
         /// </summary>
-        public const int PF_CAN = 29;        
+        public const int PF_CAN = 29; // socket.h  
         /// <summary>
-        /// Socket Configuration Control: name -> if_index mapping - Per ioctls.h
+        /// Socket Configuration Control: name -> if_index mapping
         /// </summary>
-        public const int SIOCGIFINDEX = 0x8933;
+        public const int SIOCGIFINDEX = 0x8933; // ioctls.h
         /// <summary>
         /// Used to enable or disable non-blocking mode on a socket.
         /// </summary>
