@@ -36,35 +36,35 @@ using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
 {
-    /// <summary>
-    /// Represents an SAE J1939 Filter.
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct J1939Filter
-    {
-        /// <summary>
-        /// NAME value to match against after applying the NAME Mask.
-        /// </summary>
-        public ulong Name { get; set;}
-        /// <summary>
-        /// Mask to apply to the NAME.
-        /// </summary>
-	    public ulong NameMask { get; set; }
-        /// <summary>
-        /// Parameter Group Number (PGN) to match against after applying the PGN Mask.
-        /// </summary>
-	    public uint PGN { get; set; }
-        /// <summary>
-        /// Mask to apply to the PGN.
-        /// </summary>
-	    public uint PGNMask { get; set; }
-        /// <summary>
-        /// Address value to match against after applying the Address Mask.
-        /// </summary>
-	    public byte Address { get; set; }
-        /// <summary>
-        /// Mask to apply to the Address.
-        /// </summary>
-	    public byte AddressMask { get; set; }
-    }
+   /// <summary>
+   /// Represents an SAE J1939 Filter.
+   /// </summary>
+   [StructLayout(LayoutKind.Sequential)]
+   public struct J1939Filter
+   {
+      /// <summary>
+      /// NAME value to match against after applying the NAME Mask.
+      /// </summary>
+      public ulong Name { get; set;}
+      /// <summary>
+      /// Mask to apply to the NAME.
+      /// </summary>
+      public ulong NameMask { get; set; }
+      /// <summary>
+      /// Parameter Group Number (PGN) to match against after applying the PGN Mask.
+      /// </summary>
+      public uint PGN { get; set; }
+      /// <summary>
+      /// Mask to apply to the PGN.
+      /// </summary>
+      public uint PGNMask { get; set; }
+      /// <summary>
+      /// Address value to match against after applying the Address Mask.
+      /// </summary>
+      public byte Address { get; set; }
+      /// <summary>
+      /// Mask to apply to the Address.
+      /// </summary>
+      public byte AddressMask { get; set; }
+   }
 }
