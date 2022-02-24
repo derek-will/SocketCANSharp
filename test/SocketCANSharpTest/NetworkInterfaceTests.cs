@@ -37,13 +37,16 @@ using SocketCANSharp;
 using SocketCANSharp.Network;
 using System;
 using System.Linq;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 namespace SocketCANSharpTest
 {
-    public class ListCanDevicesTests
+    public class NetworkInterfaceTests
     {
+        SafeSocketHandle socketHandle;
+
         [SetUp]
         public void Setup()
         {
@@ -52,6 +55,7 @@ namespace SocketCANSharpTest
         [TearDown]
         public void Cleanup()
         {
+            socketHandle.Close();
         }
 
         [Test]
@@ -89,6 +93,87 @@ namespace SocketCANSharpTest
                 Assert.Greater(canInterface.Index, 0);
                 Assert.IsNotNull(canInterface.Name);
             }
+        }
+
+        [Test]
+        public void Bind_CAN_RAW_on_vcan0_CanNetworkInterface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            var addr = new SockAddrCan(iface.Index);
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+        }
+
+        [Test]
+        public void Bind_CAN_ISOTP_on_vcan0_CanNetworkInterface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            var addr = new SockAddrCanIsoTp(iface.Index)
+            {
+                TxId = 0x7e0,
+                RxId = 0x7e8,
+            };
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanIsoTp)));
+            Assert.AreNotEqual(-1, bindResult);
+        }
+
+        [Test]
+        public void Connect_CAN_BCM_on_vcan0_CanNetworkInterface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_BCM);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            var addr = new SockAddrCan(iface.Index);
+            int connectResult = LibcNativeMethods.Connect(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, connectResult);
+        }
+
+        [Test]
+        public void Bind_CAN_J1939_on_vcan0_CanNetworkInterface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            var addr = new SockAddrCanJ1939(iface.Index)
+            {
+                Name = 0x00000000,
+                PGN = 0x40000,
+                Address = 0xFF,
+            };
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));
+            Assert.AreNotEqual(-1, bindResult);
         }
     }
 }
