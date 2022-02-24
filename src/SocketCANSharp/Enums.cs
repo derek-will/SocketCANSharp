@@ -72,7 +72,7 @@ namespace SocketCANSharp
     }
 
     /// <summary>
-    /// 
+    /// Socket levels at which options reside.
     /// </summary>
     public enum SocketLevel
     {
