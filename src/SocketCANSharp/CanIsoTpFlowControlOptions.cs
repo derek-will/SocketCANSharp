@@ -46,14 +46,16 @@ namespace SocketCANSharp
         /// BlockSize is part of the FC Frame and is the requested number of frames to send per block between FC Frames. Set to 0 to turn off (no limit).
         /// </summary>
         public byte BlockSize { get; set; }
+
         /// <summary>
         /// Separation Time is part of the FC Frame and is the requested minimum separation time between each frame in a block. 
         /// 0x00 - 0x7F : 0 - 127 ms
-		/// 0x80 - 0xF0 : reserved
-		/// 0xF1 - 0xF9 : 100 us - 900 us
-		/// 0xFA - 0xFF : reserved
+        /// 0x80 - 0xF0 : reserved
+        /// 0xF1 - 0xF9 : 100 us - 900 us
+        /// 0xFA - 0xFF : reserved
         /// </summary>
         public byte Stmin { get; set; }
+
         /// <summary>
         /// Maximum number of consecutive FC frames with 'wait' FlowStatus (FS = 1) allowed. Set to 0 to disable.
         /// </summary>
