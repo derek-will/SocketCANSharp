@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
 using NUnit.Framework;
 using SocketCANSharp;
 using System.Net.Sockets;
@@ -61,6 +62,15 @@ namespace SocketCANSharpTest
             var ifr = new Ifreq("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
             Assert.AreNotEqual(-1, ioctlResult);
+        }
+
+        [Test]
+        public void GetInterfaceIndex_vcan0_SocketClosed_Failure_Test()
+        {
+            socketHandle.Close();
+
+            var ifr = new Ifreq("vcan0");
+            Assert.Throws<ObjectDisposedException>(() => LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr));
         }
 
         [Test]

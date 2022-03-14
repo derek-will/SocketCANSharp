@@ -87,7 +87,4 @@ Global
 		{B3212B61-1B39-4EB1-8BD0-C54049F44BBC}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3212B61-1B39-4EB1-8BD0-C54049F44BBC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B3212B61-1B39-4EB1-8BD0-C54049F44BBC} = {154C17B2-0237-4984-870C-A8ED7038814B}
-	EndGlobalSection
 EndGlobal

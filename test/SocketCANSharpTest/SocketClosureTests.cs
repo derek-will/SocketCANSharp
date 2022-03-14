@@ -53,8 +53,10 @@ namespace SocketCANSharpTest
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
+            Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();
             Assert.IsTrue(socketHandle.IsInvalid);
+            Assert.IsTrue(socketHandle.IsClosed);
         }
 
         [Test]
@@ -62,8 +64,10 @@ namespace SocketCANSharpTest
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             Assert.IsFalse(socketHandle.IsInvalid);
+            Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();
             Assert.IsTrue(socketHandle.IsInvalid);
+            Assert.IsTrue(socketHandle.IsClosed);
         }
 
         [Test]
@@ -71,8 +75,10 @@ namespace SocketCANSharpTest
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             Assert.IsFalse(socketHandle.IsInvalid);
+            Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();
             Assert.IsTrue(socketHandle.IsInvalid);
+            Assert.IsTrue(socketHandle.IsClosed);
         }
 
         [Test]
@@ -80,8 +86,10 @@ namespace SocketCANSharpTest
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_BCM);
             Assert.IsFalse(socketHandle.IsInvalid);
+            Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();
             Assert.IsTrue(socketHandle.IsInvalid);
+            Assert.IsTrue(socketHandle.IsClosed);
         }
     }
 }
