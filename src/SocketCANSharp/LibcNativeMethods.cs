@@ -630,5 +630,44 @@ namespace SocketCANSharp
         /// <param name="ptr">Pointer to an array of IfNameIndex objects</param>
         [DllImport("libc", EntryPoint="if_freenameindex", SetLastError=true)]
         public static extern void IfFreeNameIndex(IntPtr ptr);
+
+        /// <summary>
+        /// Opens an epoll file descriptor.
+        /// </summary>
+        /// <param name="size">The size argument is ignored since Linux 2.6.8, but must be greater than zero for backwards compatibility. 
+        /// Originally, this argument was intended as a hint to the kernel as to the number of file descriptors that the caller expected to add to the epoll instance.</param>
+        /// <returns>On success, returns a valid file descriptor handle. On failure, returns an invalid file descriptor handle.</returns>
+        [DllImport("libc", EntryPoint="epoll_create", SetLastError=true)]
+        public static extern SafeFileDescriptorHandle EpollCreate(int size);
+        
+        /// <summary>
+        /// Control interface used to add, modify, and delete entries from the interest list of an epoll file descriptor.
+        /// </summary>
+        /// <param name="epfd">Epoll File Descriptor.</param>
+        /// <param name="op">Operation to be performed.</param>
+        /// <param name="fd">Target file descriptor.</param>
+        /// <param name="evnt">Event object linked to the targeted file descriptor.</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="epoll_ctl", SetLastError=true)]
+        public static extern int EpollControl(SafeFileDescriptorHandle epfd, EpollOperation op, SafeSocketHandle fd, ref EpollEvent evnt);
+        
+        /// <summary>
+        /// Waits for an I/O event on an epoll file descriptor.
+        /// </summary>
+        /// <param name="epfd">Epoll File Descriptor.</param>
+        /// <param name="events">A buffer that contains information from the ready lists about file descriptors in the interest list that have some event(s) available.</param>
+        /// <param name="maxEvents">Maximum number of events to wait for.</param>
+        /// <param name="timeout">The maximum number of milliseconds that the function call will block for. Set to 0 to return immediately, set to -1 to wait indefinitely.</param>
+        /// <returns>Returns the number of file descriptors ready for the requested I/O. Returns -1 on failure.</returns>
+        [DllImport("libc", EntryPoint="epoll_wait", SetLastError=true)]
+        public static extern int EpollWait(SafeFileDescriptorHandle epfd, [Out] EpollEvent[] events, int maxEvents, int timeout);
+
+        /// <summary>
+        /// Closes a file descriptor.
+        /// </summary>
+        /// <param name="fd">File descriptor to close.</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="close", SetLastError=true)]
+        public static extern int Close(IntPtr fd);
     }
 }

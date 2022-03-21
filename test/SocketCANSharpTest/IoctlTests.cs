@@ -41,52 +41,51 @@ namespace SocketCANSharpTest
 {
     public class IoctlTests
     {
-        SafeSocketHandle socketHandle;
-        
-        [SetUp]
-        public void Setup()
-        {
-            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
-            Assert.IsFalse(socketHandle.IsInvalid);
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-            socketHandle.Close();
-        }
-
         [Test]
         public void GetInterfaceIndex_vcan0_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                Assert.IsFalse(socketHandle.IsInvalid);
+
+                var ifr = new Ifreq("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {System.Runtime.InteropServices.Marshal.GetLastWin32Error()}");
+            }
         }
 
         [Test]
         public void GetInterfaceIndex_vcan0_SocketClosed_Failure_Test()
         {
-            socketHandle.Close();
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                socketHandle.Close();
 
-            var ifr = new Ifreq("vcan0");
-            Assert.Throws<ObjectDisposedException>(() => LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr));
+                var ifr = new Ifreq("vcan0");
+                Assert.Throws<ObjectDisposedException>(() => LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr));
+            }
         }
 
         [Test]
         public void EnableNonBlockingMode_Success_Test()
         {
-            int arg = 1;
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
-            Assert.AreNotEqual(-1, ioctlResult);
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                int arg = 1;
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
+                Assert.AreNotEqual(-1, ioctlResult);
+            }
         }
 
         [Test]
         public void DisableNonBlockingMode_Success_Test()
         {
-            int arg = 0;
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
-            Assert.AreNotEqual(-1, ioctlResult);
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                int arg = 0;
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
+                Assert.AreNotEqual(-1, ioctlResult);
+            }
         }
     }
 }

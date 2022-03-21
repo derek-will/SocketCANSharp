@@ -697,4 +697,93 @@ namespace SocketCANSharp
         /// </summary>
         SO_J1939_ERRQUEUE   = 4,
     }
+
+    /// <summary>
+    /// Operations to perform on an epoll file descriptor.
+    /// </summary>
+    public enum EpollOperation
+    {
+        /// <summary>
+        /// Add a file descriptor to the interest list of the epoll file descriptor.
+        /// </summary>
+        EPOLL_CTL_ADD = 1,
+        /// <summary>
+        /// Remove a file descriptor from the interest list of the epoll file descriptor.
+        /// </summary>
+        EPOLL_CTL_DEL = 2,
+        /// <summary>
+        /// Change the settings associated with a file descriptor within the interest list.
+        /// </summary>
+        EPOLL_CTL_MOD = 3,
+    }
+
+    /// <summary>
+    /// Epoll event types.
+    /// </summary>
+    [Flags]
+    public enum EpollEventType : uint
+    {
+        /// <summary>
+        /// The associated file descriptor is available for read operations.
+        /// </summary>
+        EPOLLIN         = 0x00000001,
+        /// <summary>
+        /// There is urgent data available to be read on the associated file descriptor.
+        /// </summary>
+        EPOLLPRI        = 0x00000002,
+        /// <summary>
+        /// The associated file descriptor is available for write operations.
+        /// </summary>
+        EPOLLOUT        = 0x00000004,
+        /// <summary>
+        /// Error condition happened on the associated file descriptor.
+        /// </summary>
+        EPOLLERR        = 0x00000008,
+        /// <summary>
+        /// Hang up happened on the associated file descriptor.
+        /// </summary>
+        EPOLLHUP        = 0x00000010,
+        /// <summary>
+        /// Same as EPOLLIN.
+        /// </summary>
+        EPOLLRDNORM     = 0x00000040,
+        /// <summary>
+        /// Priority data band can be read.
+        /// </summary>
+        EPOLLRDBAND     = 0x00000080,
+        /// <summary>
+        /// Same as EPOLLOUT.
+        /// </summary>
+        EPOLLWRNORM     = 0x00000100,
+        /// <summary>
+        /// Priority data band may be written.
+        /// </summary>
+        EPOLLWRBAND     = 0x00000200,
+        /// <summary>
+        /// Ignored (Do not use).
+        /// </summary>
+        EPOLLMSG        = 0x00000400,
+        /// <summary>
+        /// Stream socket peer closed connection, or shut down writing half of connection.
+        /// </summary>
+        EPOLLRDHUP      = 0x00002000,
+        /// <summary>
+        /// Sets an exclusive wakeup mode for the epoll file descriptor that is being attached to the target file descriptor.
+        /// </summary>
+        EPOLLEXCLUSIVE  = 0x10000000,
+        /// <summary>
+        /// If EPOLLONESHOT and EPOLLET are clear and the process has the CAP_BLOCK_SUSPEND capability, then this will ensure that the system does not enter "suspend" or "hibernate" while this event is pending or being processed.
+        /// </summary>
+        EPOLLWAKEUP     = 0x20000000,
+        /// <summary>
+        /// Requests one-shot notification for the associated file descriptor. 
+        /// This means that after an event is notified for the associated file descriptor then the file descriptor is disabled in the interest list and no other events will be reported for it.
+        /// </summary>
+        EPOLLONESHOT    = 0x40000000,
+        /// <summary>
+        /// Requests edge-triggered notification for the associated file descriptor. 
+        /// The default behavior for epoll is level-triggered.
+        /// </summary>
+        EPOLLET         = 0x80000000,
+    }
 }
