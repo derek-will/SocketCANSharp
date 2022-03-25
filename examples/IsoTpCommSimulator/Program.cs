@@ -74,7 +74,7 @@ namespace IsoTpCommSimulator
             var testerSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             if (testerSocketHandle.IsInvalid)
             {
-                throw new InvalidOperationException($"Failed to create socket. Errno: {Marshal.GetLastWin32Error()}");
+                throw new InvalidOperationException($"Failed to create socket. Errno: {LibcNativeMethods.Errno}");
             }
 
             var ifr = new Ifreq("vcan0"); 
@@ -82,7 +82,7 @@ namespace IsoTpCommSimulator
             if (ioctlResult == -1)
             {
                 testerSocketHandle.Close();
-                throw new InvalidOperationException($"Failed to look up interface index for vcan0. Errno: {Marshal.GetLastWin32Error()}");
+                throw new InvalidOperationException($"Failed to look up interface index for vcan0. Errno: {LibcNativeMethods.Errno}");
             }
 
             var testerAddr = new SockAddrCanIsoTp(ifr.IfIndex)
@@ -95,7 +95,7 @@ namespace IsoTpCommSimulator
             if (bindResult == -1)
             {
                 testerSocketHandle.Close();
-                throw new InvalidOperationException($"Failed to bind address to the socket. Errno: {Marshal.GetLastWin32Error()}");
+                throw new InvalidOperationException($"Failed to bind address to the socket. Errno: {LibcNativeMethods.Errno}");
             }
 
             return testerSocketHandle;
@@ -106,7 +106,7 @@ namespace IsoTpCommSimulator
             var ecuSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             if (ecuSocketHandle.IsInvalid)
             {
-                throw new InvalidOperationException($"Failed to create socket. Errno: {Marshal.GetLastWin32Error()}");
+                throw new InvalidOperationException($"Failed to create socket. Errno: {LibcNativeMethods.Errno}");
             }
 
             var ifr = new Ifreq("vcan0"); 
@@ -114,7 +114,7 @@ namespace IsoTpCommSimulator
             if (ioctlResult == -1)
             {
                 ecuSocketHandle.Close();
-                throw new InvalidOperationException($"Failed to look up interface index for vcan0. Errno: {Marshal.GetLastWin32Error()}");
+                throw new InvalidOperationException($"Failed to look up interface index for vcan0. Errno: {LibcNativeMethods.Errno}");
             }
 
             var testerAddr = new SockAddrCanIsoTp(ifr.IfIndex)
@@ -127,7 +127,7 @@ namespace IsoTpCommSimulator
             if (bindResult == -1)
             {
                 ecuSocketHandle.Close();
-                throw new InvalidOperationException($"Failed to bind address to the socket. Errno: {Marshal.GetLastWin32Error()}");
+                throw new InvalidOperationException($"Failed to bind address to the socket. Errno: {LibcNativeMethods.Errno}");
             }
 
             return ecuSocketHandle;

@@ -544,8 +544,7 @@ namespace SocketCANSharpTest
             optionValueSize = Marshal.SizeOf(typeof(J1939Filter)) * filters.Length;
             result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_FILTER, filters, ref optionValueSize);
             Assert.AreEqual(-1, result); // per net/can/j1939/socket.c --> This option name is not supported by getsockopt
-            int errno = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-            Assert.AreEqual(92, errno); // ENOPROTOOPT
+            Assert.AreEqual(92, LibcNativeMethods.Errno); // ENOPROTOOPT
         }
 
         [Test]

@@ -83,8 +83,7 @@ namespace SocketCANSharp.Network
             IntPtr ptr = LibcNativeMethods.IfNameIndex();
             if (ptr == IntPtr.Zero)
             {
-                int errno = Marshal.GetLastWin32Error();
-                throw new NetworkInformationException(errno);
+                throw new NetworkInformationException(LibcNativeMethods.Errno);
             }
 
             var ifList = new List<CanNetworkInterface>();

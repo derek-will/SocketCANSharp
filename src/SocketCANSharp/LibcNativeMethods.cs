@@ -44,6 +44,11 @@ namespace SocketCANSharp
     public static class LibcNativeMethods
     {
         /// <summary>
+        /// Number of the last error which indicates what went wrong. Set by system calls and some library functions when an error occurs.
+        /// </summary>
+        public static int Errno { get { return Marshal.GetLastWin32Error(); } }
+
+        /// <summary>
         /// Creates a socket.
         /// </summary>
         /// <param name="addressFamily">Address Family</param>

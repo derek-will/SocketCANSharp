@@ -190,7 +190,7 @@ namespace SocketCANSharpTest
             var readFrame = new CanFrame();
             int nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, Marshal.SizeOf(typeof(CanFrame)));
             Assert.AreEqual(-1, nReadBytes);
-            Assert.AreEqual(11, System.Runtime.InteropServices.Marshal.GetLastWin32Error()); // EAGAIN / EWOULDBLOCK
+            Assert.AreEqual(11, LibcNativeMethods.Errno); // EAGAIN / EWOULDBLOCK
 
             var writeFrame = new CanFrame(0x123, new byte[] { 0x11, 0x22 });
             int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFrame)));

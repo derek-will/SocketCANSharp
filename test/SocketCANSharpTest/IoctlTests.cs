@@ -50,7 +50,7 @@ namespace SocketCANSharpTest
 
                 var ifr = new Ifreq("vcan0");
                 int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {System.Runtime.InteropServices.Marshal.GetLastWin32Error()}");
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
             }
         }
 
