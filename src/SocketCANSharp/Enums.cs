@@ -205,7 +205,7 @@ namespace SocketCANSharp
         /// </summary>
         CAN_EFF_FLAG = 0x80000000,
         /// <summary>
-        /// Specifies whether the CAN ID has the Remote Rransmission Request (RTR) bit set or not.
+        /// Specifies whether the CAN ID has the Remote Transmission Request (RTR) bit set or not.
         /// </summary>
         CAN_RTR_FLAG = 0x40000000,
         /// <summary>
