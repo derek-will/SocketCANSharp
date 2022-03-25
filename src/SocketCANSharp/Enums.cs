@@ -547,7 +547,7 @@ namespace SocketCANSharp
         /// </summary>
         CAN_ISOTP_RX_EXT_ADDR   = 0x00000200,
         /// <summary>
-        /// Wait for transmission to complete, 
+        /// Wait for transmission to complete.
         /// </summary>
         CAN_ISOTP_WAIT_TX_DONE  = 0x00000400,
         /// <summary>
