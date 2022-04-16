@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
+using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -78,6 +79,62 @@ namespace SocketCANSharpTest
             int len = Marshal.SizeOf(typeof(CanFilter)) * canFilterArray.Length;
             result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FILTER, canFilterArray, ref len);
             Assert.AreEqual(0, result);
+            Assert.AreEqual(2, canFilterArray.Length);
+            Assert.AreEqual(0x700, canFilterArray[0].CanId);
+            Assert.AreEqual(0x700, canFilterArray[0].CanMask);
+            Assert.AreEqual(0x600, canFilterArray[1].CanId);
+            Assert.AreEqual(0x600, canFilterArray[1].CanMask);
+        }
+
+        [Test]
+        public void SocketOption_CAN_RAW_FILTER_via_IntPtr_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var canFilter1 = new CanFilter(0x700, 0x700);
+            var canFilter2 = new CanFilter(0x600, 0x600);
+            var canFilterArray = new CanFilter[] { canFilter1, canFilter2 };
+
+            int size = Marshal.SizeOf(typeof(CanFilter));
+            IntPtr ptr = Marshal.AllocHGlobal(size * canFilterArray.Length);
+            try
+            {
+                IntPtr iteratorPtr = ptr;
+                for (int i = 0; i < canFilterArray.Length; ++i)
+                {
+                    Marshal.StructureToPtr<CanFilter>(canFilterArray[i], iteratorPtr, false);
+                    iteratorPtr = IntPtr.Add(iteratorPtr, size);
+                }
+
+                int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, (int)CanSocketOptions.CAN_RAW_FILTER, ptr, size * canFilterArray.Length);
+                Assert.AreEqual(0, result);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+
+            int len = size * (int)SocketCanConstants.CAN_RAW_FILTER_MAX;
+            ptr = Marshal.AllocHGlobal(len);
+            try
+            {
+                int result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, (int)CanSocketOptions.CAN_RAW_FILTER, ptr, ref len);
+                Assert.AreEqual(0, result);
+
+                canFilterArray = new CanFilter[len / size];
+                IntPtr iteratorPtr = ptr;
+                for (int i = 0; i < canFilterArray.Length; ++i)
+                {
+                    canFilterArray[i] = Marshal.PtrToStructure<CanFilter>(iteratorPtr);
+                    iteratorPtr = IntPtr.Add(iteratorPtr, size);
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+
             Assert.AreEqual(2, canFilterArray.Length);
             Assert.AreEqual(0x700, canFilterArray[0].CanId);
             Assert.AreEqual(0x700, canFilterArray[0].CanMask);

@@ -621,6 +621,30 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
         public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, [In, Out] J1939Filter[] filters, ref int optionValueSize);
+        
+        /// <summary>
+        /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="socketLevel">Socket level</param>
+        /// <param name="optionName">Socket option</param>
+        /// <param name="optionValue">Pointer to option value</param>
+        /// <param name="optionValueSize">Size of the buffer pointed to by optionValue</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
+        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="socketLevel">Socket level</param>
+        /// <param name="optionName">Socket option</param>
+        /// <param name="optionValue">Pointer to option value</param>
+        /// <param name="optionValueSize">Size of the buffer pointed to by optionValue</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint = "getsockopt", SetLastError = true)]
+        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Returns a pointer to an array of IfNameIndex objects. Each IfNameIndex object includes information about one of the network interfaces on the local system.
