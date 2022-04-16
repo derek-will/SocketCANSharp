@@ -71,12 +71,12 @@ namespace SocketCANSharp.Network
         public SocketCanProtocolType ProtocolType { get; protected set; }
 
         /// <summary>
-        /// Returns true if the socket is bound to a specific SocketCAN ISO-TP address; otherwise, false.
+        /// Returns true if the socket is bound to a specific SocketCAN address; otherwise, false.
         /// </summary>
         public bool IsBound { get; protected set; }
 
         /// <summary>
-        /// Returns true if the socket is connected to a SocketCAN ISO-TP address as of the most recent operation; otherwise, false.
+        /// Returns true if the socket is connected to a SocketCAN address as of the most recent operation; otherwise, false.
         /// </summary>
         public bool Connected { get; protected set; }
 
