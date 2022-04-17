@@ -52,6 +52,10 @@ namespace SocketCANSharp
         /// </summary>
         public const int SIOCGIFINDEX = 0x8933; // ioctls.h
         /// <summary>
+        /// Socket Configuration Control: get MTU size
+        /// </summary>
+        public const int SIOCGIFMTU = 0x8921; // ioctls.h
+        /// <summary>
         /// Used to enable or disable non-blocking mode on a socket.
         /// </summary>
         public const int FIONBIO = 0x5421; // ioctls.h

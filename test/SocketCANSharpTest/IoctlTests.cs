@@ -87,5 +87,33 @@ namespace SocketCANSharpTest
                 Assert.AreNotEqual(-1, ioctlResult);
             }
         }
+
+        [Test]
+        public void GetInterfaceIndex_vcan0_MaximumTransmisisonUnit_RAW_Test()
+        {
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                Assert.IsFalse(socketHandle.IsInvalid);
+
+                var ifr = new IfreqMtu("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifr);
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+                Assert.AreEqual(72, ifr.MTU);
+            }
+        }
+
+        [Test]
+        public void GetInterfaceIndex_vcan0_MaximumTransmisisonUnit_ISOTP_Test()
+        {
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                Assert.IsFalse(socketHandle.IsInvalid);
+
+                var ifr = new IfreqMtu("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifr);
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+                Assert.AreEqual(72, ifr.MTU);
+            }
+        }
     }
 }

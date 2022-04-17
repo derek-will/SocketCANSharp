@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
@@ -118,6 +119,28 @@ namespace SocketCANSharp.Network
             }
 
             return ifList;
+        }
+
+        /// <summary>
+        /// Retreives the Maximum Transmission Unit (MTU) of the interface.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle</param>
+        /// <returns>Maximum Transmission Unit of the interface.</returns>
+        /// <exception cref="NetworkInformationException">Unable to retreive MTU size information for the interface.</exception>
+        public int ReadSupportedMtu(SafeSocketHandle socketHandle)
+        {
+            if (socketHandle == null)
+                throw new ArgumentNullException(nameof(socketHandle));
+            
+            if (socketHandle.IsClosed || socketHandle.IsInvalid)
+                throw new ArgumentException("Socket handle must be open and valid", nameof(socketHandle));
+
+            var ifr = new IfreqMtu(Name);
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifr);
+            if (ioctlResult == -1)
+                throw new NetworkInformationException(LibcNativeMethods.Errno);
+
+            return ifr.MTU;
         }
 
         /// <summary>

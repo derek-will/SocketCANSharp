@@ -79,6 +79,16 @@ namespace SocketCANSharp
         public static extern int Ioctl(SafeSocketHandle socketHandle, int request, [In][Out] Ifreq ifreq);
 
         /// <summary>
+        /// Manipulates the underlying device parameters of special files.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="request">Request Code</param>
+        /// <param name="ifreq">Interface Request structure</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
+        public static extern int Ioctl(SafeSocketHandle socketHandle, int request, [In][Out] IfreqMtu ifreq);
+
+        /// <summary>
         /// Assigns the specified SocketCAN base address to the socket.
         /// </summary>
         /// <param name="socketHandle">Socket Handle Wrapper Instance</param>

@@ -96,6 +96,52 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CanNetworkInterface_MtuOfInterface_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int mtu = iface.ReadSupportedMtu(socketHandle);
+            Assert.AreEqual(72, mtu);
+        }
+
+        [Test]
+        public void CanNetworkInterface_MtuOfInterface_ClosedOrInvalid_SafeSocketHandle_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            socketHandle.Close();
+            Assert.IsTrue(socketHandle.IsInvalid);
+
+            Assert.Throws<ArgumentException>(() => iface.ReadSupportedMtu(socketHandle));
+        }
+
+        [Test]
+        public void CanNetworkInterface_MtuOfInterface_Null_SafeSocketHandle_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            Assert.Throws<ArgumentNullException>(() => iface.ReadSupportedMtu(null));
+        }
+
+        [Test]
         public void Bind_CAN_RAW_on_vcan0_CanNetworkInterface_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
