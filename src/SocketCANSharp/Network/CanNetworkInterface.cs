@@ -122,6 +122,35 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// Looks up and creates a CanNetworkInterface instance from the interface name.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle</param>
+        /// <param name="interfaceName">Interface Name</param>
+        /// <returns>CanNetworkInterface instance with the corresponding name.</returns>
+        /// <exception cref="ArgumentNullException">Socket Handle is null.</exception>
+        /// <exception cref="ArgumentException">Socket Handle is closed or invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Interface Name is null, empty, or only whitespace characters.</exception>
+        /// <exception cref="NetworkInformationException">Failed to look up interface by name.</exception>
+        public static CanNetworkInterface GetInterfaceByName(SafeSocketHandle socketHandle, string interfaceName)
+        {
+            if (socketHandle == null)
+                throw new ArgumentNullException(nameof(socketHandle));
+            
+            if (socketHandle.IsClosed || socketHandle.IsInvalid)
+                throw new ArgumentException("Socket handle must be open and valid", nameof(socketHandle));
+
+            if (string.IsNullOrWhiteSpace(interfaceName))
+                throw new ArgumentOutOfRangeException("Interface Name can not by null, empty, or only whitespace characters.", nameof(interfaceName));
+
+            var ifr = new Ifreq(interfaceName);
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            if (ioctlResult == -1)
+                throw new NetworkInformationException(LibcNativeMethods.Errno);
+
+            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, interfaceName.StartsWith(VirtualCanInterfaceStartsWith));
+        }
+
+        /// <summary>
         /// Retreives the Maximum Transmission Unit (MTU) of the interface.
         /// </summary>
         /// <param name="socketHandle">Socket Handle</param>

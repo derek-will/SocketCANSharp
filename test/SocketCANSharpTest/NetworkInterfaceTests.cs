@@ -38,6 +38,7 @@ using SocketCANSharp.Network;
 using System;
 using System.Linq;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
@@ -139,6 +140,63 @@ namespace SocketCANSharpTest
             Assert.IsNotNull(iface);
 
             Assert.Throws<ArgumentNullException>(() => iface.ReadSupportedMtu(null));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByName_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByName_Null_SocketHandle_Failure_Test()
+        {
+            Assert.Throws<ArgumentNullException>(() => CanNetworkInterface.GetInterfaceByName(null, "vcan0"));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByName_WhitespaceChars_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => CanNetworkInterface.GetInterfaceByName(socketHandle, "  "));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByName_Null_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => CanNetworkInterface.GetInterfaceByName(socketHandle, null));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByName_Closed_Socket_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            socketHandle.Close();
+            Assert.IsTrue(socketHandle.IsInvalid);
+
+            Assert.Throws<ArgumentException>(() => CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0"));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByName_Invalid_Name_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            Assert.Throws<NetworkInformationException>(() => CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan555"));
         }
 
         [Test]
