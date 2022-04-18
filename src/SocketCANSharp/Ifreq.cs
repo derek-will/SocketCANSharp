@@ -62,5 +62,15 @@ namespace SocketCANSharp
             Name = name;
             IfIndex = 0;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the Ifreq class using the specified interface index.
+        /// </summary>
+        /// <param name="index">Interface Index</param>
+        public Ifreq(int index)
+        {
+            Name = string.Empty;
+            IfIndex = index;
+        }
     }
 }

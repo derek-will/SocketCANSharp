@@ -115,5 +115,23 @@ namespace SocketCANSharpTest
                 Assert.AreEqual(72, ifr.MTU);
             }
         }
+
+        [Test]
+        public void GetInterfaceName_vcan0_Test()
+        {
+            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                Assert.IsFalse(socketHandle.IsInvalid);
+
+                var ifr = new Ifreq("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+
+                var ifreq = new Ifreq(ifr.IfIndex);
+                ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFNAME, ifreq);
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+                Assert.AreEqual("vcan0", ifreq.Name);
+            }
+        }
     }
 }

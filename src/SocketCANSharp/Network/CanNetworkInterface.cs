@@ -147,7 +147,32 @@ namespace SocketCANSharp.Network
             if (ioctlResult == -1)
                 throw new NetworkInformationException(LibcNativeMethods.Errno);
 
-            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, interfaceName.StartsWith(VirtualCanInterfaceStartsWith));
+            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, ifr.Name.StartsWith(VirtualCanInterfaceStartsWith));
+        }
+
+        /// <summary>
+        /// Looks up and creates a CanNetworkInterface instance from the interface index.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle</param>
+        /// <param name="interfaceIndex">Interface Index</param>
+        /// <returns>CanNetworkInterface instance with the corresponding index.</returns>
+        /// <exception cref="ArgumentNullException">Socket Handle is null.</exception>
+        /// <exception cref="ArgumentException">Socket Handle is closed or invalid.</exception>
+        /// <exception cref="NetworkInformationException">Failed to look up interface by index.</exception>
+        public static CanNetworkInterface GetInterfaceByIndex(SafeSocketHandle socketHandle, int interfaceIndex)
+        {
+            if (socketHandle == null)
+                throw new ArgumentNullException(nameof(socketHandle));
+            
+            if (socketHandle.IsClosed || socketHandle.IsInvalid)
+                throw new ArgumentException("Socket handle must be open and valid", nameof(socketHandle));
+
+            var ifr = new Ifreq(interfaceIndex);
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFNAME, ifr);
+            if (ioctlResult == -1)
+                throw new NetworkInformationException(LibcNativeMethods.Errno);
+
+            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, ifr.Name.StartsWith(VirtualCanInterfaceStartsWith));
         }
 
         /// <summary>

@@ -200,6 +200,63 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CanNetworkInterface_GetInterfaceByIndex_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            CanNetworkInterface iface2 = CanNetworkInterface.GetInterfaceByIndex(socketHandle, iface.Index);
+            Assert.AreEqual("vcan0", iface2.Name);
+            Assert.AreEqual(true, iface2.IsVirtual);
+            Assert.AreEqual(iface2.Index, iface.Index);
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByIndex_Null_SocketHandle_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            Assert.Throws<ArgumentNullException>(() => CanNetworkInterface.GetInterfaceByIndex(null, iface.Index));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByIndex_Closed_Socket_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            socketHandle.Close();
+            Assert.IsTrue(socketHandle.IsInvalid);
+
+            Assert.Throws<ArgumentException>(() => CanNetworkInterface.GetInterfaceByIndex(socketHandle, iface.Index));
+        }
+
+        [Test]
+        public void CanNetworkInterface_GetInterfaceByIndex_Invalid_Index_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            Assert.Throws<NetworkInformationException>(() => CanNetworkInterface.GetInterfaceByIndex(socketHandle, -200));
+        }
+
+        [Test]
         public void Bind_CAN_RAW_on_vcan0_CanNetworkInterface_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);

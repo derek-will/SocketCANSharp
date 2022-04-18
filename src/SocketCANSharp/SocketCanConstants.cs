@@ -56,6 +56,10 @@ namespace SocketCANSharp
         /// </summary>
         public const int SIOCGIFMTU = 0x8921; // ioctls.h
         /// <summary>
+        /// Socket Configuration Control: get iface name
+        /// </summary>
+        public const int SIOCGIFNAME = 0x8910; // ioctls.h
+        /// <summary>
         /// Used to enable or disable non-blocking mode on a socket.
         /// </summary>
         public const int FIONBIO = 0x5421; // ioctls.h
