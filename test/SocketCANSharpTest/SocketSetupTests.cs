@@ -189,6 +189,28 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void GetSockName_CAN_ISOTP_Unbound_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCanIsoTp();
+            int size = Marshal.SizeOf(typeof(SockAddrCanIsoTp));
+            int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
+
+            Assert.AreEqual(0, getSockNameResult);
+            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCanIsoTp)), size);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+            Assert.AreEqual(0, addr.CanIfIndex);
+            Assert.AreEqual(0x0, addr.TxId);
+            Assert.AreEqual(0x0, addr.RxId);
+        }
+
+        [Test]
         public void GetSockName_CAN_J1939_on_vcan0_Interface_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);

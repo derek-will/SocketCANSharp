@@ -44,6 +44,17 @@ namespace SocketCANSharp.Network
     public class IsoTpCanSocket : AbstractCanSocket
     {
         /// <summary>
+        /// The current address to which this socket is bound.
+        /// </summary>
+        public SockAddrCanIsoTp Address
+        {
+            get
+            {
+                return GetSockAddr();
+            }
+        }
+
+        /// <summary>
         /// Base options for ISO-TP including Extended Addresses, Pad Bytes, Transmit Timing, and various configuration flags.
         /// </summary>
         public CanIsoTpOptions BaseOptions 
@@ -334,6 +345,21 @@ namespace SocketCANSharp.Network
                 throw new SocketCanException("Unable to get CAN_ISOTP_LL_OPTS on CAN_ISOTP socket.");
 
             return isoTpLinkLayerOptions;
+        }
+
+        private SockAddrCanIsoTp GetSockAddr()
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            var addr = new SockAddrCanIsoTp();
+            int size = Marshal.SizeOf(typeof(SockAddrCanIsoTp));
+            int result = LibcNativeMethods.GetSockName(SafeHandle, addr, ref size);
+
+            if (result != 0)
+                throw new SocketCanException("Unable to get name on CAN_ISOTP socket.");
+
+            return addr;
         }
     }
 }

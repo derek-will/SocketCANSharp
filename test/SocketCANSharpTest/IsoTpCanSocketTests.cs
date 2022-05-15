@@ -861,5 +861,67 @@ namespace SocketCANSharpTest
                 isoTpCanSocket.Close();
             }
         }
+
+        [Test]
+        public void IsoTpCanSocket_GetAddress_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocket = new IsoTpCanSocket())
+            {
+                isoTpCanSocket.Bind(iface, 0x7e0, 0x7e8);
+                Assert.AreEqual(true, isoTpCanSocket.IsBound);
+                SockAddrCanIsoTp addr = isoTpCanSocket.Address;
+                Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+                Assert.AreEqual(iface.Index, addr.CanIfIndex);
+                Assert.AreEqual(0x7e0, addr.TxId);
+                Assert.AreEqual(0x7e8, addr.RxId);
+            }
+        }
+
+        [Test]
+        public void IsoTpCanSocket_GetAddress_NotBound_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocket = new IsoTpCanSocket())
+            {
+                Assert.AreEqual(false, isoTpCanSocket.IsBound);
+                SockAddrCanIsoTp addr = isoTpCanSocket.Address;
+                Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+                Assert.AreEqual(0, addr.CanIfIndex);
+                Assert.AreEqual(0x0, addr.TxId);
+                Assert.AreEqual(0x00, addr.RxId);
+            }
+        }
+
+        [Test]
+        public void IsoTpCanSocket_GetAddress_ObjectDisposedException_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocket = new IsoTpCanSocket())
+            {
+                isoTpCanSocket.Bind(iface, 0x7e0, 0x7e8);
+                Assert.AreEqual(true, isoTpCanSocket.IsBound);
+                isoTpCanSocket.Close();
+                Assert.Throws<ObjectDisposedException>(() => { SockAddrCanIsoTp addr = isoTpCanSocket.Address; });
+            }
+        }
     }
 }
