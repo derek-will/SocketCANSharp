@@ -32,68 +32,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
-using System.Runtime.InteropServices;
+using System;
 
 namespace SocketCANSharp
 {
     /// <summary>
-    /// Represents a SocketCAN ISO-TP address structure.
+    /// Set of SocketCAN utility functions.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class SockAddrCanIsoTp : SockAddrCan
+    public static class SocketCanUtils
     {
-        private uint _rxId;
-        private uint _txId;
-
         /// <summary>
-        /// CAN ID to receive on. Typically, CAN frames coming from the ECU will use this CAN ID (ex. 0x7e8).
+        /// Validates the SocketCAN CAN Identifier structure.
         /// </summary>
-        public uint RxId 
-        { 
-            get
-            {
-                return _rxId;
-            }
-            set
-            {
-                SocketCanUtils.ThrowIfCanIdStructureInvalid(value);
-                _rxId = value;
-            }
-        }
-
-        /// <summary>
-        /// CAN ID to transmit with. Typically, CAN frames being sent from the Tester will use this CAN ID (ex. 0x7e0).
-        /// </summary>
-        public uint TxId
+        /// <param name="canId">CAN Identifier structure</param>
+        /// <exception cref="ArgumentException">CAN_EFF_FLAG not set on a CAN ID that exceeds 11 bits.</exception>
+        public static void ThrowIfCanIdStructureInvalid(uint canId)
         {
-            get
+            uint rawId = canId & SocketCanConstants.CAN_EFF_MASK; // remove ERR, RTR, and EFF flags
+            if (rawId > 0x7ff && (canId & (uint)CanIdFlags.CAN_EFF_FLAG) == 0)
             {
-                return _txId;
+                throw new ArgumentException("CAN_EFF_FLAG must be set when CAN ID exceeds 11 bits.", nameof(canId));
             }
-            set
-            {
-                SocketCanUtils.ThrowIfCanIdStructureInvalid(value);
-                _txId = value;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a SocketCAN ISO-TP address structure with default values of zeroes.
-        /// </summary>
-        public SockAddrCanIsoTp() : base()
-        {
-            RxId = 0;
-            TxId = 0;
-        }
-
-        /// <summary>
-        /// Initializes a SocketCAN ISO-TP address structure to the AF_CAN address family and the provided interface index value. 
-        /// </summary>
-        /// <param name="interfaceIndex">Interface index value</param>
-        public SockAddrCanIsoTp(int interfaceIndex) : base(interfaceIndex)
-        {      
-            RxId = 0;
-            TxId = 0;   
         }
     }
 }

@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
 using NUnit.Framework;
 using SocketCANSharp;
 using System.Net.Sockets;
@@ -406,6 +407,34 @@ namespace SocketCANSharpTest
             receiveResponseMessage = new byte[4095];
             nBytes = LibcNativeMethods.Read(obdTester2SocketHandle, receiveResponseMessage, receiveResponseMessage.Length);
             Assert.AreEqual(6, nBytes);
+        }
+
+        [Test]
+        public void CAN_ISOTP_SockAddr_InvalidAddress_TxId_Failure_Test()
+        {
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            Assert.Throws<ArgumentException>(() => new SockAddrCanIsoTp(ifr.IfIndex)
+            {
+                TxId = 0x1500,
+                RxId = 0x600,
+            });
+        }
+
+        [Test]
+        public void CAN_ISOTP_SockAddr_InvalidAddress_RxId_Failure_Test()
+        {
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            Assert.Throws<ArgumentException>(() => new SockAddrCanIsoTp(ifr.IfIndex)
+            {
+                TxId = 0x500,
+                RxId = 0x1600,
+            });
         }
     }
 }

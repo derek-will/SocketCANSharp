@@ -43,6 +43,8 @@ namespace SocketCANSharp
     [StructLayout(LayoutKind.Sequential)]
     public struct CanFrame
     {
+        private uint _canId;
+
         /// <summary>
         /// Controller Area Network Identifier structure:
         /// bit 0-28: CAN identifier (11 or 29 bit)
@@ -50,7 +52,18 @@ namespace SocketCANSharp
         /// bit 30: Remote frame flag (1 = Remote Transmission Request (RTR) bit is set)
         /// bit 31: Frame format flag (0 = standard 11 bit, 1 = extended 29 bit)
         /// </summary>
-        public uint CanId { get; set; }
+        public uint CanId 
+        { 
+            get
+            {
+                return _canId;
+            }
+            set
+            {
+                SocketCanUtils.ThrowIfCanIdStructureInvalid(value);
+                _canId = value;
+            }
+        }
         /// <summary>
         /// Frame length in bytes.
         /// </summary>
@@ -86,7 +99,9 @@ namespace SocketCANSharp
             if (data.Length > SocketCanConstants.CAN_MAX_DLEN)
                 throw new ArgumentOutOfRangeException(nameof(data), $"Data must be {SocketCanConstants.CAN_MAX_DLEN} bytes or less");
 
-            CanId = canId;
+            SocketCanUtils.ThrowIfCanIdStructureInvalid(canId);
+
+            _canId = canId;
             Length = (byte) data?.Length;
             Pad = 0x00;
             Res0 = 0x00;

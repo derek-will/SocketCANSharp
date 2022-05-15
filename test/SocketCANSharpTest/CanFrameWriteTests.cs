@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
 using NUnit.Framework;
 using SocketCANSharp;
 using System.Net.Sockets;
@@ -151,6 +152,36 @@ namespace SocketCANSharpTest
 
             int nBytes = LibcNativeMethods.Write(socketHandle, ref canFrame, Marshal.SizeOf(typeof(CanFrame)));
             Assert.AreEqual(16, nBytes); 
+        }
+
+        [Test]
+        public void CanFrameWrite_InvalidAddress_Ctor_Failure_Test()
+        {
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCan(ifr.IfIndex);
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            Assert.Throws<ArgumentException>(() => new CanFrame(0x18db33f1, new byte[] { 0x11, 0x22 }));
+        }
+
+        [Test]
+        public void CanFrameWrite_InvalidAddress_Property_Failure_Test()
+        {
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCan(ifr.IfIndex);
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            var canFrame = new CanFrame(0x123, new byte[] { 0x11, 0x22 });
+
+            Assert.Throws<ArgumentException>(() => canFrame.CanId = 0x18db33f1);
         }
     }
 }
