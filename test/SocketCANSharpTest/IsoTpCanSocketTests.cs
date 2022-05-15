@@ -769,8 +769,9 @@ namespace SocketCANSharpTest
 
                 var data = new byte[3];
                 SocketCanException ex = Assert.Throws<SocketCanException>(() => isoTpCanSocketEcu.Read(data));
-                Assert.AreEqual(SocketError.WouldBlock, ex.SocketErrorCode);
-                Assert.AreEqual(11, ex.NativeErrorCode);
+                // depending on kernel version - exact behavior may differ
+                Assert.That(ex.SocketErrorCode, Is.EqualTo(SocketError.WouldBlock) | Is.EqualTo(SocketError.AddressNotAvailable));
+                Assert.That(ex.NativeErrorCode, Is.EqualTo(11) | Is.EqualTo(99));
             }
         }
 
