@@ -708,5 +708,35 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="close", SetLastError=true)]
         public static extern int Close(IntPtr fd);
+
+        /// <summary>
+        /// Returns the current address to which the socket is bound to.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="sockAddr">Address structure</param>
+        /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
+        public static extern int GetSockName(SafeSocketHandle socketHandle, SockAddrCan sockAddr, ref int sockAddrLen);
+
+        /// <summary>
+        /// Returns the current address to which the socket is bound to.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="sockAddr">Address structure</param>
+        /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
+        public static extern int GetSockName(SafeSocketHandle socketHandle, SockAddrCanIsoTp sockAddr, ref int sockAddrLen);
+
+        /// <summary>
+        /// Returns the current address to which the socket is bound to.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="sockAddr">Address structure</param>
+        /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
+        public static extern int GetSockName(SafeSocketHandle socketHandle, SockAddrCanJ1939 sockAddr, ref int sockAddrLen);
     }
 }

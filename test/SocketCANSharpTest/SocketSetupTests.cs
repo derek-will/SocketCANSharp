@@ -117,5 +117,91 @@ namespace SocketCANSharpTest
             int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));
             Assert.AreNotEqual(-1, bindResult);
         }
+
+        [Test]
+        public void GetSockName_CAN_RAW_on_vcan0_Interface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCan(ifr.IfIndex);
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            addr = new SockAddrCan();
+            int size = Marshal.SizeOf(typeof(SockAddrCan));
+            int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
+
+            Assert.AreEqual(0, getSockNameResult);
+            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCan)), size);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+            Assert.AreEqual(ifr.IfIndex, addr.CanIfIndex);
+        }
+
+        [Test]
+        public void GetSockName_CAN_ISOTP_on_vcan0_Interface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCanIsoTp(ifr.IfIndex)
+            {
+                TxId = 0x7e0,
+                RxId = 0x7e8,
+            };
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanIsoTp)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            addr = new SockAddrCanIsoTp();
+            int size = Marshal.SizeOf(typeof(SockAddrCanIsoTp));
+            int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
+
+            Assert.AreEqual(0, getSockNameResult);
+            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCanIsoTp)), size);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+            Assert.AreEqual(ifr.IfIndex, addr.CanIfIndex);
+            Assert.AreEqual(0x7e0, addr.TxId);
+            Assert.AreEqual(0x7e8, addr.RxId);
+        }
+
+        [Test]
+        public void GetSockName_CAN_J1939_on_vcan0_Interface_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCanJ1939(ifr.IfIndex)
+            {
+                Name = 0x00000000,
+                PGN = 0x40000,
+                Address = 0xFF,
+            };
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            addr = new SockAddrCanJ1939();
+            int size = Marshal.SizeOf(typeof(SockAddrCanJ1939));
+            int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
+
+            Assert.AreEqual(0, getSockNameResult);
+            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCanJ1939)), size);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+            Assert.AreEqual(ifr.IfIndex, addr.CanIfIndex);
+            Assert.AreEqual(0x00000000, addr.Name);
+            Assert.AreEqual(0x40000, addr.PGN);
+            Assert.AreEqual(0xFF, addr.Address);
+        }
     }
 }
