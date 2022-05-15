@@ -143,6 +143,22 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void GetSockName_CAN_RAW_Unbound_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var addr = new SockAddrCan();
+            int size = Marshal.SizeOf(typeof(SockAddrCan));
+            int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
+
+            Assert.AreEqual(0, getSockNameResult);
+            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCan)), size);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+            Assert.AreEqual(0, addr.CanIfIndex);
+        }
+
+        [Test]
         public void GetSockName_CAN_ISOTP_on_vcan0_Interface_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);

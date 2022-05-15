@@ -787,5 +787,44 @@ namespace SocketCANSharpTest
                 Assert.IsTrue(frame.Data.Take(frame.Length).SequenceEqual(new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
             }
         }
+
+        [Test]
+        public void RawCanSocket_GetAddress_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                rawCanSocket.Bind(iface);
+                Assert.AreEqual(true, rawCanSocket.IsBound);
+                SockAddrCan addr = rawCanSocket.Address;
+                Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+                Assert.AreEqual(iface.Index, addr.CanIfIndex);
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_GetAddress_NotBound_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                Assert.AreEqual(false, rawCanSocket.IsBound);
+                SockAddrCan addr = rawCanSocket.Address;
+                Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+                Assert.AreEqual(0, addr.CanIfIndex);
+            }
+        }
     }
 }

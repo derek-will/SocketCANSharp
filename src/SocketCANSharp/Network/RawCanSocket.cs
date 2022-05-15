@@ -44,6 +44,17 @@ namespace SocketCANSharp.Network
     public class RawCanSocket : AbstractCanSocket
     {
         /// <summary>
+        /// The current address to which this socket is bound.
+        /// </summary>
+        public SockAddrCan Address
+        {
+            get
+            {
+                return GetSockAddr();
+            }
+        }
+
+        /// <summary>
         /// CAN Filters to control the reception of CAN frames.
         /// </summary>
         public CanFilter[] CanFilters 
@@ -437,6 +448,21 @@ namespace SocketCANSharp.Network
                 throw new SocketCanException("Unable to get CAN_RAW_JOIN_FILTERS on CAN_RAW socket.");
 
             return join_filter > 0;
+        }
+
+        private SockAddrCan GetSockAddr()
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            var addr = new SockAddrCan();
+            int size = Marshal.SizeOf(typeof(SockAddrCan));
+            int result = LibcNativeMethods.GetSockName(SafeHandle, addr, ref size);
+
+            if (result != 0)
+                throw new SocketCanException("Unable to get name on CAN_RAW socket.");
+
+            return addr;
         }
     }
 }
