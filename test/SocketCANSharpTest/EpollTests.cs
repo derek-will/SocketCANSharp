@@ -95,7 +95,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Add_Success_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -118,7 +118,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Delete_Success_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -144,7 +144,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Modify_Success_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -175,7 +175,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Add_with_Data_Success_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -198,7 +198,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Add_Invalid_Handle_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -221,7 +221,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Invalid_Operation_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -244,7 +244,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Invalid_SocketHandle_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Seqpacket, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Seqpacket, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsTrue(socketHandle.IsInvalid);
 
@@ -267,7 +267,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Modify_EPOLLEXCLUSIVE_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -298,8 +298,8 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollWait_Success_Test()
         {
-            using (SafeSocketHandle readerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
-            using (SafeSocketHandle writerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle readerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle writerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(readerHandle.IsInvalid);
                 Assert.IsFalse(writerHandle.IsInvalid);
@@ -345,8 +345,8 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollWait_MaxEvents_Zero_Failure_Test()
         {
-            using (SafeSocketHandle readerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
-            using (SafeSocketHandle writerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle readerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle writerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(readerHandle.IsInvalid);
                 Assert.IsFalse(writerHandle.IsInvalid);
@@ -404,8 +404,8 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollWait_NullEventsArray_Failure_Test()
         {
-            using (SafeSocketHandle readerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
-            using (SafeSocketHandle writerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle readerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle writerHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(readerHandle.IsInvalid);
                 Assert.IsFalse(writerHandle.IsInvalid);
@@ -449,7 +449,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Delete_Not_Found_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -473,7 +473,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Modify_Not_Found_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -496,7 +496,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EpollControl_Add_Twice_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -594,7 +594,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void Epoll_Add_Null_SafeSocketHandle_Failure_Test()
+        public void Epoll_Add_Null_SafeFileDescriptorHandle_Failure_Test()
         {
             using (var epoll = new Epoll())
             {
@@ -700,7 +700,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void Epoll_Remove_Null_SafeSocketHandle_Failure_Test()
+        public void Epoll_Remove_Null_SafeFileDescriptorHandle_Failure_Test()
         {
             using (var epoll = new Epoll())
             {
@@ -815,7 +815,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void Epoll_Modify_Null_SafeSocketHandle_Failure_Test()
+        public void Epoll_Modify_Null_SafeFileDescriptorHandle_Failure_Test()
         {
             using (var epoll = new Epoll())
             {

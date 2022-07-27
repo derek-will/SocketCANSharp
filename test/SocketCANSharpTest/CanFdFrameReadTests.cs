@@ -43,7 +43,7 @@ namespace SocketCANSharpTest
 {
     public class CanFdFrameReadTests
     {
-        SafeSocketHandle socketHandle;
+        SafeFileDescriptorHandle socketHandle;
 
         [SetUp]
         public void Setup()

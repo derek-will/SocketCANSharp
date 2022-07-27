@@ -78,7 +78,7 @@ namespace SocketCANSharp.Network
         /// <exception cref="ObjectDisposedException">Epoll file descriptor is closed.</exception>
         /// <exception cref="ArgumentNullException">Socket handle is null.</exception>
         /// <exception cref="SocketException">The epoll_ctl call failed.</exception>
-        public void Add(SafeSocketHandle socketHandle, EpollEvent eventSettings)
+        public void Add(SafeFileDescriptorHandle socketHandle, EpollEvent eventSettings)
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);
@@ -100,7 +100,7 @@ namespace SocketCANSharp.Network
         /// <exception cref="ObjectDisposedException">Epoll file descriptor is closed.</exception>
         /// <exception cref="ArgumentNullException">Socket handle is null.</exception>
         /// <exception cref="SocketException">The epoll_ctl call failed.</exception>
-        public void Modify(SafeSocketHandle socketHandle, EpollEvent eventSettings)
+        public void Modify(SafeFileDescriptorHandle socketHandle, EpollEvent eventSettings)
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);
@@ -121,7 +121,7 @@ namespace SocketCANSharp.Network
         /// <exception cref="ObjectDisposedException">Epoll file descriptor is closed.</exception>
         /// <exception cref="ArgumentNullException">Socket handle is null.</exception>
         /// <exception cref="SocketException">The epoll_ctl call failed.</exception>
-        public void Remove(SafeSocketHandle socketHandle)
+        public void Remove(SafeFileDescriptorHandle socketHandle)
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);

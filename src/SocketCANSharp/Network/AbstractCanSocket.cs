@@ -53,7 +53,7 @@ namespace SocketCANSharp.Network
         /// <summary>
         /// Represents the operating system handle exposed in a safe manner for the socket that the current AbstractCanSocket object encapsulates.
         /// </summary>
-        public SafeSocketHandle SafeHandle { get; protected set; }
+        public SafeFileDescriptorHandle SafeHandle { get; protected set; }
 
         /// <summary>
         /// Represents the operating system handle for the socket that is encapsulated by this object.

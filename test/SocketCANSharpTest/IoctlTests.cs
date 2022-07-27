@@ -44,7 +44,7 @@ namespace SocketCANSharpTest
         [Test]
         public void GetInterfaceIndex_vcan0_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -57,7 +57,7 @@ namespace SocketCANSharpTest
         [Test]
         public void GetInterfaceIndex_vcan0_SocketClosed_Failure_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 socketHandle.Close();
 
@@ -69,7 +69,7 @@ namespace SocketCANSharpTest
         [Test]
         public void EnableNonBlockingMode_Success_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 int arg = 1;
                 int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
@@ -80,7 +80,7 @@ namespace SocketCANSharpTest
         [Test]
         public void DisableNonBlockingMode_Success_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 int arg = 0;
                 int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.FIONBIO, ref arg);
@@ -91,7 +91,7 @@ namespace SocketCANSharpTest
         [Test]
         public void GetInterfaceIndex_vcan0_MaximumTransmisisonUnit_RAW_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -105,7 +105,7 @@ namespace SocketCANSharpTest
         [Test]
         public void GetInterfaceIndex_vcan0_MaximumTransmisisonUnit_ISOTP_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 
@@ -119,7 +119,7 @@ namespace SocketCANSharpTest
         [Test]
         public void GetInterfaceName_vcan0_Test()
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 Assert.IsFalse(socketHandle.IsInvalid);
 

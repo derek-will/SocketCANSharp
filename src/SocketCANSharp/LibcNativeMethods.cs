@@ -56,7 +56,7 @@ namespace SocketCANSharp
         /// <param name="protocolType">Protocol Type</param>
         /// <returns>Socket Handle Wrapper Instance</returns>
         [DllImport("libc", EntryPoint="socket", SetLastError=true)]
-        public static extern SafeSocketHandle Socket(int addressFamily, SocketType socketType, SocketCanProtocolType protocolType);
+        public static extern SafeFileDescriptorHandle Socket(int addressFamily, SocketType socketType, SocketCanProtocolType protocolType);
 
         /// <summary>
         /// Manipulates the underlying device parameters of special files.
@@ -66,7 +66,7 @@ namespace SocketCANSharp
         /// <param name="arg">Integer Argument</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="ioctl", SetLastError=true)]
-        public static extern int Ioctl(SafeSocketHandle socketHandle, int request, ref int arg);
+        public static extern int Ioctl(SafeFileDescriptorHandle socketHandle, int request, ref int arg);
 
         /// <summary>
         /// Manipulates the underlying device parameters of special files.
@@ -76,7 +76,7 @@ namespace SocketCANSharp
         /// <param name="ifreq">Interface Request structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="ioctl", SetLastError=true)]
-        public static extern int Ioctl(SafeSocketHandle socketHandle, int request, [In][Out] Ifreq ifreq);
+        public static extern int Ioctl(SafeFileDescriptorHandle socketHandle, int request, [In][Out] Ifreq ifreq);
 
         /// <summary>
         /// Manipulates the underlying device parameters of special files.
@@ -86,7 +86,7 @@ namespace SocketCANSharp
         /// <param name="ifreq">Interface Request structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
-        public static extern int Ioctl(SafeSocketHandle socketHandle, int request, [In][Out] IfreqMtu ifreq);
+        public static extern int Ioctl(SafeFileDescriptorHandle socketHandle, int request, [In][Out] IfreqMtu ifreq);
 
         /// <summary>
         /// Assigns the specified SocketCAN base address to the socket.
@@ -96,7 +96,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">Size of address structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="bind", SetLastError=true)]
-        public static extern int Bind(SafeSocketHandle socketHandle, SockAddrCan addr, int addrSize);
+        public static extern int Bind(SafeFileDescriptorHandle socketHandle, SockAddrCan addr, int addrSize);
 
         /// <summary>
         /// Assigns the specified SocketCAN ISO-TP address to the socket.
@@ -106,7 +106,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">Size of address structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="bind", SetLastError=true)]
-        public static extern int Bind(SafeSocketHandle socketHandle, SockAddrCanIsoTp addr, int addrSize);
+        public static extern int Bind(SafeFileDescriptorHandle socketHandle, SockAddrCanIsoTp addr, int addrSize);
 
         /// <summary>
         /// Assigns the specified SocketCAN J1939 address to the socket.
@@ -116,7 +116,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">Size of address structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="bind", SetLastError=true)]
-        public static extern int Bind(SafeSocketHandle socketHandle, SockAddrCanJ1939 addr, int addrSize);
+        public static extern int Bind(SafeFileDescriptorHandle socketHandle, SockAddrCanJ1939 addr, int addrSize);
 
         /// <summary>
         /// Establishes a connection on the socket to the specified SocketCAN base address.
@@ -126,7 +126,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">Size of address structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="connect", SetLastError=true)]
-        public static extern int Connect(SafeSocketHandle socketHandle, SockAddrCan addr, int addrSize);
+        public static extern int Connect(SafeFileDescriptorHandle socketHandle, SockAddrCan addr, int addrSize);
 
         /// <summary>
         /// Establishes a connection on the socket to the specified SocketCAN base address.
@@ -136,7 +136,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">Size of address structure</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="connect", SetLastError=true)]
-        public static extern int Connect(SafeSocketHandle socketHandle, SockAddrCanJ1939 addr, int addrSize);
+        public static extern int Connect(SafeFileDescriptorHandle socketHandle, SockAddrCanJ1939 addr, int addrSize);
  
         /// <summary>
         /// Write the CanFrame to the socket.
@@ -146,7 +146,7 @@ namespace SocketCANSharp
         /// <param name="frameSize">Size of CAN Frame in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, ref CanFrame frame, int frameSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, ref CanFrame frame, int frameSize);
 
         /// <summary>
         /// Write the CanFdFrame to the socket.
@@ -156,7 +156,7 @@ namespace SocketCANSharp
         /// <param name="frameSize">Size of CAN FD Frame in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, ref CanFdFrame frame, int frameSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, ref CanFdFrame frame, int frameSize);
 
         /// <summary>
         /// Write the BcmCanMessage to the socket.
@@ -166,7 +166,7 @@ namespace SocketCANSharp
         /// <param name="msgSize">Size of BCM Message in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, BcmCanMessage message, int msgSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanMessage message, int msgSize);
 
         /// <summary>
         /// Write the BcmCanFdMessage to the socket.
@@ -176,7 +176,7 @@ namespace SocketCANSharp
         /// <param name="msgSize">Size of BCM Message in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, BcmCanFdMessage message, int msgSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanFdMessage message, int msgSize);
 
         /// <summary>
         /// Write the BcmCanSingleMessage to the socket.
@@ -186,7 +186,7 @@ namespace SocketCANSharp
         /// <param name="msgSize">Size of BCM Message in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, BcmCanSingleMessage message, int msgSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanSingleMessage message, int msgSize);
 
         /// <summary>
         /// Write the BcmCanFdSingleMessage to the socket.
@@ -196,7 +196,7 @@ namespace SocketCANSharp
         /// <param name="msgSize">Size of BCM Message in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, BcmCanFdSingleMessage message, int msgSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanFdSingleMessage message, int msgSize);
 
         /// <summary>
         /// Write the BcmMessageHeader to the socket.
@@ -206,7 +206,7 @@ namespace SocketCANSharp
         /// <param name="headerSize">Size of BCM Message Header in bytes</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, BcmMessageHeader header, int headerSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmMessageHeader header, int headerSize);
 
         /// <summary>
         /// Write the byte array to the socket.
@@ -216,7 +216,7 @@ namespace SocketCANSharp
         /// <param name="dataSize">Size of Byte Array</param>
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
-        public static extern int Write(SafeSocketHandle socketHandle, byte[] data, int dataSize);
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, byte[] data, int dataSize);
 
         /// <summary>
         /// Read a CanFrame from the socket.
@@ -226,7 +226,7 @@ namespace SocketCANSharp
         /// <param name="frameSize">Size of CAN Frame structure</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
-        public static extern int Read(SafeSocketHandle socketHandle, ref CanFrame frame, int frameSize);
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, ref CanFrame frame, int frameSize);
 
         /// <summary>
         /// Read a CanFdFrame from the socket.
@@ -236,7 +236,7 @@ namespace SocketCANSharp
         /// <param name="frameSize">Size of CAN FD Frame structure</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
-        public static extern int Read(SafeSocketHandle socketHandle, ref CanFdFrame frame, int frameSize);
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, ref CanFdFrame frame, int frameSize);
 
         /// <summary>
         /// Read a BcmCanMessage from the socket.
@@ -246,7 +246,7 @@ namespace SocketCANSharp
         /// <param name="msgSize">Size of BCM CAN Message structure</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
-        public static extern int Read(SafeSocketHandle socketHandle, [Out] BcmCanMessage message, int msgSize);
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmCanMessage message, int msgSize);
 
         /// <summary>
         /// Read a BcmCanFdMessage from the socket.
@@ -256,7 +256,7 @@ namespace SocketCANSharp
         /// <param name="msgSize">Size of BCM CAN FD Message structure</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
-        public static extern int Read(SafeSocketHandle socketHandle, [Out] BcmCanFdMessage message, int msgSize);
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmCanFdMessage message, int msgSize);
 
         /// <summary>
         /// Read a byte array from the socket.
@@ -266,7 +266,7 @@ namespace SocketCANSharp
         /// <param name="dataSize">Size of byte array</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
-        public static extern int Read(SafeSocketHandle socketHandle, [Out] byte[] data, int dataSize);
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] byte[] data, int dataSize);
 
         /// <summary>
         /// Receive a CanFrame from a socket.
@@ -279,7 +279,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">The size of the SocketCAN base address</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="recvfrom", SetLastError=true)]
-        public static extern int RecvFrom(SafeSocketHandle socketHandle, ref CanFrame frame, int frameSize, MessageFlags flags, [Out] SockAddrCan addr, ref int addrSize);
+        public static extern int RecvFrom(SafeFileDescriptorHandle socketHandle, ref CanFrame frame, int frameSize, MessageFlags flags, [Out] SockAddrCan addr, ref int addrSize);
 
         /// <summary>
         /// Receive a CanFdFrame from a socket.
@@ -292,7 +292,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">The size of the SocketCAN base address</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="recvfrom", SetLastError=true)]
-        public static extern int RecvFrom(SafeSocketHandle socketHandle, ref CanFdFrame frame, int frameSize, MessageFlags flags, [Out] SockAddrCan addr, ref int addrSize);
+        public static extern int RecvFrom(SafeFileDescriptorHandle socketHandle, ref CanFdFrame frame, int frameSize, MessageFlags flags, [Out] SockAddrCan addr, ref int addrSize);
 
         /// <summary>
         /// Receive a byte array from a socket.
@@ -305,7 +305,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">The size of the SocketCAN J1939 address</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint = "recvfrom", SetLastError = true)]
-        public static extern int RecvFrom(SafeSocketHandle socketHandle, [Out] byte[] data, int dataSize, MessageFlags flags, [Out] SockAddrCanJ1939 addr, ref int addrSize);
+        public static extern int RecvFrom(SafeFileDescriptorHandle socketHandle, [Out] byte[] data, int dataSize, MessageFlags flags, [Out] SockAddrCanJ1939 addr, ref int addrSize);
 
         /// <summary>
         /// Receive a byte array on a connected socket.
@@ -316,7 +316,7 @@ namespace SocketCANSharp
         /// <param name="flags">Message Flags</param>
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="recv", SetLastError=true)]
-        public static extern int Recv(SafeSocketHandle socketHandle, [Out] byte[] data, int dataSize, MessageFlags flags);
+        public static extern int Recv(SafeFileDescriptorHandle socketHandle, [Out] byte[] data, int dataSize, MessageFlags flags);
 
         /// <summary>
         /// Transmit a CanFrame to another socket.
@@ -329,7 +329,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">The size of the SocketCAN base address</param>
         /// <returns>The number of bytes sent on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="sendto", SetLastError=true)]
-        public static extern int SendTo(SafeSocketHandle socketHandle, ref CanFrame frame, int frameSize, MessageFlags flags, SockAddrCan addr, int addrSize);
+        public static extern int SendTo(SafeFileDescriptorHandle socketHandle, ref CanFrame frame, int frameSize, MessageFlags flags, SockAddrCan addr, int addrSize);
 
         /// <summary>
         /// Transmit a CanFdFrame to another socket.
@@ -342,7 +342,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">The size of the SocketCAN base address</param>
         /// <returns>The number of bytes sent on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="sendto", SetLastError=true)]
-        public static extern int SendTo(SafeSocketHandle socketHandle, ref CanFdFrame frame, int frameSize, MessageFlags flags, SockAddrCan addr, int addrSize);
+        public static extern int SendTo(SafeFileDescriptorHandle socketHandle, ref CanFdFrame frame, int frameSize, MessageFlags flags, SockAddrCan addr, int addrSize);
 
         /// <summary>
         /// Transmit a byte array to another socket.
@@ -355,7 +355,7 @@ namespace SocketCANSharp
         /// <param name="addrSize">The size of the SocketCAN J1939 address</param>
         /// <returns>The number of bytes sent on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="sendto", SetLastError=true)]
-        public static extern int SendTo(SafeSocketHandle socketHandle, byte[] data, int dataSize, MessageFlags flags, SockAddrCanJ1939 addr, int addrSize);
+        public static extern int SendTo(SafeFileDescriptorHandle socketHandle, byte[] data, int dataSize, MessageFlags flags, SockAddrCanJ1939 addr, int addrSize);
 
         /// <summary>
         /// Transmit a byte array to another socket.
@@ -366,7 +366,7 @@ namespace SocketCANSharp
         /// <param name="flags">Message Flags</param>
         /// <returns>The number of bytes sent on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="send", SetLastError=true)]
-        public static extern int Send(SafeSocketHandle socketHandle, byte[] data, int dataSize, MessageFlags flags);
+        public static extern int Send(SafeFileDescriptorHandle socketHandle, byte[] data, int dataSize, MessageFlags flags);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -378,7 +378,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of unsigned interger</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref uint optionValue, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref uint optionValue, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -390,7 +390,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of an unsigned integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref uint optionValue, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref uint optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -402,7 +402,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of CAN Filter Array in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, CanFilter[] filters, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, CanFilter[] filters, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -414,7 +414,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of CAN Filter Array in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, [In, Out] CanFilter[] filters, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, [In, Out] CanFilter[] filters, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -426,7 +426,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of signed integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref int optionValue, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref int optionValue, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -438,7 +438,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of signed integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref int optionValue, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, ref int optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -450,7 +450,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of signed integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, ref int optionValue, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, ref int optionValue, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -462,7 +462,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of signed integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, ref int optionValue, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, ref int optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -474,7 +474,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of Time interval object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, Timeval timeval, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, Timeval timeval, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -486,7 +486,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of Time interval object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, [In, Out] Timeval timeval, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, SocketLevelOptions optionName, [In, Out] Timeval timeval, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -498,7 +498,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of unsigned integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, ref uint optionValue, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, ref uint optionValue, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -510,7 +510,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of unsigned integer</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, ref uint optionValue, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, ref uint optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -522,7 +522,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of ISO-TP Flow Control Options object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpFlowControlOptions fcOptions, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpFlowControlOptions fcOptions, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -534,7 +534,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of ISO-TP Flow Control Options object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpFlowControlOptions fcOptions, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpFlowControlOptions fcOptions, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -546,7 +546,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of ISO-TP Link Layer Options object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpLinkLayerOptions llOptions, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpLinkLayerOptions llOptions, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -558,7 +558,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of ISO-TP Link Layer Options object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpLinkLayerOptions llOptions, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpLinkLayerOptions llOptions, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -570,7 +570,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of ISO-TP Options object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpOptions tpOptions, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpOptions tpOptions, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -582,7 +582,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of ISO-TP Options object in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpOptions tpOptions, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanIsoTpSocketOptions optionName, CanIsoTpOptions tpOptions, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -594,7 +594,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of signed integer</param>
         /// <returns>0 or 1 on success depending on option name and value, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, ref int optionValue, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, ref int optionValue, int optionValueSize);
         
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -606,7 +606,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of signed integer</param>
         /// <returns>0 or 1 on success depending on option name and value, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, ref int optionValue, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, ref int optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -618,7 +618,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of array of J1939 Filters in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, J1939Filter[] filters, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, J1939Filter[] filters, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -630,7 +630,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of array of J1939 Filters in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, [In, Out] J1939Filter[] filters, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, J1939SocketOptions optionName, [In, Out] J1939Filter[] filters, ref int optionValueSize);
         
         /// <summary>
         /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -642,7 +642,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of the buffer pointed to by optionValue</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
-        public static extern int SetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, int optionValueSize);
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, int optionValueSize);
 
         /// <summary>
         /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
@@ -654,7 +654,7 @@ namespace SocketCANSharp
         /// <param name="optionValueSize">Size of the buffer pointed to by optionValue</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint = "getsockopt", SetLastError = true)]
-        public static extern int GetSockOpt(SafeSocketHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, ref int optionValueSize);
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Returns a pointer to an array of IfNameIndex objects. Each IfNameIndex object includes information about one of the network interfaces on the local system.
@@ -688,7 +688,7 @@ namespace SocketCANSharp
         /// <param name="evnt">Event object linked to the targeted file descriptor.</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="epoll_ctl", SetLastError=true)]
-        public static extern int EpollControl(SafeFileDescriptorHandle epfd, EpollOperation op, SafeSocketHandle fd, ref EpollEvent evnt);
+        public static extern int EpollControl(SafeFileDescriptorHandle epfd, EpollOperation op, SafeFileDescriptorHandle fd, ref EpollEvent evnt);
         
         /// <summary>
         /// Waits for an I/O event on an epoll file descriptor.
@@ -717,7 +717,7 @@ namespace SocketCANSharp
         /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
-        public static extern int GetSockName(SafeSocketHandle socketHandle, SockAddrCan sockAddr, ref int sockAddrLen);
+        public static extern int GetSockName(SafeFileDescriptorHandle socketHandle, SockAddrCan sockAddr, ref int sockAddrLen);
 
         /// <summary>
         /// Returns the current address to which the socket is bound to.
@@ -727,7 +727,7 @@ namespace SocketCANSharp
         /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
-        public static extern int GetSockName(SafeSocketHandle socketHandle, SockAddrCanIsoTp sockAddr, ref int sockAddrLen);
+        public static extern int GetSockName(SafeFileDescriptorHandle socketHandle, SockAddrCanIsoTp sockAddr, ref int sockAddrLen);
 
         /// <summary>
         /// Returns the current address to which the socket is bound to.
@@ -737,6 +737,6 @@ namespace SocketCANSharp
         /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
-        public static extern int GetSockName(SafeSocketHandle socketHandle, SockAddrCanJ1939 sockAddr, ref int sockAddrLen);
+        public static extern int GetSockName(SafeFileDescriptorHandle socketHandle, SockAddrCanJ1939 sockAddr, ref int sockAddrLen);
     }
 }

@@ -51,7 +51,7 @@ namespace CanBusSniffer
 
         static void Main(string[] args)
         {
-            using (SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
             {
                 if (socketHandle.IsInvalid)
                 {

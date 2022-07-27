@@ -42,15 +42,15 @@ namespace SocketCANSharpTest
 {
     public class CanFdIsoTpTests
     {
-        SafeSocketHandle testerSocketHandle;
-        SafeSocketHandle ecuSocketHandle;
-        SafeSocketHandle extAddrTesterSocketHandle;
-        SafeSocketHandle extAddrEcuSocketHandle;
-        SafeSocketHandle fxnAddrTesterSocketHandle;
-        SafeSocketHandle obdTester1SocketHandle;
-        SafeSocketHandle obdEcu1SocketHandle;
-        SafeSocketHandle obdTester2SocketHandle;
-        SafeSocketHandle obdEcu2SocketHandle;
+        SafeFileDescriptorHandle testerSocketHandle;
+        SafeFileDescriptorHandle ecuSocketHandle;
+        SafeFileDescriptorHandle extAddrTesterSocketHandle;
+        SafeFileDescriptorHandle extAddrEcuSocketHandle;
+        SafeFileDescriptorHandle fxnAddrTesterSocketHandle;
+        SafeFileDescriptorHandle obdTester1SocketHandle;
+        SafeFileDescriptorHandle obdEcu1SocketHandle;
+        SafeFileDescriptorHandle obdTester2SocketHandle;
+        SafeFileDescriptorHandle obdEcu2SocketHandle;
 
         [SetUp]
         public void Setup()

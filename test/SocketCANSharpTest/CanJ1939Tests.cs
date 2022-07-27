@@ -43,9 +43,9 @@ namespace SocketCANSharpTest
 {
     public class CanJ1939Tests
     {
-        SafeSocketHandle testerSocketHandle;
-        SafeSocketHandle ecuSocketHandle;
-        SafeSocketHandle broadcastHandle;
+        SafeFileDescriptorHandle testerSocketHandle;
+        SafeFileDescriptorHandle ecuSocketHandle;
+        SafeFileDescriptorHandle broadcastHandle;
 
         [SetUp]
         public void Setup()

@@ -42,7 +42,7 @@ namespace SocketCANSharpTest
 {
     public class CanFrameWriteTests
     {
-        SafeSocketHandle socketHandle;
+        SafeFileDescriptorHandle socketHandle;
 
         [SetUp]
         public void Setup()

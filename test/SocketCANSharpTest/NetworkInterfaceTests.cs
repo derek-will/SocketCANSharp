@@ -46,7 +46,7 @@ namespace SocketCANSharpTest
 {
     public class NetworkInterfaceTests
     {
-        SafeSocketHandle socketHandle;
+        SafeFileDescriptorHandle socketHandle;
 
         [SetUp]
         public void Setup()
@@ -113,7 +113,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void CanNetworkInterface_MtuOfInterface_ClosedOrInvalid_SafeSocketHandle_Failure_Test()
+        public void CanNetworkInterface_MtuOfInterface_ClosedOrInvalid_SafeFileDescriptorHandle_Failure_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
             Assert.IsNotNull(collection);
@@ -131,7 +131,7 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void CanNetworkInterface_MtuOfInterface_Null_SafeSocketHandle_Failure_Test()
+        public void CanNetworkInterface_MtuOfInterface_Null_SafeFileDescriptorHandle_Failure_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
             Assert.IsNotNull(collection);

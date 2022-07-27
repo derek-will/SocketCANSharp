@@ -43,7 +43,7 @@ namespace SocketCANSharpTest
         [Test]
         public void Errno_Invalid_SocketType_Test()
         {
-            SafeSocketHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Stream, SocketCanProtocolType.CAN_RAW);
+            SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Stream, SocketCanProtocolType.CAN_RAW);
             Assert.AreEqual(91, LibcNativeMethods.Errno);
         }
     }

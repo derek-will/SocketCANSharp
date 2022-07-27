@@ -131,7 +131,7 @@ namespace SocketCANSharp.Network
         /// <exception cref="ArgumentException">Socket Handle is closed or invalid.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Interface Name is null, empty, or only whitespace characters.</exception>
         /// <exception cref="NetworkInformationException">Failed to look up interface by name.</exception>
-        public static CanNetworkInterface GetInterfaceByName(SafeSocketHandle socketHandle, string interfaceName)
+        public static CanNetworkInterface GetInterfaceByName(SafeFileDescriptorHandle socketHandle, string interfaceName)
         {
             if (socketHandle == null)
                 throw new ArgumentNullException(nameof(socketHandle));
@@ -159,7 +159,7 @@ namespace SocketCANSharp.Network
         /// <exception cref="ArgumentNullException">Socket Handle is null.</exception>
         /// <exception cref="ArgumentException">Socket Handle is closed or invalid.</exception>
         /// <exception cref="NetworkInformationException">Failed to look up interface by index.</exception>
-        public static CanNetworkInterface GetInterfaceByIndex(SafeSocketHandle socketHandle, int interfaceIndex)
+        public static CanNetworkInterface GetInterfaceByIndex(SafeFileDescriptorHandle socketHandle, int interfaceIndex)
         {
             if (socketHandle == null)
                 throw new ArgumentNullException(nameof(socketHandle));
@@ -181,7 +181,7 @@ namespace SocketCANSharp.Network
         /// <param name="socketHandle">Socket Handle</param>
         /// <returns>Maximum Transmission Unit of the interface.</returns>
         /// <exception cref="NetworkInformationException">Unable to retreive MTU size information for the interface.</exception>
-        public int ReadSupportedMtu(SafeSocketHandle socketHandle)
+        public int ReadSupportedMtu(SafeFileDescriptorHandle socketHandle)
         {
             if (socketHandle == null)
                 throw new ArgumentNullException(nameof(socketHandle));

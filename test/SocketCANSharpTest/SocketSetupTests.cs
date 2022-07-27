@@ -41,7 +41,7 @@ namespace SocketCANSharpTest
 {
     public class SocketSetupTests
     {
-        SafeSocketHandle socketHandle;
+        SafeFileDescriptorHandle socketHandle;
 
         [TearDown]
         public void Cleanup()

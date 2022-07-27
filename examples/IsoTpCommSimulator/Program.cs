@@ -69,7 +69,7 @@ namespace IsoTpCommSimulator
             }
         }
 
-        private static SafeSocketHandle SetupTester()
+        private static SafeFileDescriptorHandle SetupTester()
         {
             var testerSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             if (testerSocketHandle.IsInvalid)
@@ -101,7 +101,7 @@ namespace IsoTpCommSimulator
             return testerSocketHandle;
         }
 
-        private static SafeSocketHandle SetupEcu()
+        private static SafeFileDescriptorHandle SetupEcu()
         {
             var ecuSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
             if (ecuSocketHandle.IsInvalid)
@@ -133,7 +133,7 @@ namespace IsoTpCommSimulator
             return ecuSocketHandle;
         }
 
-        private static void EcuLoop(SafeSocketHandle socketHandle)
+        private static void EcuLoop(SafeFileDescriptorHandle socketHandle)
         {
             while (true)
             {
