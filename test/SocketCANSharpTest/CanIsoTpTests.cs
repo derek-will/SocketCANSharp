@@ -436,5 +436,42 @@ namespace SocketCANSharpTest
                 RxId = 0x1600,
             });
         }
+
+        [Test]
+        public void CAN_ISOTP_TRUNC_Plus_PEEK_MessageFlags_Success_Test()
+        {
+            // Tests this change: 
+            // https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=42bf50a1795a1854d48717b7361dbdbce496b16b
+
+            // Tester sends request
+            var requestMessage = new byte[] { 0x09, 0x02 };
+            int nBytes = LibcNativeMethods.Write(extAddrTesterSocketHandle, requestMessage, requestMessage.Length);
+            Assert.AreEqual(2, nBytes);
+
+            // ECU peaks at request
+            var receiveRequestMessage = new byte[1];
+            nBytes = LibcNativeMethods.Recv(extAddrEcuSocketHandle, receiveRequestMessage, receiveRequestMessage.Length, MessageFlags.MSG_TRUNC | MessageFlags.MSG_PEEK);
+            Assert.That(nBytes, Is.EqualTo(2).Or.EqualTo(1)); // Pre update this would return 1, post update it will return 2.
+
+            // ECU reads request
+            receiveRequestMessage = new byte[4095];
+            nBytes = LibcNativeMethods.Read(extAddrEcuSocketHandle, receiveRequestMessage, receiveRequestMessage.Length);
+            Assert.AreEqual(2, nBytes);
+
+            // ECU sends back response
+            var responseMessage = new byte[] { 0x49, 0x02, 0x01, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30  };
+            nBytes = LibcNativeMethods.Write(extAddrEcuSocketHandle, responseMessage, responseMessage.Length);
+            Assert.AreEqual(20, nBytes);
+
+            // Tester peeks at response
+            var receiveResponseMessage = new byte[1];
+            nBytes = LibcNativeMethods.Recv(extAddrTesterSocketHandle, receiveResponseMessage, receiveResponseMessage.Length, MessageFlags.MSG_TRUNC | MessageFlags.MSG_PEEK);
+            Assert.That(nBytes, Is.EqualTo(20).Or.EqualTo(1)); // // Pre update this would return 1, post update it will return 20.
+
+            // Tester reads response
+            receiveResponseMessage = new byte[4095];
+            nBytes = LibcNativeMethods.Read(extAddrTesterSocketHandle, receiveResponseMessage, receiveResponseMessage.Length);
+            Assert.AreEqual(20, nBytes);
+        }
     }
 }

@@ -215,7 +215,7 @@ namespace SocketCANSharp.Network
         /// Reads data from the socket into the supplied receive buffer.
         /// </summary>
         /// <param name="data">An array of bytes that is the receive buffer</param>
-        /// <returns>The number of received from the socket.</returns>
+        /// <returns>The number of bytes received from the socket.</returns>
         /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
         /// <exception cref="ArgumentNullException">The data byte array is null.</exception>
         /// <exception cref="SocketCanException">Reading from the underlying CAN_ISOTP socket failed.</exception>
@@ -234,6 +234,32 @@ namespace SocketCANSharp.Network
             }
 
             return bytesRead;
+        }
+
+        /// <summary>
+        /// Reads data from the socket into the supplied receive buffer using the supplied message flags.
+        /// </summary>
+        /// <param name="data">An array of bytes that is the receive buffer.</param>
+        /// <param name="messageFlags">Specifies socket receive behavior.</param>
+        /// <returns>The number of bytes received from the socket or the real length of packet / datagram in the case of MSG_TRUNC being used.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="ArgumentNullException">The data byte array is null.</exception>
+        /// <exception cref="SocketCanException">Reading from the underlying CAN_ISOTP socket failed.</exception>
+        public int Read(byte[] data, MessageFlags messageFlags)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+            int numOfBytes = LibcNativeMethods.Recv(SafeHandle, data, data.Length, messageFlags);
+            if (numOfBytes == -1)
+            {
+                throw new SocketCanException("Reading from the underlying CAN_ISOTP socket failed.");
+            }
+
+            return numOfBytes;
         }
 
         private void SetBaseOptions(CanIsoTpOptions isoTpOptions)

@@ -162,6 +162,14 @@ namespace SocketCANSharp
         /// </summary>
         None            = 0x00,
         /// <summary>
+        /// Peek at incoming messages without removing them from the receive queue.
+        /// </summary>
+        MSG_PEEK		= 0x02,
+        /// <summary>
+        /// Return the real length of the packet or datagram even when it is larger than the passed buffer.
+        /// </summary>
+        MSG_TRUNC		= 0x20,
+        /// <summary>
         /// Nonblocking IO.
         /// </summary>
         MSG_DONTWAIT	= 0x40,

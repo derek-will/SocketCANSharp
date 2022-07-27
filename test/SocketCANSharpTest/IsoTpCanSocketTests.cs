@@ -923,5 +923,136 @@ namespace SocketCANSharpTest
                 Assert.Throws<ObjectDisposedException>(() => { SockAddrCanIsoTp addr = isoTpCanSocket.Address; });
             }
         }
+
+        [Test]
+        public void IsoTpCanSocket_Read_with_MessageFlags_Success_Test()
+        {
+            // Tests this change: 
+            // https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=42bf50a1795a1854d48717b7361dbdbce496b16b
+
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocketTester = new IsoTpCanSocket())
+            using (var isoTpCanSocketEcu = new IsoTpCanSocket())
+            {
+                isoTpCanSocketTester.Bind(iface, 0x7e0, 0x7e8);
+                isoTpCanSocketEcu.Bind(iface, 0x7e8, 0x7e0);
+
+                int bytesWritten = isoTpCanSocketTester.Write(new byte[] { 0x22, 0xf1, 0x8c });
+                Assert.AreEqual(3, bytesWritten);
+
+                var data = new byte[1];
+                int bytesRead = isoTpCanSocketEcu.Read(data, MessageFlags.MSG_TRUNC | MessageFlags.MSG_PEEK);
+                Assert.That(bytesRead, Is.EqualTo(3).Or.EqualTo(1)); // Pre update this would return 1, post update it will return 3.
+                Assert.IsTrue(data.SequenceEqual(new byte[] { 0x22 }));
+            }
+        }
+
+        [Test]
+        public void IsoTpCanSocket_Read_with_MessageFlags_ObjectDisposedException_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocketTester = new IsoTpCanSocket())
+            using (var isoTpCanSocketEcu = new IsoTpCanSocket())
+            {
+                isoTpCanSocketTester.Bind(iface, 0x7e0, 0x7e8);
+                isoTpCanSocketEcu.Bind(iface, 0x7e8, 0x7e0);
+                isoTpCanSocketEcu.Close();
+
+                int bytesWritten = isoTpCanSocketTester.Write(new byte[] { 0x22, 0xf1, 0x8c });
+                Assert.AreEqual(3, bytesWritten);
+
+                var data = new byte[3];
+                Assert.Throws<ObjectDisposedException>(() => isoTpCanSocketEcu.Read(data, MessageFlags.MSG_TRUNC | MessageFlags.MSG_PEEK));
+            }
+        }
+
+        [Test]
+        public void IsoTpCanSocket_Read_with_MessageFlags_SocketCanException_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocketTester = new IsoTpCanSocket())
+            using (var isoTpCanSocketEcu = new IsoTpCanSocket())
+            {
+                isoTpCanSocketEcu.ReceiveTimeout = 100;
+                isoTpCanSocketTester.Bind(iface, 0x7e0, 0x7e8);
+
+                int bytesWritten = isoTpCanSocketTester.Write(new byte[] { 0x22, 0xf1, 0x8c });
+                Assert.AreEqual(3, bytesWritten);
+
+                var data = new byte[3];
+                SocketCanException ex = Assert.Throws<SocketCanException>(() => isoTpCanSocketEcu.Read(data, MessageFlags.MSG_TRUNC | MessageFlags.MSG_PEEK));
+                // depending on kernel version - exact behavior may differ
+                Assert.That(ex.SocketErrorCode, Is.EqualTo(SocketError.WouldBlock) | Is.EqualTo(SocketError.AddressNotAvailable));
+                Assert.That(ex.NativeErrorCode, Is.EqualTo(11) | Is.EqualTo(99));
+            }
+        }
+
+        [Test]
+        public void IsoTpCanSocket_Read_with_MessageFlags_ArgumentNullException_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocketTester = new IsoTpCanSocket())
+            using (var isoTpCanSocketEcu = new IsoTpCanSocket())
+            {
+                isoTpCanSocketTester.Bind(iface, 0x7e0, 0x7e8);
+                isoTpCanSocketEcu.Bind(iface, 0x7e8, 0x7e0);
+
+                int bytesWritten = isoTpCanSocketTester.Write(new byte[] { 0x22, 0xf1, 0x8c });
+                Assert.AreEqual(3, bytesWritten);
+
+                var data = new byte[3];
+                Assert.Throws<ArgumentNullException>(() => isoTpCanSocketEcu.Read(null, MessageFlags.MSG_TRUNC | MessageFlags.MSG_PEEK));
+            }
+        }
+
+        [Test]
+        public void IsoTpCanSocket_Read_with_MessageFlags_NonBlocking_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocketTester = new IsoTpCanSocket())
+            using (var isoTpCanSocketEcu = new IsoTpCanSocket())
+            {
+                isoTpCanSocketTester.Bind(iface, 0x7e0, 0x7e8);
+                isoTpCanSocketEcu.Bind(iface, 0x7e8, 0x7e0);
+
+                int bytesWritten = isoTpCanSocketTester.Write(new byte[] { 0x3e, 0x00 });
+                Assert.AreEqual(2, bytesWritten);
+
+                var data = new byte[3];
+                int bytesRead = isoTpCanSocketEcu.Read(data, MessageFlags.MSG_DONTWAIT);
+                Assert.AreEqual(2, bytesRead);
+                Assert.IsTrue(data.Take(bytesRead).ToArray().SequenceEqual(new byte[] { 0x3e, 0x00 }));
+            }
+        }
     }
 }
