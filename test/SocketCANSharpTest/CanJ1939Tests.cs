@@ -479,5 +479,27 @@ namespace SocketCANSharpTest
             Assert.AreEqual(2000, recvFromResult);
             Assert.IsTrue(recvData.Take(recvFromResult).SequenceEqual(data));
         }
+
+        [Test]
+        public void CAN_J1939_GetPeerName_Success_Test()
+        {
+            var addr = new SockAddrCanJ1939();
+            int addrSize = Marshal.SizeOf(typeof(SockAddrCanJ1939));
+            int result = LibcNativeMethods.GetPeerName(ecuSocketHandle, addr, ref addrSize);
+            Assert.AreNotEqual(-1, result);
+            Assert.AreEqual(0x25, addr.Address);
+            Assert.AreEqual(SocketCanConstants.J1939_NO_PGN, addr.PGN);
+            Assert.AreEqual(SocketCanConstants.J1939_NO_NAME, addr.Name);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+
+            addr = new SockAddrCanJ1939();
+            addrSize = Marshal.SizeOf(typeof(SockAddrCanJ1939));
+            result = LibcNativeMethods.GetPeerName(testerSocketHandle, addr, ref addrSize);
+            Assert.AreNotEqual(-1, result);
+            Assert.AreEqual(0x50, addr.Address);
+            Assert.AreEqual(0x1b100, addr.PGN);
+            Assert.AreEqual(SocketCanConstants.J1939_NO_NAME, addr.Name);
+            Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
+        }
     }
 }

@@ -738,5 +738,15 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getsockname", SetLastError=true)]
         public static extern int GetSockName(SafeFileDescriptorHandle socketHandle, SockAddrCanJ1939 sockAddr, ref int sockAddrLen);
+
+        /// <summary>
+        /// Returns the address of the peer to which the socket is connected to.
+        /// </summary>
+        /// <param name="socketHandle">Socket handle</param>
+        /// <param name="sockAddr">Address structure</param>
+        /// <param name="sockAddrLen">The size of the the socket address structure in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getpeername", SetLastError=true)]
+        public static extern int GetPeerName(SafeFileDescriptorHandle socketHandle, SockAddrCanJ1939 sockAddr, ref int sockAddrLen);
     }
 }
