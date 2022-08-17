@@ -371,6 +371,16 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CAN_ISOTP_Functional_SingleFrame_ClassicCAN_Failure_TooLarge_Test()
+        {
+            // Tester sends request
+            var requestMessage = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            int nBytes = LibcNativeMethods.Write(fxnAddrTesterSocketHandle, requestMessage, requestMessage.Length);
+            Assert.AreEqual(-1, nBytes);
+            Assert.AreEqual(22, LibcNativeMethods.Errno); // EINVAL
+        }
+
+        [Test]
         public void CAN_ISOTP_1_to_N_ClassicCAN_Success_Test()
         {
             // Tester sends functional request
@@ -472,6 +482,42 @@ namespace SocketCANSharpTest
             receiveResponseMessage = new byte[4095];
             nBytes = LibcNativeMethods.Read(extAddrTesterSocketHandle, receiveResponseMessage, receiveResponseMessage.Length);
             Assert.AreEqual(20, nBytes);
+        }
+
+        [Test]
+        public void CAN_ISOTP_1_to_N_ClassicCAN_ConsecutiveFrame_Success_Test()
+        {
+            // Note that this can falsely pass if CAN_ISOTP_CF_BROADCAST option is not supported by the isotp kernel module.
+            // Only Kernel v5.19 and above supports the CAN_ISOTP_CF_BROADCAST flag.
+            using (SafeFileDescriptorHandle cfFxnAddrTesterSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                Assert.IsFalse(cfFxnAddrTesterSocketHandle.IsInvalid);
+                
+                var ifr = new Ifreq("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+                Assert.AreNotEqual(-1, ioctlResult);
+
+                var fxnAddr = new SockAddrCanIsoTp(ifr.IfIndex)
+                {
+                    TxId = 0x7cf,
+                };
+
+                CanIsoTpOptions canIsoTpOpts = new CanIsoTpOptions()
+                {
+                    Flags = IsoTpFlags.CAN_ISOTP_CF_BROADCAST,
+                };
+
+                int result = LibcNativeMethods.SetSockOpt(cfFxnAddrTesterSocketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_OPTS, canIsoTpOpts, Marshal.SizeOf(typeof(CanIsoTpOptions)));
+                Assert.AreEqual(0, result);
+
+                int bindResult = LibcNativeMethods.Bind(cfFxnAddrTesterSocketHandle, fxnAddr, Marshal.SizeOf(typeof(SockAddrCanIsoTp)));
+                Assert.AreNotEqual(-1, bindResult);
+
+                // Tester sends request - 8 bytes which is too large for a single classic CAN frame
+                var requestMessage = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  };
+                int nBytes = LibcNativeMethods.Write(cfFxnAddrTesterSocketHandle, requestMessage, requestMessage.Length);
+                Assert.AreEqual(8, nBytes);
+            }
         }
     }
 }

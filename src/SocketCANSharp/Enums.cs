@@ -562,6 +562,11 @@ namespace SocketCANSharp
         /// Enable 1-to-N functional addressing.
         /// </summary>
         CAN_ISOTP_SF_BROADCAST  = 0x00000800,
+        /// <summary>
+        /// Enable 1-to-N functionally addressed segmented transfers without using Flow Control.
+        /// Note: This is not supported via the ISO-TP specification (ISO 15765-2), but is instead a SocketCAN special feature.
+        /// </summary>
+        CAN_ISOTP_CF_BROADCAST	= 0x00001000,
     }
 
     /// <summary>
