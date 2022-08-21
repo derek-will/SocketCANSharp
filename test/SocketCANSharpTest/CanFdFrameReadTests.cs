@@ -204,5 +204,76 @@ namespace SocketCANSharpTest
             Assert.AreEqual(3, readFrame.Length);
             Assert.IsTrue(writeFrame.Data.SequenceEqual(readFrame.Data));
         }
+
+        [Test]
+        public void CanFdFrame_RecvMsg_DONTROUTE_CONFIRM_Flags_Success_Test()
+        {
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var addr = new SockAddrCan(ifr.IfIndex);
+
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            byte[] data = new byte[64];
+            foreach (byte b in Enumerable.Range(0, 64))
+            {
+                data[b] = b;
+            }
+
+            var writeFrame = new CanFdFrame(0x123, data, CanFdFlags.None);
+            int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFdFrame)));
+            Assert.AreEqual(72, nWriteBytes); 
+
+            int ctrlMsgSize = ControlMessageMacros.CMSG_SPACE(Marshal.SizeOf<Timeval>()) + ControlMessageMacros.CMSG_SPACE(Marshal.SizeOf<UInt32>());
+            
+            IntPtr addrPtr = Marshal.AllocHGlobal(Marshal.SizeOf<SockAddrCan>());
+            IntPtr iovecPtr = Marshal.AllocHGlobal(Marshal.SizeOf<IoVector>());
+            IntPtr canFdFramePtr = Marshal.AllocHGlobal(Marshal.SizeOf<CanFdFrame>());
+            IntPtr ctrlMsgPtr = Marshal.AllocHGlobal(ctrlMsgSize);
+            
+            var iovec = new IoVector() { Base = canFdFramePtr, Length = new IntPtr(Marshal.SizeOf<CanFdFrame>()) };
+            Marshal.StructureToPtr<SockAddrCan>(addr, addrPtr, false);
+            Marshal.StructureToPtr<IoVector>(iovec, iovecPtr, false);
+            try
+            {
+                var readCanMessage = new MessageHeader();
+                readCanMessage.Name = addrPtr;
+                readCanMessage.NameLength = Marshal.SizeOf<SockAddrCan>();
+                readCanMessage.IoVectors = iovecPtr;
+                readCanMessage.IoVectorCount = new IntPtr(1);
+                readCanMessage.ControlMessage = ctrlMsgPtr;
+                readCanMessage.ControlMessageLength = new IntPtr(ctrlMsgSize);
+                int nReadBytes = LibcNativeMethods.RecvMsg(socketHandle, ref readCanMessage, MessageFlags.None);
+
+                Assert.AreEqual(72, nReadBytes);
+                Assert.AreEqual(8, readCanMessage.NameLength);
+                Assert.AreEqual(1, readCanMessage.IoVectorCount.ToInt32());
+                Assert.AreEqual(0, readCanMessage.ControlMessageLength.ToInt32());
+
+                SockAddrCan sockAddr = Marshal.PtrToStructure<SockAddrCan>(readCanMessage.Name);
+                Assert.AreEqual(SocketCanConstants.AF_CAN, sockAddr.CanFamily);
+                Assert.AreEqual(ifr.IfIndex, sockAddr.CanIfIndex);
+
+                IoVector iov = Marshal.PtrToStructure<IoVector>(readCanMessage.IoVectors);
+                Assert.AreEqual(72, iov.Length.ToInt32());
+                CanFdFrame canFdFrame = Marshal.PtrToStructure<CanFdFrame>(iov.Base);
+                Assert.AreEqual(0x123, canFdFrame.CanId);
+                Assert.AreEqual(64, canFdFrame.Length);
+                Assert.IsTrue(writeFrame.Data.SequenceEqual(canFdFrame.Data));
+
+                Assert.IsTrue(readCanMessage.Flags.HasFlag(MessageFlags.MSG_DONTROUTE));
+                Assert.IsTrue(readCanMessage.Flags.HasFlag(MessageFlags.MSG_CONFIRM));
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ctrlMsgPtr);
+                Marshal.FreeHGlobal(iovecPtr);
+                Marshal.FreeHGlobal(addrPtr);
+                Marshal.FreeHGlobal(canFdFramePtr);
+            }
+        }
     }
 }

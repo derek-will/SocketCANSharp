@@ -748,5 +748,15 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="getpeername", SetLastError=true)]
         public static extern int GetPeerName(SafeFileDescriptorHandle socketHandle, SockAddrCanJ1939 sockAddr, ref int sockAddrLen);
+
+        /// <summary>
+        /// Receive a MessageHeader from a socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="canMessage">Message Header</param>
+        /// <param name="flags">Message Flags</param>
+        /// <returns>The number of bytes received on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="recvmsg", SetLastError=true)]
+        public static extern int RecvMsg(SafeFileDescriptorHandle socketHandle, ref MessageHeader canMessage, MessageFlags flags);
     }
 }

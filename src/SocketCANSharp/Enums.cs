@@ -155,24 +155,33 @@ namespace SocketCANSharp
     /// <summary>
     /// Bits in the FLAGS argument of `send', `recv', etc. 
     /// </summary>
+    [Flags]
     public enum MessageFlags
     {
         /// <summary>
         /// None.
         /// </summary>
-        None            = 0x00,
+        None            = 0x0000,
         /// <summary>
         /// Peek at incoming messages without removing them from the receive queue.
         /// </summary>
-        MSG_PEEK		= 0x02,
+        MSG_PEEK		= 0x0002,
+        /// <summary>
+        /// Set when the received CAN frame was created on the local host.
+        /// </summary>
+        MSG_DONTROUTE   = 0x0004,
         /// <summary>
         /// Return the real length of the packet or datagram even when it is larger than the passed buffer.
         /// </summary>
-        MSG_TRUNC		= 0x20,
+        MSG_TRUNC		= 0x0020,
         /// <summary>
         /// Nonblocking IO.
         /// </summary>
-        MSG_DONTWAIT	= 0x40,
+        MSG_DONTWAIT	= 0x0040,
+        /// <summary>
+        /// Set when the CAN frame was sent via the socket it is received on. This can be treated as a TX confirmation mechanism. 
+        /// </summary>
+        MSG_CONFIRM     = 0x0800,
     }
 
     /// <summary>
