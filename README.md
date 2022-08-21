@@ -24,19 +24,20 @@ using (var rawCanSocket = new RawCanSocket())
 
 #### Procedural Style
 ```cs
-SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+{
+    var ifr = new Ifreq("vcan0");
+    int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
 
-var ifr = new Ifreq("vcan0");
-int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+    var addr = new SockAddrCan(ifr.IfIndex);
+    int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
 
-var addr = new SockAddrCan(ifr.IfIndex);
-int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+    var writeFrame = new CanFrame(0x123, new byte[] { 0x11, 0x22 });
+    int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFrame)));
 
-var writeFrame = new CanFrame(0x123, new byte[] { 0x11, 0x22 });
-int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFrame)));
-
-var readFrame = new CanFrame();
-int nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, Marshal.SizeOf(typeof(CanFrame)));
+    var readFrame = new CanFrame();
+    int nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, Marshal.SizeOf(typeof(CanFrame)));
+}
 ```
 
 ### ISO 15765-2 (ISO-TP) Support
@@ -61,22 +62,23 @@ using (var testerSocket = new IsoTpCanSocket())
 
 #### Procedural Style
 ```cs
-SafeFileDescriptorHandle testerSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
-
-var ifr = new Ifreq("vcan0");
-int ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-
-var testerAddr = new SockAddrCanIsoTp(ifr.IfIndex)
+using (SafeFileDescriptorHandle testerSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
 {
-    TxId = 0x600,
-    RxId = 0x700,
-};
-int bindResult = LibcNativeMethods.Bind(testerSocketHandle, testerAddr, Marshal.SizeOf(typeof(SockAddrCanIsoTp)));
+    var ifr = new Ifreq("vcan0");
+    int ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
 
-var requestMessage = new byte[] { 0x3e, 0x00 };
-int nBytes = LibcNativeMethods.Write(testerSocketHandle, requestMessage, requestMessage.Length);
-var receiveResponseMessage = new byte[4095];
-nBytes = LibcNativeMethods.Read(testerSocketHandle, receiveResponseMessage, receiveResponseMessage.Length);
+    var testerAddr = new SockAddrCanIsoTp(ifr.IfIndex)
+    {
+        TxId = 0x600,
+        RxId = 0x700,
+    };
+    int bindResult = LibcNativeMethods.Bind(testerSocketHandle, testerAddr, Marshal.SizeOf(typeof(SockAddrCanIsoTp)));
+
+    var requestMessage = new byte[] { 0x3e, 0x00 };
+    int nBytes = LibcNativeMethods.Write(testerSocketHandle, requestMessage, requestMessage.Length);
+    var receiveResponseMessage = new byte[4095];
+    nBytes = LibcNativeMethods.Read(testerSocketHandle, receiveResponseMessage, receiveResponseMessage.Length);
+}
 ```
 
 ### Other SocketCAN features
