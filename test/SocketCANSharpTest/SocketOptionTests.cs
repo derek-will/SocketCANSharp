@@ -552,6 +552,11 @@ namespace SocketCANSharpTest
             enable = 0;
             result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_PROMISC, ref enable, Marshal.SizeOf(typeof(int)));
             Assert.AreEqual(0, result);
+
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_PROMISC, ref enable, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(4, len);
+            Assert.AreEqual(0, enable);
         }
 
         [Test]

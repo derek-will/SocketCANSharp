@@ -222,9 +222,9 @@ namespace SocketCANSharpTest
 
             var addr = new SockAddrCanJ1939(ifr.IfIndex)
             {
-                Name = 0x00000000,
-                PGN = 0x40000,
-                Address = 0xFF,
+                Name = 0x00000010,
+                PGN = 0x1b100,
+                Address = 0xF0,
             };
             int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));
             Assert.AreNotEqual(-1, bindResult);
@@ -237,9 +237,9 @@ namespace SocketCANSharpTest
             Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCanJ1939)), size);
             Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
             Assert.AreEqual(ifr.IfIndex, addr.CanIfIndex);
-            Assert.AreEqual(0x00000000, addr.Name);
-            Assert.AreEqual(0x40000, addr.PGN);
-            Assert.AreEqual(0xFF, addr.Address);
+            Assert.AreEqual(0x00000010, addr.Name);
+            Assert.AreEqual(SocketCanConstants.J1939_NO_PGN, addr.PGN); // socket is disconnected so PGN will be set to N/A value.
+            Assert.AreEqual(0xF0, addr.Address);
         }
     }
 }
