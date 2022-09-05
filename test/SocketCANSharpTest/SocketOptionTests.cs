@@ -317,7 +317,7 @@ namespace SocketCANSharpTest
             int len = Marshal.SizeOf(typeof(Timeval));
             result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDTIMEO, timeval, ref len);
             Assert.AreEqual(0, result);
-            Assert.AreEqual(16, len);
+            Assert.AreEqual(Environment.Is64BitProcess ? 16 : 8, len);
             Assert.AreEqual(100000, timeval.Microseconds);
             Assert.AreEqual(2, timeval.Seconds);
         }
@@ -347,7 +347,7 @@ namespace SocketCANSharpTest
             int len = Marshal.SizeOf(typeof(Timeval));
             result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVTIMEO, timeval, ref len);
             Assert.AreEqual(0, result);
-            Assert.AreEqual(16, len);
+            Assert.AreEqual(Environment.Is64BitProcess ? 16 : 8, len);
             Assert.AreEqual(0, timeval.Microseconds);
             Assert.AreEqual(3, timeval.Seconds);
         }

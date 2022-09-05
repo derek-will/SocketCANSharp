@@ -2,7 +2,7 @@
 /* 
 BSD 3-Clause License
 
-Copyright (c) 2021, Derek Will
+Copyright (c) 2022, Derek Will
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,59 +32,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using NUnit.Framework;
+using SocketCANSharp;
 using System;
 using System.Runtime.InteropServices;
 
-namespace SocketCANSharp
+namespace SocketCANSharpTest
 {
-    /// <summary>
-    /// Represents a time interval structure.
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class Timeval
+    public class StructTests
     {
-        private IntPtr _tv_sec;
-        private IntPtr _tv_usec;
-
-        /// <summary>
-        /// Number of seconds.
-        /// </summary>
-        public long Seconds 
-        { 
-            get
-            {
-                return _tv_sec.ToInt64();
-            } 
-            set
-            {
-                _tv_sec = new IntPtr(value);
-            }
-        }
-        
-        /// <summary>
-        /// Number of microseconds. This value is used in combination with the Seconds property to represent the full interval of time.
-        /// </summary>
-        public long Microseconds
-        { 
-            get
-            {
-                return _tv_usec.ToInt64();
-            } 
-            set
-            {
-                _tv_usec = new IntPtr(value);
-            }
-        }
-
-        /// <summary>
-        /// Initializes a time interval object with the specified seconds and microseconds.
-        /// </summary>
-        /// <param name="seconds">Number of seconds</param>
-        /// <param name="microseconds">Number of microseconds</param>
-        public Timeval(long seconds, long microseconds)
+        [Test]
+        public void Timeval_Verification_Test()
         {
-            Seconds = seconds;
-            Microseconds = microseconds;
+            var timeval = new Timeval(2, 100000);
+            Assert.AreEqual(2, timeval.Seconds);
+            Assert.AreEqual(100000, timeval.Microseconds);
+            Assert.AreEqual(Environment.Is64BitProcess ? 16 : 8, Marshal.SizeOf<Timeval>(timeval));
         }
     }
 }
