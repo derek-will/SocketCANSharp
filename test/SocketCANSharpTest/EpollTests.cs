@@ -107,7 +107,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -130,7 +133,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -156,7 +162,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -164,7 +173,10 @@ namespace SocketCANSharpTest
                     epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN | EpollEventType.EPOLLOUT,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_MOD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -187,7 +199,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = socketHandle.DangerousGetHandle(),
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = socketHandle.DangerousGetHandle().ToInt32(),
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -210,7 +225,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(-1, result);
@@ -233,7 +251,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, (EpollOperation)35, socketHandle, ref epollEvent);
                     Assert.AreEqual(-1, result);
@@ -256,7 +277,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(-1, result);
@@ -279,7 +303,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -287,7 +314,10 @@ namespace SocketCANSharpTest
                     epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN | EpollEventType.EPOLLOUT | EpollEventType.EPOLLEXCLUSIVE,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_MOD, socketHandle, ref epollEvent);
                     Assert.AreEqual(-1, result);
@@ -325,7 +355,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = readerHandle.DangerousGetHandle(),
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = readerHandle.DangerousGetHandle().ToInt32(),
+                        },  
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, readerHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -337,7 +370,7 @@ namespace SocketCANSharpTest
                     int numEvents = LibcNativeMethods.EpollWait(handle, events, 1, 1000);
                     Assert.AreEqual(1, numEvents);
                     Assert.IsTrue(events[0].Events.HasFlag(EpollEventType.EPOLLIN));
-                    Assert.AreEqual(readerHandle.DangerousGetHandle(), events[0].Data);
+                    Assert.AreEqual(readerHandle.DangerousGetHandle().ToInt32(), events[0].Data.FileDescriptor);
                 }
             }
         }
@@ -372,7 +405,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = readerHandle.DangerousGetHandle(),
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = readerHandle.DangerousGetHandle().ToInt32(),
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, readerHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -431,7 +467,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = readerHandle.DangerousGetHandle(),
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = readerHandle.DangerousGetHandle().ToInt32(),
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, readerHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -461,7 +500,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
 
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_DEL, socketHandle, ref epollEvent);
@@ -485,7 +527,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_MOD, socketHandle, ref epollEvent);
                     Assert.AreEqual(-1, result);
@@ -508,7 +553,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = IntPtr.Zero,
+                        Data = new EpollData()
+                        {
+                            Pointer = IntPtr.Zero,
+                        },
                     };
                     int result = LibcNativeMethods.EpollControl(handle, EpollOperation.EPOLL_CTL_ADD, socketHandle, ref epollEvent);
                     Assert.AreEqual(0, result);
@@ -563,7 +611,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
                 }
@@ -583,7 +634,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
                     SocketException ex = Assert.Throws<SocketException>(() => epoll.Add(isoTpCanSocket.SafeHandle, epollEvent));
@@ -606,7 +660,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     Assert.Throws<ArgumentNullException>(() => epoll.Add(null, epollEvent));
                 }
@@ -626,7 +683,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = (EpollEventType)0xffffffff,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     SocketException ex = Assert.Throws<SocketException>(() => epoll.Add(isoTpCanSocket.SafeHandle, epollEvent));
                     Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
@@ -649,7 +709,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     Assert.Throws<ObjectDisposedException>(() => epoll.Add(isoTpCanSocket.SafeHandle, epollEvent));
                 }
@@ -669,7 +732,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
                     epoll.Remove(isoTpCanSocket.SafeHandle);
@@ -690,7 +756,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     SocketException ex = Assert.Throws<SocketException>(() => epoll.Remove(isoTpCanSocket.SafeHandle));
                     Assert.AreEqual(SocketError.AddressNotAvailable, ex.SocketErrorCode);
@@ -712,7 +781,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
                     Assert.Throws<ArgumentNullException>(() => epoll.Remove(null));
@@ -733,7 +805,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
                     epoll.Close();
@@ -755,7 +830,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
 
@@ -778,7 +856,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
 
@@ -803,7 +884,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
 
                     epollEvent.Events |= EpollEventType.EPOLLET;
@@ -827,7 +911,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
 
@@ -850,7 +937,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = isoTpCanSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = isoTpCanSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(isoTpCanSocket.SafeHandle, epollEvent);
 
@@ -885,7 +975,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = testerSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = testerSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(testerSocket.SafeHandle, epollEvent);
 
@@ -897,7 +990,7 @@ namespace SocketCANSharpTest
                     Assert.NotNull(eventArray);
                     Assert.AreEqual(1, eventArray.Length);
                     Assert.AreEqual(EpollEventType.EPOLLIN, eventArray[0].Events);
-                    Assert.AreEqual(testerSocket.Handle, eventArray[0].Data);
+                    Assert.AreEqual(testerSocket.Handle.ToInt32(), eventArray[0].Data.FileDescriptor);
 
                     var receiveBuffer = new byte[10];
                     int bytesRead = testerSocket.Read(receiveBuffer);
@@ -930,7 +1023,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = testerSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = testerSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(testerSocket.SafeHandle, epollEvent);
 
@@ -967,7 +1063,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = testerSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = testerSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(testerSocket.SafeHandle, epollEvent);
 
@@ -1002,7 +1101,10 @@ namespace SocketCANSharpTest
                     var epollEvent = new EpollEvent()
                     {
                         Events = EpollEventType.EPOLLIN,
-                        Data = testerSocket.Handle,
+                        Data = new EpollData()
+                        {
+                            FileDescriptor = testerSocket.Handle.ToInt32(),
+                        },
                     };
                     epoll.Add(testerSocket.SafeHandle, epollEvent);
 

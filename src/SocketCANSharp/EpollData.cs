@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -39,17 +40,28 @@ namespace SocketCANSharp
     /// <summary>
     /// Settings associated with a file descriptor that is part of the interest list of an epoll file descriptor. 
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct EpollEvent
+    [StructLayout(LayoutKind.Explicit)]
+    public struct EpollData
     {
         /// <summary>
-        /// Epoll event types.
+        /// Used for storing a pointer in the epoll data.
         /// </summary>
-        public EpollEventType Events { get; set; }
-
+        [FieldOffset(0)]
+        public IntPtr Pointer;
         /// <summary>
-        /// User data - The data that the kernel should save and then return (via epoll_wait) when this file descriptor becomes ready.
+        /// Used for storing a file descriptor in the epoll data.
         /// </summary>
-        public EpollData Data { get; set; }
+        [FieldOffset(0)]
+        public int FileDescriptor;
+        /// <summary>
+        /// Used for storing an unsigned 32 bit number in the epoll data.
+        /// </summary>
+        [FieldOffset(0)]
+        public uint Unsigned32BitNumber;
+        /// <summary>
+        /// Used for storing an unsigned 64 bit number in the epoll data.
+        /// </summary>
+        [FieldOffset(0)]
+        public ulong Unsigned64BitNumber;
     }
 }
