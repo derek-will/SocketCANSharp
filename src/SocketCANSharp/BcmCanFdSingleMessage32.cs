@@ -2,7 +2,7 @@
 /* 
 BSD 3-Clause License
 
-Copyright (c) 2021, Derek Will
+Copyright (c) 2022, Derek Will
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -38,56 +38,34 @@ using System.Runtime.InteropServices;
 namespace SocketCANSharp
 {
     /// <summary>
-    /// CAN_BCM specific Time Interval structure.
+    /// A shorthand trivial (single CAN FD frame) Broadcast Manager Message to use when writing to a CAN_BCM socket with a TX_SEND opcode message. Variant for 32-bit.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct BcmTimeval
+    public class BcmCanFdSingleMessage32
     {
-        private IntPtr _tv_sec;
-        private IntPtr _tv_usec;
+        /// <summary>
+        /// Broadcast Manager Message Header.
+        /// </summary>
+        public BcmMessageHeader32 Header { get; set; }
 
         /// <summary>
-        /// Time Interval in seconds.
+        /// CAN FD frame to send.
         /// </summary>
-        public long Seconds
-        { 
-            get
-            {
-                return _tv_sec.ToInt64();
-            } 
-            set
-            {
-                _tv_sec = new IntPtr(value);
-            }
-        }
+        public CanFdFrame Frame { get; set; }
 
         /// <summary>
-        /// Time Interval in microseconds. Used in combination with Seconds to represent the time interval.
+        /// Instantiates a new Broadcast Manager Message using the supplied header and CAN FD frame.
         /// </summary>
-        public long Microseconds
-        { 
-            get
-            {
-                return _tv_usec.ToInt64();
-            } 
-            set
-            {
-                _tv_usec = new IntPtr(value);
-            }
-        }
-
-        /// <summary>
-        /// Instantiates a BCM Time Interval structure using the specified Seconds and Microseconds.
-        /// </summary>
-        /// <param name="seconds">Time Interval in seconds</param>
-        /// <param name="microseconds">Time Interval in microseconds</param>
-        public BcmTimeval(long seconds, long microseconds)
+        /// <param name="header">Message Header</param>
+        /// <param name="frame">CAN FD Frame</param>
+        public BcmCanFdSingleMessage32(BcmMessageHeader32 header, CanFdFrame frame)
         {
-            _tv_sec = IntPtr.Zero;
-            _tv_usec = IntPtr.Zero;
+            if (header == null)
+                throw new ArgumentNullException(nameof(header), "Header cannot be null");
 
-            Seconds = seconds;
-            Microseconds = microseconds;
+            Header = header;
+            header.Flags |= BcmFlags.CAN_FD_FRAME;
+            Frame = frame;
         }
     }
 }

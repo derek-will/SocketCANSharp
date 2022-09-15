@@ -209,6 +209,56 @@ namespace SocketCANSharp
         public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmMessageHeader header, int headerSize);
 
         /// <summary>
+        /// Write the BcmCanMessage to the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">BCM Message to write</param>
+        /// <param name="msgSize">Size of BCM Message in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanMessage32 message, int msgSize);
+
+        /// <summary>
+        /// Write the BcmCanFdMessage to the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">BCM Message to write</param>
+        /// <param name="msgSize">Size of BCM Message in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanFdMessage32 message, int msgSize);
+
+        /// <summary>
+        /// Write the BcmCanSingleMessage to the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">Special Single Frame BCM Message to write</param>
+        /// <param name="msgSize">Size of BCM Message in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanSingleMessage32 message, int msgSize);
+
+        /// <summary>
+        /// Write the BcmCanFdSingleMessage to the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">Special Single Frame BCM Message to write</param>
+        /// <param name="msgSize">Size of BCM Message in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmCanFdSingleMessage32 message, int msgSize);
+
+        /// <summary>
+        /// Write the BcmMessageHeader to the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="header">BCM Message Header to write</param>
+        /// <param name="headerSize">Size of BCM Message Header in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, BcmMessageHeader32 header, int headerSize);
+
+        /// <summary>
         /// Write the byte array to the socket.
         /// </summary>
         /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
@@ -257,6 +307,26 @@ namespace SocketCANSharp
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
         public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmCanFdMessage message, int msgSize);
+
+        /// <summary>
+        /// Read a BcmCanMessage from the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">BCM CAN Message structure to populate</param>
+        /// <param name="msgSize">Size of BCM CAN Message structure</param>
+        /// <returns>The number of bytes read on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="read", SetLastError=true)]
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmCanMessage32 message, int msgSize);
+
+        /// <summary>
+        /// Read a BcmCanFdMessage from the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">BCM CAN Message structure to populate</param>
+        /// <param name="msgSize">Size of BCM CAN FD Message structure</param>
+        /// <returns>The number of bytes read on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="read", SetLastError=true)]
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmCanFdMessage32 message, int msgSize);
 
         /// <summary>
         /// Read a byte array from the socket.
