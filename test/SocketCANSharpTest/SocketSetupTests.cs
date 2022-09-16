@@ -137,7 +137,7 @@ namespace SocketCANSharpTest
             int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
 
             Assert.AreEqual(0, getSockNameResult);
-            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCan)), size);
+            Assert.That(size, Is.EqualTo(8) | Is.EqualTo(16));
             Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
             Assert.AreEqual(ifr.IfIndex, addr.CanIfIndex);
         }
@@ -153,7 +153,7 @@ namespace SocketCANSharpTest
             int getSockNameResult = LibcNativeMethods.GetSockName(socketHandle, addr, ref size);
 
             Assert.AreEqual(0, getSockNameResult);
-            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrCan)), size);
+            Assert.That(size, Is.EqualTo(8) | Is.EqualTo(16));
             Assert.AreEqual(SocketCanConstants.AF_CAN, addr.CanFamily);
             Assert.AreEqual(0, addr.CanIfIndex);
         }

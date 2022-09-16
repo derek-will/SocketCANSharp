@@ -40,7 +40,7 @@ namespace SocketCANSharp
     /// Represents a SocketCAN ISO-TP address structure.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public class SockAddrCanIsoTp : SockAddrCan
+    public class SockAddrCanIsoTp : AbstractSockAddrCan
     {
         private uint _rxId;
         private uint _txId;

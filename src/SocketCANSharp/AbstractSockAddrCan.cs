@@ -2,7 +2,7 @@
 /* 
 BSD 3-Clause License
 
-Copyright (c) 2021, Derek Will
+Copyright (c) 2022, Derek Will
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,40 +37,37 @@ using System.Runtime.InteropServices;
 namespace SocketCANSharp
 {
     /// <summary>
-    /// Represents a SocketCAN SAE J1939 address structure.
+    /// Represents the base class for all SocketCAN address structures.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public class SockAddrCanJ1939 : AbstractSockAddrCan
+    public abstract class AbstractSockAddrCan
     {
         /// <summary>
-        /// 64-bit NAME belonging to a J1939 Node.
+        /// Address Family.
         /// </summary>
-        public ulong Name { get; set; }
+        public ushort CanFamily { get; set; }
         /// <summary>
-        /// Parameter Group Number (PGN) to use. Note that the PGN is part of the 29-bit CAN ID.
+        /// Interface Index.
         /// </summary>
-        public uint PGN { get; set; }
-        /// <summary>
-        /// Address byte belonging to a J1939 Node.
-        /// </summary>
-        public byte Address { get; set; }
+        public int CanIfIndex { get; set; }
 
         /// <summary>
-        /// Initializes a SocketCAN SAE J1939 address structure with default values of zeroes.
+        /// Initializes a SocketCAN address structure with default values of zeroes.
         /// </summary>
-        public SockAddrCanJ1939() : base()
+        public AbstractSockAddrCan()
         {
-            Name = 0;
-            PGN = 0;
-            Address = 0;
+            CanFamily = 0;
+            CanIfIndex = 0;
         }
 
         /// <summary>
-        /// Initializes a SocketCAN SAE J1939 address structure to the AF_CAN address family and the provided interface index value. 
+        /// Initializes a SocketCAN address structure to the AF_CAN address family and the provided interface index value.
         /// </summary>
         /// <param name="interfaceIndex">Interface index value</param>
-        public SockAddrCanJ1939(int interfaceIndex) : base(interfaceIndex)
-        {         
+        public AbstractSockAddrCan(int interfaceIndex)
+        {
+            CanFamily = SocketCanConstants.AF_CAN;
+            CanIfIndex = interfaceIndex;
         }
     }
 }

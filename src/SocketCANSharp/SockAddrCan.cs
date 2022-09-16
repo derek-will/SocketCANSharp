@@ -36,38 +36,32 @@ using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
 {
+    /*
+    Prior to Linux Kernel 5.4 and the introduction of CAN_J1939, the call to bind or connect expected 
+    a structure length of at least 16 bytes for CAN_RAW and CAN_BCM sockets. Linux Kernel 5.4 and later 
+    only requires 8 bytes for CAN_RAW and CAN_BCM sockets. In order to be compatible with both implementations, 
+    this managed class pads the base class (which just includes the can_family and can_ifindex) by 8 bytes. 
+    */
+
     /// <summary>
     /// Represents a SocketCAN base address structure.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public class SockAddrCan
+    [StructLayout(LayoutKind.Sequential, Size = 8)]
+    public class SockAddrCan : AbstractSockAddrCan
     {
-        /// <summary>
-        /// Address Family.
-        /// </summary>
-        public ushort CanFamily { get; set; }
-        /// <summary>
-        /// Interface Index.
-        /// </summary>
-        public int CanIfIndex { get; set; }
-
         /// <summary>
         /// Initializes a SocketCAN base address structure with default values of zeroes.
         /// </summary>
-        public SockAddrCan()
+        public SockAddrCan() : base()
         {
-            CanFamily = 0;
-            CanIfIndex = 0;
         }
 
         /// <summary>
         /// Initializes a SocketCAN base address structure to the AF_CAN address family and the provided interface index value.
         /// </summary>
         /// <param name="interfaceIndex">Interface index value</param>
-        public SockAddrCan(int interfaceIndex)
+        public SockAddrCan(int interfaceIndex) : base(interfaceIndex)
         {
-            CanFamily = SocketCanConstants.AF_CAN;
-            CanIfIndex = interfaceIndex;
         }
     }
 }
