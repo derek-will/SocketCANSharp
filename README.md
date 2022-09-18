@@ -81,14 +81,71 @@ using (SafeFileDescriptorHandle testerSocketHandle = LibcNativeMethods.Socket(So
 }
 ```
 
+### SAE J1939 Support
+
+#### Object-Oriented Style
+```cs
+var vcan0 = CanNetworkInterface.GetAllInterfaces(true).FirstOrDefault(iface => iface.Name.Equals("vcan0"));
+
+using (var j1939Socket = new J1939CanSocket())
+{
+    j1939Socket.EnableBroadcast = true;
+    j1939Socket.SendPriority = 3;
+    j1939Socket.Bind(vcan0, SocketCanConstants.J1939_NO_NAME, 0x0F004, 0x01);
+    var destAddr = new SockAddrCanJ1939(vcan0.Index)
+    {
+        Name = SocketCanConstants.J1939_NO_NAME,
+        PGN = 0x0F004,
+        Address = SocketCanConstants.J1939_NO_ADDR,
+    };
+    j1939Socket.WriteTo(new byte[] { 0xFF, 0xFF, 0xFF, 0x6C, 0x50, 0xFF, 0xFF, 0xFF }, MessageFlags.None, destAddr);
+}
+```
+
+#### Procedural Style
+```cs
+using (var j1939Handle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939))
+{
+    var ifr = new Ifreq("vcan0");
+    int ioctlResult = LibcNativeMethods.Ioctl(j1939Handle, SocketCanConstants.SIOCGIFINDEX, ifr);
+
+    int value = 1;
+    int enableBroadcastResult = LibcNativeMethods.SetSockOpt(j1939Handle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_BROADCAST, ref value, Marshal.SizeOf(typeof(int)));
+
+    int prio = 3;
+    int prioResult = LibcNativeMethods.SetSockOpt(j1939Handle, SocketLevel.SOL_CAN_J1939, J1939SocketOptions.SO_J1939_SEND_PRIO, ref prio, Marshal.SizeOf(typeof(int)));
+
+    var srcAddr = new SockAddrCanJ1939(ifr.IfIndex)
+    {
+        Name = SocketCanConstants.J1939_NO_NAME,
+        PGN = 0x0F004,
+        Address = 0x01,
+    };
+    int bindResult = LibcNativeMethods.Bind(j1939Handle, srcAddr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));;
+
+    var dstAddr = new SockAddrCanJ1939(vcan0.Index)
+    {
+        Name = SocketCanConstants.J1939_NO_NAME,
+        PGN = 0x0F004,
+        Address = SocketCanConstants.J1939_NO_ADDR,
+    };
+    byte[] data = new byte[] { 0xFF, 0xFF, 0xFF, 0x34, 0x12, 0xFF, 0xFF, 0xFF };
+    int sendToResult = LibcNativeMethods.SendTo(j1939Handle, data, data.Length, MessageFlags.None, dstAddr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));
+}
+```
+
 ### Other SocketCAN features
-J1939 and BCM (Broadcast Manager) are supported by this library, but currently only at the basic level of providing a procedural style interface. Object-Oriented support for these socket types are planned to be implemented and released in the future. 
+BCM (Broadcast Manager) is also supported by this library, but currently only at the basic level of providing a procedural style interface. Object-Oriented support for BCM is planned to be implemented and released in the future. 
+
+### Supported Environments
+Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN and BCM have been confirmed as far back as Linux Kernel 4.9. Testing on Alpine Linux has not been carried out yet.
 
 ### Example Code
 
 * CanBusSniffer : Simple CAN bus analyzer
 * IsoTpCommSimulator : ISO-TP communication simulation
 * ObjectOrientedDiagAppSimulator : Diagnostic Application Simulator using IsoTpCanSocket objects
+* J1939EngineSpeedTransmit : Simple application that sends the J1939 Engine Speed signal a couple of different ways using SocketCAN#
 
 
 ### Additional Information:

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IsoTpCommSimulator", "examp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectOrientedDiagAppSimulator", "examples\ObjectOrientedDiagAppSimulator\ObjectOrientedDiagAppSimulator.csproj", "{B3212B61-1B39-4EB1-8BD0-C54049F44BBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "J1939EngineSpeedTransmit", "examples\J1939EngineSpeedTransmit\J1939EngineSpeedTransmit.csproj", "{F55AD00A-13BB-4CD8-B17F-105192105518}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,5 +88,17 @@ Global
 		{B3212B61-1B39-4EB1-8BD0-C54049F44BBC}.Release|x64.Build.0 = Release|Any CPU
 		{B3212B61-1B39-4EB1-8BD0-C54049F44BBC}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3212B61-1B39-4EB1-8BD0-C54049F44BBC}.Release|x86.Build.0 = Release|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Debug|x64.Build.0 = Debug|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Debug|x86.Build.0 = Debug|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Release|x64.ActiveCfg = Release|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Release|x64.Build.0 = Release|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Release|x86.ActiveCfg = Release|Any CPU
+		{F55AD00A-13BB-4CD8-B17F-105192105518}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
