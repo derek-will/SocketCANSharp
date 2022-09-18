@@ -53,7 +53,7 @@ namespace SocketCANSharp
         {
             get
             {
-                return IsClosed || base.IsInvalid;
+                return IsClosed || base.IsInvalid || (int)handle.ToInt64() == -1;
             }
         }
 
