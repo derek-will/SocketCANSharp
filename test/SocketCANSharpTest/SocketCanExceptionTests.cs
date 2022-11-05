@@ -44,7 +44,7 @@ namespace SocketCANSharpTest
         [Test]
         public void SocketCanException_Ctor_Success_Test()
         {
-            using (var isoTpCanSocket = new IsoTpCanSocket())
+            using (var rawCanSocket = new RawCanSocket()) // needed in order to set errno to Success.
             {
                 var ex = new SocketCanException();
                 Assert.AreEqual(SocketError.Success, ex.SocketErrorCode);
@@ -56,7 +56,7 @@ namespace SocketCANSharpTest
         [Test]
         public void SocketCanException_Ctor_WithDescription_Success_Test()
         {
-            using (var isoTpCanSocket = new IsoTpCanSocket())
+            using (var rawCanSocket = new RawCanSocket()) // needed in order to set errno to Success.
             {
                 var ex = new SocketCanException("Test123");
                 Assert.AreEqual(SocketError.Success, ex.SocketErrorCode);
@@ -68,43 +68,31 @@ namespace SocketCANSharpTest
         [Test]
         public void SocketCanException_Ctor_WithDescription_ArgumentNullException_Failure_Test()
         {
-            using (var isoTpCanSocket = new IsoTpCanSocket())
-            {
-                Assert.Throws<ArgumentNullException>(() => new SocketCanException(null));
-            }
+            Assert.Throws<ArgumentNullException>(() => new SocketCanException(null));
         }
 
         [Test]
         public void SocketCanException_Ctor_WithErrorCode_Success_Test()
         {
-            using (var isoTpCanSocket = new IsoTpCanSocket())
-            {
-                var ex = new SocketCanException(10061);
-                Assert.AreEqual(SocketError.ConnectionRefused, ex.SocketErrorCode);
-                Assert.AreEqual(111, ex.NativeErrorCode);
-                Assert.AreEqual(string.Empty, ex.Description);
-            }
+            var ex = new SocketCanException(10061);
+            Assert.AreEqual(SocketError.ConnectionRefused, ex.SocketErrorCode);
+            Assert.AreEqual(111, ex.NativeErrorCode);
+            Assert.AreEqual(string.Empty, ex.Description);
         }
 
         [Test]
         public void SocketCanException_Ctor_WithErrorCodeAndDescription_Success_Test()
         {
-            using (var isoTpCanSocket = new IsoTpCanSocket())
-            {
-                var ex = new SocketCanException(10057, "Test456");
-                Assert.AreEqual(SocketError.NotConnected, ex.SocketErrorCode);
-                Assert.AreEqual(107, ex.NativeErrorCode);
-                Assert.AreEqual("Test456", ex.Description);
-            }
+            var ex = new SocketCanException(10057, "Test456");
+            Assert.AreEqual(SocketError.NotConnected, ex.SocketErrorCode);
+            Assert.AreEqual(107, ex.NativeErrorCode);
+            Assert.AreEqual("Test456", ex.Description);
         }
 
         [Test]
         public void SocketCanException_Ctor_WithErrorCodeAndDescription_ArgumentNullException_Failure_Test()
         {
-            using (var isoTpCanSocket = new IsoTpCanSocket())
-            {
-                Assert.Throws<ArgumentNullException>(() => new SocketCanException(10057, null));
-            }
+            Assert.Throws<ArgumentNullException>(() => new SocketCanException(10057, null));
         }
     }
 }
