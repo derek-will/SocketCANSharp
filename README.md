@@ -1,4 +1,5 @@
 [![NuGet](https://img.shields.io/nuget/v/SocketCANSharp.svg)](https://www.nuget.org/packages/SocketCANSharp)
+[![NuGet](https://img.shields.io/nuget/dt/SocketCANSharp.svg)](https://www.nuget.org/packages/SocketCANSharp)
 
 ## SocketCAN# (SocketCANSharp)
 
