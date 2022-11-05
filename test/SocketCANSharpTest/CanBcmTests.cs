@@ -448,6 +448,63 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CAN_BCM_TX_READ_Generic_Success_Test()
+        {
+            if (Environment.Is64BitProcess)
+            {
+                var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+                var header = new BcmMessageHeader(BcmOpcode.TX_SETUP)
+                {
+                    Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
+                    Interval2 = new BcmTimeval(1, 0),
+                    NumberOfFrames = 1,
+                };
+
+                var bcmMessage = new BcmCanMessage(header, new CanFrame[] { canFrame });
+
+                int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+                Assert.AreEqual(72, nBytes);
+
+                var readHeader = new BcmMessageHeader(BcmOpcode.TX_READ);
+
+                nBytes = LibcNativeMethods.Write(socketHandle, readHeader, Marshal.SizeOf(typeof(BcmMessageHeader)));
+                Assert.AreEqual(56, nBytes);
+                Assert.AreEqual(BcmOpcode.TX_READ, readHeader.Opcode);
+
+                var receiveMessage = new BcmGenericMessage();
+                nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage)));
+                Assert.AreEqual(BcmOpcode.TX_STATUS, receiveMessage.Header.Opcode);
+                Assert.AreEqual(72, nBytes);
+            }
+            else
+            {
+                var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+                var header = new BcmMessageHeader32(BcmOpcode.TX_SETUP)
+                {
+                    Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
+                    Interval2 = new BcmTimeval(1, 0),
+                    NumberOfFrames = 1,
+                };
+
+                var bcmMessage = new BcmCanMessage32(header, new CanFrame[] { canFrame });
+
+                int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+                Assert.AreEqual(56, nBytes);
+
+                var readHeader = new BcmMessageHeader32(BcmOpcode.TX_READ);
+
+                nBytes = LibcNativeMethods.Write(socketHandle, readHeader, Marshal.SizeOf(typeof(BcmMessageHeader32)));
+                Assert.AreEqual(40, nBytes);
+                Assert.AreEqual(BcmOpcode.TX_READ, readHeader.Opcode);
+
+                var receiveMessage = new BcmGenericMessage32();
+                nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage32)));
+                Assert.AreEqual(BcmOpcode.TX_STATUS, receiveMessage.Header.Opcode);
+                Assert.AreEqual(56, nBytes);
+            }
+        }
+
+        [Test]
         public void CAN_BCM_TX_READ_CANFD_Success_Test()
         {
             if (Environment.Is64BitProcess)
@@ -497,6 +554,61 @@ namespace SocketCANSharpTest
 
                 var receiveMessage = new BcmCanFdMessage32();
                 nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmCanFdMessage32)));
+                Assert.AreEqual(BcmOpcode.TX_STATUS, receiveMessage.Header.Opcode);
+                Assert.AreEqual(112, nBytes);
+            }
+        }
+
+        [Test]
+        public void CAN_BCM_TX_READ_CANFD_Generic_Success_Test()
+        {
+            if (Environment.Is64BitProcess)
+            {
+                var canFrame = new CanFdFrame(0x111, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
+                var header = new BcmMessageHeader(BcmOpcode.TX_SETUP)
+                {
+                    Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
+                    Interval2 = new BcmTimeval(1, 0),
+                    NumberOfFrames = 1,
+                };
+
+                var bcmMessage = new BcmCanFdMessage(header, new CanFdFrame[] { canFrame });
+                int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+                Assert.AreEqual(128, nBytes);
+
+                var readHeader = new BcmMessageHeader(BcmOpcode.TX_READ);
+                readHeader.Flags = BcmFlags.CAN_FD_FRAME;
+                nBytes = LibcNativeMethods.Write(socketHandle, readHeader, Marshal.SizeOf(typeof(BcmMessageHeader)));
+                Assert.AreEqual(56, nBytes);
+                Assert.AreEqual(BcmOpcode.TX_READ, readHeader.Opcode);
+
+                var receiveMessage = new BcmGenericMessage();
+                nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage)));
+                Assert.AreEqual(BcmOpcode.TX_STATUS, receiveMessage.Header.Opcode);
+                Assert.AreEqual(128, nBytes);
+            }
+            else
+            {
+                var canFrame = new CanFdFrame(0x111, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
+                var header = new BcmMessageHeader32(BcmOpcode.TX_SETUP)
+                {
+                    Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
+                    Interval2 = new BcmTimeval(1, 0),
+                    NumberOfFrames = 1,
+                };
+
+                var bcmMessage = new BcmCanFdMessage32(header, new CanFdFrame[] { canFrame });
+                int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+                Assert.AreEqual(112, nBytes);
+
+                var readHeader = new BcmMessageHeader32(BcmOpcode.TX_READ);
+                readHeader.Flags = BcmFlags.CAN_FD_FRAME;
+                nBytes = LibcNativeMethods.Write(socketHandle, readHeader, Marshal.SizeOf(typeof(BcmMessageHeader32)));
+                Assert.AreEqual(40, nBytes);
+                Assert.AreEqual(BcmOpcode.TX_READ, readHeader.Opcode);
+
+                var receiveMessage = new BcmGenericMessage32();
+                nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage32)));
                 Assert.AreEqual(BcmOpcode.TX_STATUS, receiveMessage.Header.Opcode);
                 Assert.AreEqual(112, nBytes);
             }

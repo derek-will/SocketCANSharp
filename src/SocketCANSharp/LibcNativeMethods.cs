@@ -299,6 +299,26 @@ namespace SocketCANSharp
         public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmCanMessage message, int msgSize);
 
         /// <summary>
+        /// Read a BcmGenericMessage from the socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">BCM Generic Message structure to populate</param>
+        /// <param name="msgSize">Size of BCM Generic Message structure</param>
+        /// <returns>The number of bytes read on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="read", SetLastError=true)]
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmGenericMessage message, int msgSize);
+        
+        /// <summary>
+        /// Read a BcmGenericMessage from the socket. Variant for 32-bit.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="message">BCM Generic Message structure to populate</param>
+        /// <param name="msgSize">Size of BCM Generic Message structure</param>
+        /// <returns>The number of bytes read on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="read", SetLastError=true)]
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, [Out] BcmGenericMessage32 message, int msgSize);
+
+        /// <summary>
         /// Read a BcmCanFdMessage from the socket.
         /// </summary>
         /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
