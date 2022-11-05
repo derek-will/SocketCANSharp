@@ -1785,6 +1785,49 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void BcmCanSocket_Read_Timeout_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var bcmCanSocket = new BcmCanSocket())
+            {
+                bcmCanSocket.ReceiveTimeout = 10;
+                bcmCanSocket.Connect(iface);
+                Assert.AreEqual(false, bcmCanSocket.IsBound);
+                Assert.AreEqual(true, bcmCanSocket.Connected);
+
+                var canFrame = new CanFrame(0x189, new byte[] { 0x01 });
+                var frames = new CanFrame[] { canFrame };
+                var subscription = new BcmContentRxFilterSubscription()
+                {
+                    Id = 0x189,
+                    StartTimer = true,
+                    SetInterval = true,
+                    ReceiveTimeout = new BcmTimeval(0, 100000), // 100 ms
+                    ReceiveMessageRateLimit = new BcmTimeval(0, 0), // no throttle
+                };
+                int nBytes = bcmCanSocket.CreateReceiveFilterSubscription(subscription, frames);
+                if (Environment.Is64BitProcess)
+                {
+                    Assert.AreEqual(72, nBytes);
+                }
+                else
+                {
+                    Assert.AreEqual(56, nBytes);
+                }
+
+                SocketCanException ex = Assert.Throws<SocketCanException>(() => bcmCanSocket.Read(out BcmCanMessageResponse response));
+                Assert.AreEqual(SocketError.WouldBlock, ex.SocketErrorCode);
+                Assert.AreEqual(11, ex.NativeErrorCode);
+            }
+        }
+
+        [Test]
         public void BcmCanSocket_CANFD_Read_CanFrameUpdateNotification_Success_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
