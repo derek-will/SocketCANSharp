@@ -125,9 +125,10 @@ namespace SocketCANSharpTest
         [TearDown]
         public void Cleanup()
         {
+            // Note - if the system does not support CAN_J1939 then the rest of the socket handles will not be initialized
             testerSocketHandle.Close();
-            ecuSocketHandle.Close();
-            broadcastHandle.Close();
+            ecuSocketHandle?.Close();
+            broadcastHandle?.Close();
         }
 
         [Test]

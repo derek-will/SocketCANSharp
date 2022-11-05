@@ -192,15 +192,16 @@ namespace SocketCANSharpTest
         [TearDown]
         public void Cleanup()
         {
+            // Note - if the system does not support CAN_ISOTP then the rest of the socket handles will not be initialized
             testerSocketHandle.Close();
-            ecuSocketHandle.Close();
-            extAddrTesterSocketHandle.Close();
-            extAddrEcuSocketHandle.Close();
-            fxnAddrTesterSocketHandle.Close();
-            obdEcu1SocketHandle.Close();
-            obdTester1SocketHandle.Close();
-            obdEcu2SocketHandle.Close();
-            obdTester2SocketHandle.Close();
+            ecuSocketHandle?.Close();
+            extAddrTesterSocketHandle?.Close();
+            extAddrEcuSocketHandle?.Close();
+            fxnAddrTesterSocketHandle?.Close();
+            obdEcu1SocketHandle?.Close();
+            obdTester1SocketHandle?.Close();
+            obdEcu2SocketHandle?.Close();
+            obdTester2SocketHandle?.Close();
         }
 
         [Test]
