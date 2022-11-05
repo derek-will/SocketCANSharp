@@ -729,6 +729,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -798,6 +799,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1471,6 +1473,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1540,6 +1543,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1609,6 +1613,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1665,6 +1670,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1721,6 +1727,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1789,6 +1796,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1859,6 +1867,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1914,6 +1923,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1980,6 +1990,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -2073,6 +2084,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -2183,6 +2195,7 @@ namespace SocketCANSharpTest
 
                 using (var rawCanSocket = new RawCanSocket())
                 {
+                    rawCanSocket.ReceiveTimeout = 250;
                     rawCanSocket.Bind(iface);
                     int bytesWritten = rawCanSocket.Write(new CanFrame(0x2FF | (uint)CanIdFlags.CAN_RTR_FLAG, new byte[0]));
                     Assert.AreEqual(16, bytesWritten);
@@ -2237,6 +2250,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
