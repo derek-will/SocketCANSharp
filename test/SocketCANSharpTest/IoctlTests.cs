@@ -98,7 +98,7 @@ namespace SocketCANSharpTest
                 var ifr = new IfreqMtu("vcan0");
                 int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifr);
                 Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-                Assert.AreEqual(72, ifr.MTU);
+                Assert.That(ifr.MTU, Is.EqualTo(16) | Is.EqualTo(72)); // some devices may support CAN FD while other may support Classic CAN only
             }
         }
 
@@ -112,7 +112,7 @@ namespace SocketCANSharpTest
                 var ifr = new IfreqMtu("vcan0");
                 int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifr);
                 Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-                Assert.AreEqual(72, ifr.MTU);
+                Assert.That(ifr.MTU, Is.EqualTo(16) | Is.EqualTo(72)); // some devices may support CAN FD while other may support Classic CAN only
             }
         }
 
