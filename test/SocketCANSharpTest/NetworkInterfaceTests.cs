@@ -109,7 +109,7 @@ namespace SocketCANSharpTest
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int mtu = iface.ReadSupportedMtu(socketHandle);
-            Assert.AreEqual(72, mtu);
+            Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU)); // some devices may support CAN FD while other may support Classic CAN only
         }
 
         [Test]
