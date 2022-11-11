@@ -601,6 +601,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Add_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -624,6 +633,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Add_Twice_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -650,6 +668,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Add_Null_SafeFileDescriptorHandle_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -673,6 +700,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Add_Invalid_Event_With_EPOLLEXCLUSIVE_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -698,6 +734,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Add_ObjectDisposedException_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -722,6 +767,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Remove_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -746,6 +800,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Remove_Not_Added_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -771,6 +834,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Remove_Null_SafeFileDescriptorHandle_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -795,6 +867,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Remove_ObjectDisposedException_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -820,6 +901,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Modify_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -846,6 +936,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Modify_Include_EPOLLEXCLUSIVE_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -874,6 +973,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Modify_Not_Added_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -901,6 +1009,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Modify_Null_SafeFileDescriptorHandle_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -927,6 +1044,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Modify_ObjectDisposedException_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             using (var epoll = new Epoll())
             {
                 Assert.IsFalse(epoll.SafeHandle.IsClosed);
@@ -955,6 +1081,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Wait_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
             Assert.IsNotNull(collection);
             Assert.GreaterOrEqual(collection.Count(), 1);
@@ -1003,6 +1138,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Wait_ObjectDisposedException_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
             Assert.IsNotNull(collection);
             Assert.GreaterOrEqual(collection.Count(), 1);
@@ -1043,6 +1187,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Wait_ArgumentOutOfRangeException_Failure_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
             Assert.IsNotNull(collection);
             Assert.GreaterOrEqual(collection.Count(), 1);
@@ -1083,6 +1236,15 @@ namespace SocketCANSharpTest
         [Test]
         public void Epoll_Wait_Timeout_Test()
         {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
             Assert.IsNotNull(collection);
             Assert.GreaterOrEqual(collection.Count(), 1);
