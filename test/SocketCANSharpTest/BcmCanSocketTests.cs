@@ -300,9 +300,18 @@ namespace SocketCANSharpTest
                     InitialIntervalConfiguration = new BcmInitialIntervalConfiguration(10, new BcmTimeval(0, -1)), // invalid time
                     PostInitialInterval = new BcmTimeval(-1, 0), // invalid time
                 };
-                SocketCanException ex = Assert.Throws<SocketCanException>(() => bcmCanSocket.CreateCyclicTransmissionTask(config, frames));
-                Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
-                Assert.AreEqual(22, ex.NativeErrorCode);
+                
+                try
+                {
+                    // kernels prior to v5.0 won't throw - Updates to previous stable releases (i.e., v4.9.333) may throw 
+                    bcmCanSocket.CreateCyclicTransmissionTask(config, frames);
+                    Assert.Inconclusive("Did not throw exception on invalid time configuration - This kernel does not support validation of that argument.");
+                }
+                catch (SocketCanException ex)
+                {
+                    Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
+                    Assert.AreEqual(22, ex.NativeErrorCode);
+                }
             }
         }
 
@@ -1147,9 +1156,17 @@ namespace SocketCANSharpTest
                     ReceiveMessageRateLimit = new BcmTimeval(-1, 0), // invalid time
                 };
 
-                SocketCanException ex = Assert.Throws<SocketCanException>(() => bcmCanSocket.CreateReceiveFilterSubscription(subscription, frames));
-                Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
-                Assert.AreEqual(22, ex.NativeErrorCode);
+                try
+                {
+                    // kernels prior to v5.0 won't throw - Updates to previous stable releases (i.e., v4.9.333) may throw 
+                    bcmCanSocket.CreateReceiveFilterSubscription(subscription, frames);
+                    Assert.Inconclusive("Did not throw exception on invalid time configuration - This kernel does not support validation of that argument.");
+                }
+                catch (SocketCanException ex)
+                {
+                    Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
+                    Assert.AreEqual(22, ex.NativeErrorCode);
+                }
             }
         }
 
