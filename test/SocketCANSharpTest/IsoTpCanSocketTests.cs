@@ -44,6 +44,19 @@ namespace SocketCANSharpTest
 {
     public class IsoTpCanSocketTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            // Precondition Check
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP))
+            {
+                if (socketHandle.IsInvalid)
+                {
+                    Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+                }
+            }
+        }
+
         [Test]
         public void IsoTpCanSocket_Ctor_Success_Test()
         {
