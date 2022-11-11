@@ -374,6 +374,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_CAN_ISOTP_OPTS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var canIsoTpOpts = new CanIsoTpOptions()
@@ -389,6 +393,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_CAN_ISOTP_OPTS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var canIsoTpOpts = new CanIsoTpOptions()
@@ -412,6 +420,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_CAN_ISOTP_RECV_FC_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var canIsoTpFcOpts = new CanIsoTpFlowControlOptions()
@@ -428,6 +440,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_CAN_ISOTP_RECV_FC_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var canIsoTpFcOpts = new CanIsoTpFlowControlOptions()
@@ -452,6 +468,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_CAN_ISOTP_TX_STMIN_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             uint stmin = 100;
@@ -463,6 +483,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_CAN_ISOTP_TX_STMIN_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             uint stmin = 100;
@@ -481,6 +505,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_CAN_ISOTP_RX_STMIN_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             uint stmin = 100;
@@ -492,6 +520,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_CAN_ISOTP_RX_STMIN_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             uint stmin = 100;
@@ -510,6 +542,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_CAN_ISOTP_LL_OPTS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var canIsoTpLlOpts = new CanIsoTpLinkLayerOptions(16, 8);
@@ -521,6 +557,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_CAN_ISOTP_LL_OPTS_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var canIsoTpLlOpts = new CanIsoTpLinkLayerOptions(16, 8);
@@ -539,6 +579,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_SO_J1939_PROMISC_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int enable = 1;
@@ -554,6 +598,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_SO_J1939_PROMISC_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int enable = 1;
@@ -581,6 +629,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_SO_J1939_FILTER_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var filter = new J1939Filter()
@@ -603,6 +655,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_SO_J1939_FILTER_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             var filter = new J1939Filter()
@@ -631,6 +687,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_SO_J1939_SEND_PRIO_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int prio = 4;
@@ -642,6 +702,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_SO_J1939_SEND_PRIO_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int prio = 4;
@@ -660,6 +724,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_SO_J1939_ERRQUEUE_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int enable = 1;
@@ -675,6 +743,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_SO_J1939_ERRQUEUE_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int enable = 1;
@@ -704,6 +776,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Set_SO_BROADCAST_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int value = 1;
@@ -715,6 +791,10 @@ namespace SocketCANSharpTest
         public void SocketOption_Get_SO_BROADCAST_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
 
             int value = 1;
