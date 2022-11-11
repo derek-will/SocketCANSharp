@@ -53,7 +53,7 @@ namespace SocketCANSharpTest
             testerSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
             if (testerSocketHandle.IsInvalid)
             {
-                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies. If EINVAL, then Protocol Type is not being recognized.
             }
             Assert.IsFalse(testerSocketHandle.IsInvalid);
 
