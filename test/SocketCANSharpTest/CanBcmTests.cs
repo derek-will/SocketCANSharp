@@ -1180,6 +1180,71 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CAN_BCM_RX_READ_Generic_Success_Test()
+        {
+            if (Environment.Is64BitProcess)
+            {
+                var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)
+                {
+                    Flags = BcmFlags.STARTTIMER | BcmFlags.RX_FILTER_ID,
+                    CanId = 0x123,
+                    NumberOfFrames = 0,
+                };
+
+                var bcmMessage = new BcmCanMessage(header);
+                int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+                Assert.AreEqual(56, nBytes);
+
+                var readHeader = new BcmMessageHeader(BcmOpcode.RX_READ)
+                {
+                    CanId = 0x123,
+                };
+                var readMessage = new BcmCanMessage(readHeader);
+
+                nBytes = LibcNativeMethods.Write(socketHandle, readMessage, Marshal.SizeOf(typeof(BcmCanMessage)));
+                Assert.AreEqual(56, nBytes);
+                Assert.AreEqual(BcmOpcode.RX_READ, readHeader.Opcode);
+
+                var receiveMessage = new BcmGenericMessage();
+                nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage)));
+                Assert.AreEqual(BcmOpcode.RX_STATUS, receiveMessage.Header.Opcode);
+                Assert.AreEqual(0x123, receiveMessage.Header.CanId);
+                Assert.AreEqual(BcmFlags.STARTTIMER | BcmFlags.RX_FILTER_ID, receiveMessage.Header.Flags);
+                Assert.AreEqual(56, nBytes);
+            }
+            else
+            {
+                var header = new BcmMessageHeader32(BcmOpcode.RX_SETUP)
+                {
+                    Flags = BcmFlags.STARTTIMER | BcmFlags.RX_FILTER_ID,
+                    CanId = 0x123,
+                    NumberOfFrames = 0,
+                };
+
+                var bcmMessage = new BcmCanMessage32(header);
+                int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+                Assert.AreEqual(40, nBytes);
+
+                var readHeader = new BcmMessageHeader32(BcmOpcode.RX_READ)
+                {
+                    CanId = 0x123,
+                };
+                var readMessage = new BcmCanMessage32(readHeader);
+
+                nBytes = LibcNativeMethods.Write(socketHandle, readMessage, Marshal.SizeOf(typeof(BcmCanMessage32)));
+                Assert.AreEqual(40, nBytes);
+                Assert.AreEqual(BcmOpcode.RX_READ, readHeader.Opcode);
+
+                var receiveMessage = new BcmGenericMessage32();
+                nBytes = LibcNativeMethods.Read(socketHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage32)));
+                Assert.AreEqual(BcmOpcode.RX_STATUS, receiveMessage.Header.Opcode);
+                Assert.AreEqual(0x123, receiveMessage.Header.CanId);
+                Assert.AreEqual(BcmFlags.STARTTIMER | BcmFlags.RX_FILTER_ID, receiveMessage.Header.Flags);
+                Assert.AreEqual(40, nBytes);
+            }
+        }
+
+        [Test]
         public void CAN_BCM_RX_READ_CANFD_Success_Test()
         {
             var ifrMtu = new IfreqMtu("vcan0");
@@ -1636,7 +1701,7 @@ namespace SocketCANSharpTest
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
             Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
-            
+
             if (Environment.Is64BitProcess)
             {
                 var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)
