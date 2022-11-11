@@ -51,6 +51,10 @@ namespace SocketCANSharpTest
         public void Setup()
         {
             testerSocketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (testerSocketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and not futher testing applies
+            }
             Assert.IsFalse(testerSocketHandle.IsInvalid);
 
             var ifr = new Ifreq("vcan0");
