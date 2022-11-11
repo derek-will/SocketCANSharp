@@ -51,6 +51,19 @@ namespace SocketCANSharpTest
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
 
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var ifrMtu = new IfreqMtu("vcan0");
+            ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
+            var addr = new SockAddrCan(ifr.IfIndex);
+            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+            Assert.AreNotEqual(-1, bindResult);
+
             int can_fd_enabled = 1;
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));
             Assert.AreEqual(0, result);
@@ -65,17 +78,7 @@ namespace SocketCANSharpTest
         [Test]
         public void CanFdFrameWrite_Success_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             var canFdFrame = new CanFdFrame(0x123, new byte[] { 0x11, 0x12}, CanFdFlags.None);
-
             int nBytes = LibcNativeMethods.Write(socketHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)));
             Assert.AreEqual(72, nBytes); 
         }
@@ -83,22 +86,12 @@ namespace SocketCANSharpTest
         [Test]
         public void CanFdFrameWrite_64ByteFrame_Success_Test()
         {            
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             byte[] data = new byte[64];
             foreach (byte b in Enumerable.Range(0, 64))
             {
                 data[b] = b;
             }
             var writeFrame = new CanFdFrame(0x123, data, CanFdFlags.None);
-
             int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFdFrame)));
             Assert.AreEqual(72, nWriteBytes); 
         }
@@ -106,17 +99,7 @@ namespace SocketCANSharpTest
         [Test]
         public void CanFdFrameWrite_BaudRateSwitch_Success_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             var canFdFrame = new CanFdFrame(0x123, new byte[] { 0x11, 0x22 }, CanFdFlags.CANFD_BRS);
-
             int nBytes = LibcNativeMethods.Write(socketHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)));
             Assert.AreEqual(72, nBytes); 
         }
@@ -124,17 +107,7 @@ namespace SocketCANSharpTest
         [Test]
         public void CanFdFrameWrite_ErrorStateIndicator_Success_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             var canFdFrame = new CanFdFrame(0x123, new byte[] { 0x11, 0x22 }, CanFdFlags.CANFD_ESI);
-
             int nBytes = LibcNativeMethods.Write(socketHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)));
             Assert.AreEqual(72, nBytes); 
         }
@@ -142,37 +115,38 @@ namespace SocketCANSharpTest
         [Test]
         public void CanFdFrameWrite_ToAnyInterface_Success_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
+            using (var sockHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                Assert.IsFalse(sockHandle.IsInvalid);
 
-            var anyAddr = new SockAddrCan(0);
+                var ifr = new Ifreq("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(sockHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+                Assert.AreNotEqual(-1, ioctlResult);
 
-            int bindResult = LibcNativeMethods.Bind(socketHandle, anyAddr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
+                var ifrMtu = new IfreqMtu("vcan0");
+                ioctlResult = LibcNativeMethods.Ioctl(sockHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+                Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+                Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
 
-            var canFdFrame = new CanFdFrame(0x123, new byte[] { 0x11, 0x22 }, CanFdFlags.None);
+                var anyAddr = new SockAddrCan(0);
+                int bindResult = LibcNativeMethods.Bind(sockHandle, anyAddr, Marshal.SizeOf(typeof(SockAddrCan)));
+                Assert.AreNotEqual(-1, bindResult);
 
-            var addr = new SockAddrCan(ifr.IfIndex);
+                int can_fd_enabled = 1;
+                int result = LibcNativeMethods.SetSockOpt(sockHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));
+                Assert.AreEqual(0, result);
 
-            int nBytes = LibcNativeMethods.SendTo(socketHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)), 0, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreEqual(72, nBytes); 
+                var canFdFrame = new CanFdFrame(0x123, new byte[] { 0x11, 0x22 }, CanFdFlags.None);
+                var addr = new SockAddrCan(ifr.IfIndex);
+                int nBytes = LibcNativeMethods.SendTo(sockHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)), 0, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+                Assert.AreEqual(72, nBytes);
+            }
         }
 
         [Test]
         public void CanFdFrameWrite_29BitAddressing_Success_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             var canFdFrame = new CanFdFrame(0x12345678 | (uint)CanIdFlags.CAN_EFF_FLAG, new byte[] { 0x33, 0x44}, CanFdFlags.None);
-
             int nBytes = LibcNativeMethods.Write(socketHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)));
             Assert.AreEqual(72, nBytes); 
         }
@@ -180,32 +154,13 @@ namespace SocketCANSharpTest
         [Test]
         public void CanFdFrameWrite_InvalidAddress_Ctor_Failure_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             Assert.Throws<ArgumentException>(() => new CanFdFrame(0x18db33f1, new byte[] { 0x11, 0x22 }, CanFdFlags.None));
         }
 
         [Test]
         public void CanFdFrameWrite_InvalidAddress_Property_Failure_Test()
         {
-            var ifr = new Ifreq("vcan0");
-            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-            Assert.AreNotEqual(-1, ioctlResult);
-
-            var addr = new SockAddrCan(ifr.IfIndex);
-
-            int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-            Assert.AreNotEqual(-1, bindResult);
-
             var canFdFrame = new CanFdFrame(0x123, new byte[] { 0x11, 0x22 }, CanFdFlags.None);
-
             Assert.Throws<ArgumentException>(() => canFdFrame.CanId = 0x18db33f1);
         }
     }

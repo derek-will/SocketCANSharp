@@ -109,6 +109,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_SETUP_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var canFrame = new CanFdFrame(0x311, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
@@ -234,6 +239,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_SETUP_With_ExpireEvent_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var timeval = new Timeval(3, 0);
@@ -342,6 +352,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_DELETE_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var canFrame = new CanFdFrame(0x111, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
@@ -507,6 +522,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_READ_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var canFrame = new CanFdFrame(0x111, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
@@ -562,6 +582,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_READ_CANFD_Generic_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var canFrame = new CanFdFrame(0x111, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
@@ -705,6 +730,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_SEND_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var canFrame = new CanFdFrame(0x31, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF, 0xDE, 0xAD, 0xBE, 0xEF }, CanFdFlags.CANFD_BRS);
@@ -800,6 +830,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_RX_SETUP_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)
@@ -919,6 +954,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_RX_SETUP_with_Timeout_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var timeval = new Timeval(3, 0);
@@ -1021,6 +1061,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_RX_DELETE_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)
@@ -1137,6 +1182,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_RX_READ_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)
@@ -1344,6 +1394,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_RX_CHANGED_Detection_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             if (Environment.Is64BitProcess)
             {
                 var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)
@@ -1577,6 +1632,11 @@ namespace SocketCANSharpTest
         [Test]
         public void CAN_BCM_TX_CP_CAN_ID_CANFD_Success_Test()
         {
+            var ifrMtu = new IfreqMtu("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            
             if (Environment.Is64BitProcess)
             {
                 var header = new BcmMessageHeader(BcmOpcode.RX_SETUP)

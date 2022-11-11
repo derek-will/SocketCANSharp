@@ -62,6 +62,11 @@ namespace SocketCANSharpTest
             int ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
             Assert.AreNotEqual(-1, ioctlResult);
 
+            var ifrMtu = new IfreqMtu("vcan0");
+            ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+
             // Set CAN FD
             var canIsoTpLlOpts = new CanIsoTpLinkLayerOptions(72, 64, CanFdFlags.CANFD_BRS);
             int sockOptResult = LibcNativeMethods.SetSockOpt(testerSocketHandle, SocketLevel.SOL_CAN_ISOTP, CanIsoTpSocketOptions.CAN_ISOTP_LL_OPTS, canIsoTpLlOpts, Marshal.SizeOf(typeof(CanIsoTpLinkLayerOptions)));

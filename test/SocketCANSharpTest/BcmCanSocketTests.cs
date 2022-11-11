@@ -247,6 +247,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -501,6 +502,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -639,6 +641,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -799,6 +802,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
@@ -947,6 +951,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1032,6 +1037,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.ReceiveTimeout = 500;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
@@ -1159,6 +1165,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1245,6 +1252,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1425,6 +1433,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
                 Assert.AreEqual(true, bcmCanSocket.Connected);
@@ -1543,6 +1552,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
@@ -1670,6 +1680,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
@@ -1839,6 +1850,7 @@ namespace SocketCANSharpTest
 
             using (var bcmCanSocket = new BcmCanSocket())
             {
+                Assume.That(iface.ReadSupportedMtu(bcmCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 bcmCanSocket.ReceiveTimeout = 250;
                 bcmCanSocket.Connect(iface);
                 Assert.AreEqual(false, bcmCanSocket.IsBound);
