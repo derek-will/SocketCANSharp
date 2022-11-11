@@ -375,7 +375,6 @@ namespace SocketCANSharp.Network.BroadcastManagement
             {
                 var receiveMessage = new BcmGenericMessage32();
                 nBytes = LibcNativeMethods.Read(SafeHandle, receiveMessage, Marshal.SizeOf(typeof(BcmGenericMessage32)));
-                while (receiveMessage.Header.Opcode != BcmOpcode.TX_STATUS && nBytes != -1);
 
                 if (nBytes == -1)
                     throw new SocketCanException("Unable to retrieve information from the socket.");
