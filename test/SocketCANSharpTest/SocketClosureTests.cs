@@ -63,6 +63,10 @@ namespace SocketCANSharpTest
         public void CloseSocket_CAN_ISOTP_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_ISOTP);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
             Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();
@@ -74,6 +78,10 @@ namespace SocketCANSharpTest
         public void CloseSocket_CAN_J1939_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_J1939);
+            if (socketHandle.IsInvalid)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(93) & Is.Not.EqualTo(22)); // If EPROTONOSUPPORT, then this protocol is not supported on this platform and no futher testing applies. If EINVAL, then Protocol Type is not being recognized as valid.
+            }
             Assert.IsFalse(socketHandle.IsInvalid);
             Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();
