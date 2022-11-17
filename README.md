@@ -135,8 +135,73 @@ using (var j1939Handle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, Soc
 }
 ```
 
-### Other SocketCAN features
-BCM (Broadcast Manager) is also supported by this library, but currently only at the basic level of providing a procedural style interface. Object-Oriented support for BCM is planned to be implemented and released in the future. 
+### Broadcast Manager (BCM) Support
+
+#### Object-Oriented Style
+```cs
+CanNetworkInterface vcan0 = CanNetworkInterface.GetAllInterfaces(true).First(iface => iface.Name.Equals("vcan0"));
+
+using (var bcmCanSocket = new BcmCanSocket())
+{
+    bcmCanSocket.Connect(vcan0);
+    var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+    var frames = new CanFrame[] { canFrame };
+    var config = new BcmCyclicTxTaskConfiguration()
+    {
+        Id = 0x333,
+        StartTimer = true,
+        SetInterval = true,
+        InitialIntervalConfiguration = new BcmInitialIntervalConfiguration(10, new BcmTimeval(0, 5000)), // 10 messages at 5 ms
+        PostInitialInterval = new BcmTimeval(0, 100000), // Then at 100 ms
+    };
+    int nBytes = bcmCanSocket.CreateCyclicTransmissionTask(config, frames);
+}
+```
+
+#### Procedural Style
+```cs
+using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_BCM))
+{
+    var ifr = new Ifreq("vcan0");
+    int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+
+    var addr = new SockAddrCan(ifr.IfIndex);
+    int connectResult = LibcNativeMethods.Connect(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+
+    if (Environment.Is64BitProcess)
+    {
+        var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+        var header = new BcmMessageHeader(BcmOpcode.TX_SETUP)
+        {
+            CanId = 0x333,
+            Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
+            Interval1Count = 10, // 10 messages
+            Interval1 = new BcmTimeval(0, 5000), // at 5 ms interval
+            Interval2 = new BcmTimeval(0, 100000), // then at 100 ms
+            NumberOfFrames = 1,
+        };
+
+        var bcmMessage = new BcmCanMessage(header, new CanFrame[] { canFrame });
+        int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+    }
+    else // 32-bit process
+    {
+        var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+        var header = new BcmMessageHeader32(BcmOpcode.TX_SETUP)
+        {
+            CanId = 0x333,
+            Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
+            Interval1Count = 10, // 10 messages
+            Interval1 = new BcmTimeval(0, 5000), // at 5 ms interval
+            Interval2 = new BcmTimeval(0, 100000), // then at 100 ms
+            NumberOfFrames = 1,
+        };
+
+        var bcmMessage = new BcmCanMessage32(header, new CanFrame[] { canFrame });
+        int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
+    }
+}
+```
 
 ### Supported Environments
 Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN and BCM have been confirmed as far back as Linux Kernel 4.9. Testing on Alpine Linux has not been carried out yet.
