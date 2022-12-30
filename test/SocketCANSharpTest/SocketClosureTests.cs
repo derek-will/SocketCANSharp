@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
+using SocketCANSharp.Netlink;
 using System.Net.Sockets;
 
 namespace SocketCANSharpTest
@@ -93,6 +94,17 @@ namespace SocketCANSharpTest
         public void CloseSocket_CAN_BCM_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_BCM);
+            Assert.IsFalse(socketHandle.IsInvalid);
+            Assert.IsFalse(socketHandle.IsClosed);
+            socketHandle.Close();
+            Assert.IsTrue(socketHandle.IsInvalid);
+            Assert.IsTrue(socketHandle.IsClosed);
+        }
+
+        [Test]
+        public void CloseSocket_NETLINK_ROUTE_Test()
+        {
+            socketHandle = NetlinkNativeMethods.Socket(NetlinkConstants.PF_NETLINK, SocketType.Raw, NetlinkProtocolType.NETLINK_ROUTE);
             Assert.IsFalse(socketHandle.IsInvalid);
             Assert.IsFalse(socketHandle.IsClosed);
             socketHandle.Close();

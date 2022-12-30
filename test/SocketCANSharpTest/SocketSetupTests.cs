@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
+using SocketCANSharp.Netlink;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -260,6 +261,39 @@ namespace SocketCANSharpTest
             Assert.AreEqual(0x00000010, addr.Name);
             Assert.AreEqual(SocketCanConstants.J1939_NO_PGN, addr.PGN); // socket is disconnected so PGN will be set to N/A value.
             Assert.AreEqual(0xF0, addr.Address);
+        }
+
+        [Test]
+        public void BindAddress_NETLINK_ROUTE_Test()
+        {
+            socketHandle = NetlinkNativeMethods.Socket(NetlinkConstants.PF_NETLINK, SocketType.Raw, NetlinkProtocolType.NETLINK_ROUTE);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var addr = new SockAddrNetlink(0, 0);
+            int bindResult = NetlinkNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrNetlink)));
+            Assert.AreNotEqual(-1, bindResult);
+        }
+
+        [Test]
+        public void GetSockName_NETLINK_ROUTE_Test()
+        {
+            socketHandle = NetlinkNativeMethods.Socket(NetlinkConstants.PF_NETLINK, SocketType.Raw, NetlinkProtocolType.NETLINK_ROUTE);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var addr = new SockAddrNetlink(0, 0);
+            int bindResult = NetlinkNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrNetlink)));
+            Assert.AreNotEqual(-1, bindResult);
+
+            addr = new SockAddrNetlink();
+            int size = Marshal.SizeOf(typeof(SockAddrNetlink));
+            int getSockNameResult = NetlinkNativeMethods.GetSockName(socketHandle, addr, ref size);
+
+            Assert.AreEqual(0, getSockNameResult);
+            Assert.AreEqual(Marshal.SizeOf(typeof(SockAddrNetlink)), size);
+            Assert.AreEqual(NetlinkConstants.AF_NETLINK, addr.NetlinkFamily);
+            Assert.AreEqual(0, addr.Pad);
+            Assert.AreEqual(0, addr.GroupsMask);
+            Assert.NotZero(addr.PortId);
         }
     }
 }

@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
+using SocketCANSharp.Netlink;
 using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -865,6 +866,22 @@ namespace SocketCANSharpTest
             Assert.AreEqual(0, result);
             Assert.AreEqual(16384, value); // the kernel doubles whatever we send it in setsockopt and this doubled value is what is returned by getsockopt
             Assert.AreEqual(4, len);
+        }
+
+        [Test]
+        public void Netlink_Set_Send_And_Receive_Buffer_Sizes_Test()
+        {
+            socketHandle = NetlinkNativeMethods.Socket(NetlinkConstants.PF_NETLINK, SocketType.Raw, NetlinkProtocolType.NETLINK_ROUTE);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            int sendBufferSize = 32768;
+            int recvBufferSize = 32768;
+
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDBUF, ref sendBufferSize, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
+
+            result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVBUF, ref recvBufferSize, Marshal.SizeOf(typeof(int)));
+            Assert.AreEqual(0, result);
         }
     }
 }

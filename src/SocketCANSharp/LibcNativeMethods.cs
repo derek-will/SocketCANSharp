@@ -49,11 +49,11 @@ namespace SocketCANSharp
         public static int Errno { get { return Marshal.GetLastWin32Error(); } }
 
         /// <summary>
-        /// Creates a socket.
+        /// Creates a CAN socket.
         /// </summary>
         /// <param name="addressFamily">Address Family</param>
         /// <param name="socketType">Type of socket</param>
-        /// <param name="protocolType">Protocol Type</param>
+        /// <param name="protocolType">CAN Protocol Type</param>
         /// <returns>Socket Handle Wrapper Instance</returns>
         [DllImport("libc", EntryPoint="socket", SetLastError=true)]
         public static extern SafeFileDescriptorHandle Socket(int addressFamily, SocketType socketType, SocketCanProtocolType protocolType);
