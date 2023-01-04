@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// Netlink Native Methods

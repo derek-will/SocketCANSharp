@@ -33,10 +33,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
-using System.Net.Sockets;
+using System.Text;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using SocketCANSharp.Network.Netlink;
 
 namespace SocketCANSharp.Network
 {
@@ -60,6 +62,102 @@ namespace SocketCANSharp.Network
         /// Indicates if the CAN interface is virtual or not.
         /// </summary>
         public bool IsVirtual { get; set; }
+
+        /// <summary>
+        /// Device Flags.
+        /// </summary>
+        public NetDeviceFlags DeviceFlags
+        {
+            get
+            {
+                InterfaceInfoMessage? msg = GetInterfaceInfoMessage();
+                return msg.HasValue ? msg.Value.DeviceFlags : 0;
+            }
+        }
+
+        /// <summary>
+        /// Device Type.
+        /// </summary>
+        public ArpHardwareIdentifier DeviceType
+        {
+            get
+            {
+                InterfaceInfoMessage? msg = GetInterfaceInfoMessage();
+                return msg.HasValue ? msg.Value.DeviceType : 0;
+            }
+        }
+
+        /// <summary>
+        /// Bit Timing of the CAN Network Interface.
+        /// </summary>
+        public CanBitTiming BitTiming
+        {
+            get
+            {
+                CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_BITTIMING);
+                return cbtAttr == null ? null : CanBitTiming.FromBytes(cbtAttr.Data);
+            }
+        }
+
+        /// <summary>
+        /// Hardware-dependent Bit Timing of the CAN Network Interface.
+        /// </summary>
+        public CanBitTimingConstant BitTimingConstant
+        {
+            get
+            {
+                CanRoutingAttribute cbtcAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_BITTIMING_CONST);
+                return cbtcAttr == null ? null : CanBitTimingConstant.FromBytes(cbtcAttr.Data);
+            }
+        }
+
+        /// <summary>
+        /// Operational Status of the Interface (RFC2863 State).
+        /// </summary>
+        public InterfaceOperationalStatus OperationalStatus
+        {
+            get
+            {
+                InterfaceLinkAttribute operStateAttr = GetInterfaceLinkAttribute(InterfaceLinkAttributeType.IFLA_OPERSTATE);
+                return operStateAttr == null ? InterfaceOperationalStatus.IF_OPER_UNKNOWN : (InterfaceOperationalStatus)operStateAttr.Data[0];
+            }
+        }
+
+        /// <summary>
+        /// Link Statistics.
+        /// </summary>
+        public InterfaceLinkStatistics64 LinkStatistics
+        {
+            get
+            {
+                InterfaceLinkAttribute stats64Attr = GetInterfaceLinkAttribute(InterfaceLinkAttributeType.IFLA_STATS64);
+                return stats64Attr == null ? null : InterfaceLinkStatistics64.FromBytes(stats64Attr.Data);
+            }
+        }
+
+        /// <summary>
+        /// Link Kind (i.e., can or vcan).
+        /// </summary>
+        public string LinkKind
+        {
+            get
+            {
+                LinkInfoAttribute kindAttr = GetLinkInfoAttribute(LinkInfoAttributeType.IFLA_INFO_KIND);
+                return kindAttr == null ? null : Encoding.ASCII.GetString(kindAttr.Data).Trim('\0');
+            }
+        }
+
+        /// <summary>
+        /// CAN Device Statistics.
+        /// </summary>
+        public CanDeviceStatistics DeviceStatistics
+        {
+            get
+            {
+                LinkInfoAttribute deviceStatsAttr = GetLinkInfoAttribute(LinkInfoAttributeType.IFLA_INFO_XSTATS);
+                return deviceStatsAttr == null ? null : CanDeviceStatistics.FromBytes(deviceStatsAttr.Data);
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the CanNetworkInterface class with the specified Index, Name and whether the interface is virtual or physical.
@@ -204,6 +302,49 @@ namespace SocketCANSharp.Network
         public override string ToString()
         {
             return $"Index: {Index}; Name: {Name}; Is Virtual: {IsVirtual}";
+        }
+        
+        private byte[] GetLinkInfo()
+        {
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
+            {
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+                
+                NetworkInterfaceInfoRequest req = NetlinkUtils.GenerateRequestForLinkInfoByIndex(Index);
+                int numBytes = rtNetlinkSocket.Write(req);
+
+                byte[] rxBuffer = new byte[8192];
+                int bytesRead = rtNetlinkSocket.Read(rxBuffer);
+
+                return rxBuffer.Take(bytesRead).ToArray();
+            }
+        }
+
+        private CanRoutingAttribute GetCanRoutingAttribute(CanRoutingAttributeType type)
+        {
+            byte[] rxBuffer = GetLinkInfo();
+            return NetlinkUtils.FindNestedCanRoutingAttribute(Index, rxBuffer, type);
+        }
+
+        private InterfaceLinkAttribute GetInterfaceLinkAttribute(InterfaceLinkAttributeType type)
+        {
+            byte[] rxBuffer = GetLinkInfo();
+            return NetlinkUtils.FindInterfaceLinkAttribute(Index, rxBuffer, type);
+        }
+
+        private LinkInfoAttribute GetLinkInfoAttribute(LinkInfoAttributeType type)
+        {
+            byte[] rxBuffer = GetLinkInfo();
+            return NetlinkUtils.FindNestedLinkInfoAttribute(Index, rxBuffer, type);
+        }
+
+        private InterfaceInfoMessage? GetInterfaceInfoMessage()
+        {
+            byte[] rxBuffer = GetLinkInfo();
+            return NetlinkUtils.FindInterfaceInfoMessage(Index, rxBuffer);
         }
     }
 }

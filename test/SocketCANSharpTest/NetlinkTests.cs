@@ -39,7 +39,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using SocketCANSharp;
-using SocketCANSharp.Netlink;
+using SocketCANSharp.Network;
+using SocketCANSharp.Network.Netlink;
 using System.Net.Sockets;
 
 namespace SocketCANSharpTest
@@ -481,6 +482,131 @@ namespace SocketCANSharpTest
             numBytes = LibcNativeMethods.Read(socketHandle, rxBuffer, rxBuffer.Length);
             Assert.AreEqual(-1, numBytes);
             Assert.AreEqual(11, LibcNativeMethods.Errno); // EWOULDBLOCK
+        }
+
+        [Test]
+        public void RoutingNetlinkSocket_Write_Info_Request_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
+            {
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+                var req = new NetworkInterfaceInfoRequest()
+                {
+                    Header = new NetlinkMessageHeader()
+                    {
+                        MessageLength = (uint)Marshal.SizeOf<NetworkInterfaceInfoRequest>(),
+                        MessageType = NetlinkMessageType.RTM_GETLINK,
+                        Flags = NetlinkMessageFlags.NLM_F_REQUEST,
+                        SenderPortId = 0,
+                        SequenceNumber = 0,
+                    },
+                    Information = new InterfaceInfoMessage()
+                    {
+                        AddressFamily = NetlinkConstants.AF_NETLINK,
+                        InterfaceIndex = iface.Index,
+                    }
+                };
+                int numBytes = rtNetlinkSocket.Write(req);
+                Assert.AreEqual((int)req.Header.MessageLength, numBytes);
+            }
+        }
+
+        [Test]
+        public void RoutingNetlinkSocket_Read_Link_Info_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
+            {
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+                var req = new NetworkInterfaceInfoRequest()
+                {
+                    Header = new NetlinkMessageHeader()
+                    {
+                        MessageLength = (uint)Marshal.SizeOf<NetworkInterfaceInfoRequest>(),
+                        MessageType = NetlinkMessageType.RTM_GETLINK,
+                        Flags = NetlinkMessageFlags.NLM_F_REQUEST,
+                        SenderPortId = 0,
+                        SequenceNumber = 0,
+                    },
+                    Information = new InterfaceInfoMessage()
+                    {
+                        AddressFamily = NetlinkConstants.AF_NETLINK,
+                        InterfaceIndex = iface.Index,
+                    }
+                };
+                int numBytes = rtNetlinkSocket.Write(req);
+                Assert.AreEqual((int)req.Header.MessageLength, numBytes);
+
+                byte[] rxBuffer = new byte[8192];
+                numBytes = rtNetlinkSocket.Read(rxBuffer);
+                Assert.AreNotEqual(-1, numBytes, $"Errno: {LibcNativeMethods.Errno}");
+                Assert.Greater(numBytes, 0);
+            }
+        }
+
+        [Test]
+        public void RoutingNetlinkSocket_Read_Link_Info_BadInterfaceId_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
+            {
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+                var req = new NetworkInterfaceInfoRequest()
+                {
+                    Header = new NetlinkMessageHeader()
+                    {
+                        MessageLength = (uint)Marshal.SizeOf<NetworkInterfaceInfoRequest>(),
+                        MessageType = NetlinkMessageType.RTM_GETLINK,
+                        Flags = NetlinkMessageFlags.NLM_F_REQUEST,
+                        SenderPortId = 0,
+                        SequenceNumber = 0,
+                    },
+                    Information = new InterfaceInfoMessage()
+                    {
+                        AddressFamily = NetlinkConstants.AF_NETLINK,
+                        InterfaceIndex = int.MaxValue, // should be non-existent...
+                    }
+                };
+                int numBytes = rtNetlinkSocket.Write(req);
+                Assert.AreEqual((int)req.Header.MessageLength, numBytes);
+
+                byte[] rxBuffer = new byte[8192];
+                numBytes = rtNetlinkSocket.Read(rxBuffer);
+                Assert.AreNotEqual(-1, numBytes, $"Errno: {LibcNativeMethods.Errno}");
+                Assert.Greater(numBytes, 0);
+
+                byte[] headerData = rxBuffer.Take(NetlinkMessageMacros.NLMSG_HDRLEN).ToArray();
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(headerData);
+                Assert.AreEqual(NetlinkMessageType.NLMSG_ERROR, msgHeader.MessageType);
+            }
         }
     }
 }

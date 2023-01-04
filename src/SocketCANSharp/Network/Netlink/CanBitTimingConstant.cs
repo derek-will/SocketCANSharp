@@ -32,16 +32,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
-using System;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// CAN hardware-dependent bit timing constant. These values are used for calculating and checking bit timing parameters.
     /// </summary>
-    public struct CanBitTimingConstant
+    [StructLayout(LayoutKind.Sequential)]
+    public class CanBitTimingConstant
     {
         /// <summary>
         /// Name of the CAN controller hardware.

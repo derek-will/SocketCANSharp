@@ -33,13 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System.Text;
+using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// CAN clock parameters.
     /// </summary>
-    public struct CanClock
+    [StructLayout(LayoutKind.Sequential)]
+    public class CanClock
     {
         /// <summary>
         /// CAN system clock frequency in Hz.

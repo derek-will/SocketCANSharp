@@ -36,12 +36,13 @@ using System;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// Interface Link Statistics with 32 bit length parameters.
     /// </summary>
-    public struct InterfaceLinkStatistics
+    [StructLayout(LayoutKind.Sequential)]
+    public class InterfaceLinkStatistics
     {
         /// <summary>
         /// Number of good packets received by the interface. 

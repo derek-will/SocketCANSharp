@@ -33,13 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System.Text;
+using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// CAN Bus Error Counter Information.
     /// </summary>
-    public struct CanBusErrorCounter
+    [StructLayout(LayoutKind.Sequential)]
+    public class CanBusErrorCounter
     {
         /// <summary>
         /// Transmit Error Count.

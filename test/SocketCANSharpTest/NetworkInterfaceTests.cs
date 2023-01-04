@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using NUnit.Framework;
 using SocketCANSharp;
 using SocketCANSharp.Network;
+using SocketCANSharp.Network.Netlink;
 using System;
 using System.Linq;
 using System.Net.Sockets;
@@ -343,6 +344,129 @@ namespace SocketCANSharpTest
             };
             int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCanJ1939)));
             Assert.AreNotEqual(-1, bindResult);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_BitTiming_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            CanBitTiming bitTiming = iface.BitTiming;
+            Assert.IsNull(bitTiming);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_BitTimingConstant_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            CanBitTimingConstant bitTimingConstant = iface.BitTimingConstant;
+            Assert.IsNull(bitTimingConstant);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_OperationalStatus_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            InterfaceOperationalStatus opStatus = iface.OperationalStatus;
+            Assert.AreEqual(InterfaceOperationalStatus.IF_OPER_UNKNOWN, opStatus);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_LinkStatistics_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            InterfaceLinkStatistics64 linkStatistics64 = iface.LinkStatistics;
+            Assert.IsNotNull(linkStatistics64);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_LinkKind_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            string kind = iface.LinkKind;
+            Assert.AreEqual("vcan", kind);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_DeviceStatistics_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            CanDeviceStatistics stats = iface.DeviceStatistics;
+            Assert.IsNull(stats);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_DeviceType_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            ArpHardwareIdentifier hwId = iface.DeviceType;
+            Assert.AreEqual(ArpHardwareIdentifier.ARPHRD_CAN, hwId);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_DeviceFlags_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            NetDeviceFlags deviceFlags = iface.DeviceFlags;
+            Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_UP));
+            Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_RUNNING));
+            Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_NOARP));
+            Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_LOWER_UP));
         }
     }
 }

@@ -39,7 +39,8 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using SocketCANSharp;
-using SocketCANSharp.Netlink;
+using SocketCANSharp.Network;
+using SocketCANSharp.Network.Netlink;
 
 namespace CanNetlinkReader
 {
@@ -420,6 +421,27 @@ namespace CanNetlinkReader
                     }
                 }
             }
+
+            Console.WriteLine("+++++++++++++++++++++++++++++++");
+            Console.WriteLine("Testing Object-Oriented Code...");
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals(canInterfaceName));
+
+            if (iface == null)
+            {
+                Console.WriteLine($"Failed to find CAN interface {canInterfaceName}. Errno: {LibcNativeMethods.Errno}");
+                return;
+            }
+
+            Console.WriteLine($"Name:{Environment.NewLine}{iface.Name}");
+            Console.WriteLine($"DeviceType:{Environment.NewLine}{iface.DeviceType}");
+            Console.WriteLine($"DeviceFlags:{Environment.NewLine}{iface.DeviceFlags}");
+            Console.WriteLine($"LinkStats:{Environment.NewLine}{iface.LinkStatistics}");
+            Console.WriteLine($"OpStatus:{Environment.NewLine}{iface.OperationalStatus}");
+            Console.WriteLine($"LinkKind:{Environment.NewLine}{iface.LinkKind}");
+            Console.WriteLine($"DeviceStats:{Environment.NewLine}{iface.DeviceStatistics}");
+            Console.WriteLine($"BitTiming:{Environment.NewLine}{iface.BitTiming}");
+            Console.WriteLine($"BitTimingConstant:{Environment.NewLine}{iface.BitTimingConstant}");
         }
     }
 }

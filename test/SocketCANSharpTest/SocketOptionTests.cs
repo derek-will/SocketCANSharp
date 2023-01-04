@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
-using SocketCANSharp.Netlink;
+using SocketCANSharp.Network.Netlink;
 using System;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;

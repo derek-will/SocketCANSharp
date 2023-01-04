@@ -33,13 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System.Text;
+using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// CAN Controller Mode Information. 
     /// </summary>
-    public struct CanControllerMode
+    [StructLayout(LayoutKind.Sequential)]
+    public class CanControllerMode
     {
         /// <summary>
         /// Flag Mask.

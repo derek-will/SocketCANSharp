@@ -33,13 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System.Text;
+using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// Interface Map for setting hardware parameters.
     /// </summary>
-    public struct InterfaceMap
+    [StructLayout(LayoutKind.Sequential)]
+    public class InterfaceMap
     {
         /// <summary>
         /// Memory Address Start.

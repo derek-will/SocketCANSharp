@@ -37,7 +37,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// Netlink Utilities.
@@ -182,6 +182,223 @@ namespace SocketCANSharp.Netlink
             {
                 Marshal.FreeHGlobal(ptr);
             }
+        }
+
+        /// <summary>
+        /// Retrieves the requested Interface Information Message.
+        /// </summary>
+        /// <param name="interfaceIndex">Interface Index</param>
+        /// <param name="rxBuffer">Receive Buffer</param>
+        /// <returns>Requested Interface Information Message, if found; otherwise, null.</returns>
+        public static InterfaceInfoMessage? FindInterfaceInfoMessage(int interfaceIndex, byte[] rxBuffer)
+        {
+            int offset = 0;
+            int numBytes = rxBuffer.Length;
+            while (numBytes > 0)
+            {
+                byte[] headerData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_HDRLEN).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_HDRLEN;
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(headerData);  
+
+                if (NetlinkMessageMacros.NLMSG_OK(msgHeader, numBytes) == false)
+                    break;
+
+                numBytes -= (int)msgHeader.MessageLength;
+
+                if (msgHeader.MessageType != NetlinkMessageType.RTM_NEWLINK)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0);
+                    continue;
+                }
+
+                byte[] ifiData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0)).ToArray();
+                InterfaceInfoMessage msg = InterfaceInfoMessage.FromBytes(ifiData);
+
+                if (msg.InterfaceIndex != interfaceIndex)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0);
+                    continue;
+                }
+
+                return msg;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the requested CAN Routing Attribute.
+        /// </summary>
+        /// <param name="interfaceIndex">Interface Index</param>
+        /// <param name="rxBuffer">Receive Buffer</param>
+        /// <param name="type">Requested CAN Routing Attribute</param>
+        /// <returns>Requested CAN Routing Attribute, if found; otherwise, null.</returns>
+        public static CanRoutingAttribute FindNestedCanRoutingAttribute(int interfaceIndex, byte[] rxBuffer, CanRoutingAttributeType type)
+        {
+            int offset = 0;
+            int numBytes = rxBuffer.Length;
+            while (numBytes > 0)
+            {
+                byte[] headerData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_HDRLEN).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_HDRLEN;
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(headerData);  
+
+                if (NetlinkMessageMacros.NLMSG_OK(msgHeader, numBytes) == false)
+                    break;
+
+                numBytes -= (int)msgHeader.MessageLength;
+
+                if (msgHeader.MessageType != NetlinkMessageType.RTM_NEWLINK)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0);
+                    continue;
+                }
+
+                byte[] ifiData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0)).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_ALIGN(Marshal.SizeOf<InterfaceInfoMessage>());
+                InterfaceInfoMessage interfaceInfo = InterfaceInfoMessage.FromBytes(ifiData);
+
+                if (interfaceInfo.InterfaceIndex != interfaceIndex)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, Marshal.SizeOf<InterfaceInfoMessage>());
+                    continue;
+                }
+
+                List<InterfaceLinkAttribute> iflaList = NetlinkUtils.ParseInterfaceLinkAttributes(rxBuffer, ref offset);
+                InterfaceLinkAttribute linkInfo = iflaList.FirstOrDefault(ifla => ifla.Type == InterfaceLinkAttributeType.IFLA_LINKINFO);
+                if (linkInfo != null)
+                {
+                    List<LinkInfoAttribute> liaList = NetlinkUtils.ParseNestedLinkInfoAttributes(linkInfo.Data);
+                    LinkInfoAttribute infoData = liaList.FirstOrDefault(lia => lia.Type == LinkInfoAttributeType.IFLA_INFO_DATA);
+                    if (infoData != null)
+                    {
+                        List<CanRoutingAttribute> craList = NetlinkUtils.ParseNestedCanRoutingAttributes(infoData.Data);
+                        return craList.FirstOrDefault(cra => cra.Type == type);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the requested Link Information Attribute.
+        /// </summary>
+        /// <param name="interfaceIndex">Interface Index</param>
+        /// <param name="rxBuffer">Receive Buffer</param>
+        /// <param name="type">Requested Link Information Attribute</param>
+        /// <returns>Requested Link Information Attribute, if found; otherwise, null.</returns>
+        public static LinkInfoAttribute FindNestedLinkInfoAttribute(int interfaceIndex, byte[] rxBuffer, LinkInfoAttributeType type)
+        {
+            int offset = 0;
+            int numBytes = rxBuffer.Length;
+            while (numBytes > 0)
+            {
+                byte[] headerData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_HDRLEN).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_HDRLEN;
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(headerData);  
+
+                if (NetlinkMessageMacros.NLMSG_OK(msgHeader, numBytes) == false)
+                    break;
+
+                numBytes -= (int)msgHeader.MessageLength;
+
+                if (msgHeader.MessageType != NetlinkMessageType.RTM_NEWLINK)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0);
+                    continue;
+                }
+
+                byte[] ifiData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0)).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_ALIGN(Marshal.SizeOf<InterfaceInfoMessage>());
+                InterfaceInfoMessage interfaceInfo = InterfaceInfoMessage.FromBytes(ifiData);
+
+                if (interfaceInfo.InterfaceIndex != interfaceIndex)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, Marshal.SizeOf<InterfaceInfoMessage>());
+                    continue;
+                }
+
+                List<InterfaceLinkAttribute> iflaList = NetlinkUtils.ParseInterfaceLinkAttributes(rxBuffer, ref offset);
+                InterfaceLinkAttribute linkInfo = iflaList.FirstOrDefault(ifla => ifla.Type == InterfaceLinkAttributeType.IFLA_LINKINFO);
+                if (linkInfo != null)
+                {
+                    List<LinkInfoAttribute> liaList = NetlinkUtils.ParseNestedLinkInfoAttributes(linkInfo.Data);
+                    return liaList.FirstOrDefault(lia => lia.Type == type);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the requested Interface Link Attribute.
+        /// </summary>
+        /// <param name="interfaceIndex">Interface Index</param>
+        /// <param name="rxBuffer">Receive Buffer</param>
+        /// <param name="type">Requested Interface Link Attribute</param>
+        /// <returns>Requested Interface Link Attribute, if found; otherwise, null.</returns>
+        public static InterfaceLinkAttribute FindInterfaceLinkAttribute(int interfaceIndex, byte[] rxBuffer, InterfaceLinkAttributeType type)
+        {
+            int offset = 0;
+            int numBytes = rxBuffer.Length;
+            while (numBytes > 0)
+            {
+                byte[] headerData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_HDRLEN).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_HDRLEN;
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(headerData);  
+
+                if (NetlinkMessageMacros.NLMSG_OK(msgHeader, numBytes) == false)
+                    break;
+
+                numBytes -= (int)msgHeader.MessageLength;
+
+                if (msgHeader.MessageType != NetlinkMessageType.RTM_NEWLINK)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0);
+                    continue;
+                }
+
+                byte[] ifiData = rxBuffer.Skip(offset).Take(NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0)).ToArray();
+                offset += NetlinkMessageMacros.NLMSG_ALIGN(Marshal.SizeOf<InterfaceInfoMessage>());
+                InterfaceInfoMessage interfaceInfo = InterfaceInfoMessage.FromBytes(ifiData);
+
+                if (interfaceInfo.InterfaceIndex != interfaceIndex)
+                {
+                    offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, Marshal.SizeOf<InterfaceInfoMessage>());
+                    continue;
+                }
+
+                List<InterfaceLinkAttribute> iflaList = NetlinkUtils.ParseInterfaceLinkAttributes(rxBuffer, ref offset);
+                return iflaList.FirstOrDefault(ifla => ifla.Type == type);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Generates a Network Interface Information Request Message for the Interface specified by the Index number.
+        /// </summary>
+        /// <param name="index">Interface Index</param>
+        /// <returns>Network Interface Request Message for the Interface specified by the Index number.</returns>
+        public static NetworkInterfaceInfoRequest GenerateRequestForLinkInfoByIndex(int index)
+        {
+            return new NetworkInterfaceInfoRequest()
+            {
+                Header = new NetlinkMessageHeader()
+                {
+                    MessageLength = (uint)Marshal.SizeOf<NetworkInterfaceInfoRequest>(),
+                    MessageType = NetlinkMessageType.RTM_GETLINK,
+                    Flags = NetlinkMessageFlags.NLM_F_REQUEST,
+                    SenderPortId = 0,
+                    SequenceNumber = 0,
+                },
+                Information = new InterfaceInfoMessage()
+                {
+                    AddressFamily = NetlinkConstants.AF_NETLINK,
+                    InterfaceIndex = index,
+                }
+            };
         }
     }
 }

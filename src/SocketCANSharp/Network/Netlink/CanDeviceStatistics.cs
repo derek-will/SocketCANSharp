@@ -33,13 +33,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System.Text;
+using System.Runtime.InteropServices;
 
-namespace SocketCANSharp.Netlink
+namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
     /// CAN Device Statistics.
     /// </summary>
-    public struct CanDeviceStatistics
+    [StructLayout(LayoutKind.Sequential)]
+    public class CanDeviceStatistics
     {
         /// <summary>
         /// Bus errors.
