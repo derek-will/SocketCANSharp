@@ -442,6 +442,7 @@ namespace CanNetlinkReader
             Console.WriteLine($"DeviceStats:{Environment.NewLine}{iface.DeviceStatistics}");
             Console.WriteLine($"BitTiming:{Environment.NewLine}{iface.BitTiming}");
             Console.WriteLine($"BitTimingConstant:{Environment.NewLine}{iface.BitTimingConstant}");
+            Console.WriteLine($"MaximumTransmissionUnit:{Environment.NewLine}{iface.MaximumTransmissionUnit}");
         }
     }
 }

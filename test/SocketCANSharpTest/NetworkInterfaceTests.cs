@@ -108,8 +108,9 @@ namespace SocketCANSharpTest
 
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
             Assert.IsFalse(socketHandle.IsInvalid);
-
+#pragma warning disable 0618
             int mtu = iface.ReadSupportedMtu(socketHandle);
+#pragma warning restore 0618
             Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU)); // some devices may support CAN FD while other may support Classic CAN only
         }
 
@@ -127,8 +128,9 @@ namespace SocketCANSharpTest
 
             socketHandle.Close();
             Assert.IsTrue(socketHandle.IsInvalid);
-
+#pragma warning disable 0618
             Assert.Throws<ArgumentException>(() => iface.ReadSupportedMtu(socketHandle));
+#pragma warning restore 0618
         }
 
         [Test]
@@ -139,8 +141,9 @@ namespace SocketCANSharpTest
 
             var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
             Assert.IsNotNull(iface);
-
+#pragma warning disable 0618
             Assert.Throws<ArgumentNullException>(() => iface.ReadSupportedMtu(null));
+#pragma warning restore 0618
         }
 
         [Test]
@@ -467,6 +470,22 @@ namespace SocketCANSharpTest
             Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_RUNNING));
             Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_NOARP));
             Assert.IsTrue(deviceFlags.HasFlag(NetDeviceFlags.IFF_LOWER_UP));
+        }
+
+        [Test]
+        public void CanNetworkInterface_Get_MaximumTransmissionUnit_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            uint? mtu = iface.MaximumTransmissionUnit;
+            Assert.IsTrue(mtu.HasValue);
+            Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU)); // some devices may support CAN FD while other may support Classic CAN only
         }
     }
 }

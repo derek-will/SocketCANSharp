@@ -136,6 +136,18 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// Maximum Transmission Unit (MTU) of the interface.
+        /// </summary>
+        public uint? MaximumTransmissionUnit
+        {
+            get
+            {
+                InterfaceLinkAttribute mtuAttr = GetInterfaceLinkAttribute(InterfaceLinkAttributeType.IFLA_MTU);
+                return mtuAttr == null ? (uint?)null : BitConverter.ToUInt32(mtuAttr.Data, 0);
+            }
+        }
+
+        /// <summary>
         /// Link Kind (i.e., can or vcan).
         /// </summary>
         public string LinkKind
@@ -279,6 +291,7 @@ namespace SocketCANSharp.Network
         /// <param name="socketHandle">Socket Handle</param>
         /// <returns>Maximum Transmission Unit of the interface.</returns>
         /// <exception cref="NetworkInformationException">Unable to retreive MTU size information for the interface.</exception>
+        [Obsolete("ReadSupportedMtu method is deprecated, please use MaximumTransmissionUnit property instead.")]
         public int ReadSupportedMtu(SafeFileDescriptorHandle socketHandle)
         {
             if (socketHandle == null)

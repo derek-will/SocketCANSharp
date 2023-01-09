@@ -658,7 +658,7 @@ namespace SocketCANSharpTest
 
             using (var rawCanSocket = new RawCanSocket())
             {
-                Assume.That(iface.ReadSupportedMtu(rawCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 rawCanSocket.EnableCanFdFrames = true;
                 rawCanSocket.Bind(iface);
                 int bytesWritten = rawCanSocket.Write(new CanFdFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }, CanFdFlags.CANFD_BRS));
@@ -679,7 +679,7 @@ namespace SocketCANSharpTest
             using (var senderSocket = new RawCanSocket())
             using (var receiverSocket = new RawCanSocket())
             {
-                Assume.That(iface.ReadSupportedMtu(senderSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 senderSocket.EnableCanFdFrames = true;
                 receiverSocket.EnableCanFdFrames = true;
                 senderSocket.Bind(iface);
@@ -708,7 +708,7 @@ namespace SocketCANSharpTest
 
             using (var rawCanSocket = new RawCanSocket())
             {
-                Assume.That(iface.ReadSupportedMtu(rawCanSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 rawCanSocket.Bind(iface);
                 SocketCanException ex = Assert.Throws<SocketCanException>(() => rawCanSocket.Write(new CanFdFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }, CanFdFlags.CANFD_BRS)));
                 Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
@@ -729,7 +729,7 @@ namespace SocketCANSharpTest
             using (var senderSocket = new RawCanSocket())
             using (var receiverSocket = new RawCanSocket())
             {
-                Assume.That(iface.ReadSupportedMtu(senderSocket.SafeHandle), Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
                 senderSocket.EnableCanFdFrames = true;
                 receiverSocket.ReceiveTimeout = 100;
                 senderSocket.Bind(iface);
