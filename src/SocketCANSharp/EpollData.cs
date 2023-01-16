@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -63,5 +64,19 @@ namespace SocketCANSharp
         /// </summary>
         [FieldOffset(0)]
         public ulong Unsigned64BitNumber;
+
+        /// <summary>
+        /// Returns a string that represents the current EpollData object.
+        /// </summary>
+        /// <returns>A string that represents the current EpollData object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Pointer: " + (IntPtr.Size == 4 ? $"0x{Pointer:X8}" : $"0x{Pointer:X16}"));
+            stringBuilder.AppendLine($"FileDescriptor: 0x{FileDescriptor:X8}");
+            stringBuilder.AppendLine($"Unsigned32BitNumber: 0x{Unsigned32BitNumber:X8}");
+            stringBuilder.Append($"Unsigned64BitNumber: 0x{Unsigned64BitNumber:X16}");
+            return stringBuilder.ToString();
+        }
     }
 }

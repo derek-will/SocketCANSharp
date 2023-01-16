@@ -33,6 +33,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Linq;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -113,6 +115,19 @@ namespace SocketCANSharp
             {
                 Data[i] = data[i];
             }
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current CanFdFrame object.
+        /// </summary>
+        /// <returns>A string that represents the current CanFdFrame object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"CAN FD Flags: {Flags.ToString()}");
+            stringBuilder.AppendLine($"CAN ID Flags: EFF: {((uint)CanIdFlags.CAN_EFF_FLAG & CanId) != 0}, RTR: {((uint)CanIdFlags.CAN_RTR_FLAG & CanId) != 0}, ERR: {((uint)CanIdFlags.CAN_ERR_FLAG & CanId) != 0}");
+            stringBuilder.Append($"CAN Data: 0x{SocketCanConstants.CAN_EFF_MASK & CanId:X} [{Length:D2}] {BitConverter.ToString(Data.Take(Length).ToArray()).Replace("-", " ")}");
+            return stringBuilder.ToString();
         }
     }
 }

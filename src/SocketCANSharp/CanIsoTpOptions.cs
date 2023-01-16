@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -67,5 +68,21 @@ namespace SocketCANSharp
         /// Extended Addressing to expect when receiving ISO-TP messages.
         /// </summary>
         public byte RxExtendedAddress { get; set; }
+
+        /// <summary>
+        /// Returns a string that represents the current CanIsoTpOptions object.
+        /// </summary>
+        /// <returns>A string that represents the current CanIsoTpOptions object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Flags: {Flags}");
+            stringBuilder.AppendLine($"FrameTxTime: {FrameTxTime} ns");
+            stringBuilder.AppendLine($"ExtendedAddress: 0x{ExtendedAddress:X2}");
+            stringBuilder.AppendLine($"TxPadByte: 0x{TxPadByte:X2}");
+            stringBuilder.AppendLine($"RxPadByte: 0x{RxPadByte:X2}");
+            stringBuilder.Append($"RxExtendedAddress: 0x{RxExtendedAddress:X2}");
+            return stringBuilder.ToString();
+        }
     }
 }

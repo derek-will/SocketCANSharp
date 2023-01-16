@@ -72,5 +72,14 @@ namespace SocketCANSharp
             Name = string.Empty;
             IfIndex = index;
         }
+
+        /// <summary>
+        /// Returns a string that represents the current Ifreq object.
+        /// </summary>
+        /// <returns>A string that represents the current Ifreq object.</returns>
+        public override string ToString()
+        {
+            return $"Name: {Name}; IfIndex: {IfIndex}";
+        }
     }
 }

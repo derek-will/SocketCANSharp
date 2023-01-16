@@ -98,5 +98,14 @@ namespace SocketCANSharp
             TxDataLength = txDataLength;
             TxFlags = txFlags;
         }
+
+        /// <summary>
+        /// Returns a string that represents the current CanIsoTpLinkLayerOptions object.
+        /// </summary>
+        /// <returns>A string that represents the current CanIsoTpLinkLayerOptions object.</returns>
+        public override string ToString()
+        {
+            return $"MTU: {Mtu}, TxDataLength: {TxDataLength}, CAN FD Transmit Flags: {TxFlags}";
+        }
     }
 }

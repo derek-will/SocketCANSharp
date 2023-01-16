@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -51,5 +53,17 @@ namespace SocketCANSharp
         /// User data - The data that the kernel should save and then return (via epoll_wait) when this file descriptor becomes ready.
         /// </summary>
         public EpollData Data { get; set; }
+
+        /// <summary>
+        /// Returns a string that represents the current EpollEvent object.
+        /// </summary>
+        /// <returns>A string that represents the current EpollEvent object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Events: {Events}");
+            stringBuilder.Append($"Data:{Environment.NewLine}{Data}");
+            return stringBuilder.ToString();
+        }
     }
 }

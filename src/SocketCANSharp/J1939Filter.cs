@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -42,29 +43,45 @@ namespace SocketCANSharp
    [StructLayout(LayoutKind.Sequential)]
    public struct J1939Filter
    {
-      /// <summary>
-      /// NAME value to match against after applying the NAME Mask.
-      /// </summary>
-      public ulong Name { get; set;}
-      /// <summary>
-      /// Mask to apply to the NAME.
-      /// </summary>
-      public ulong NameMask { get; set; }
-      /// <summary>
-      /// Parameter Group Number (PGN) to match against after applying the PGN Mask.
-      /// </summary>
-      public uint PGN { get; set; }
-      /// <summary>
-      /// Mask to apply to the PGN.
-      /// </summary>
-      public uint PGNMask { get; set; }
-      /// <summary>
-      /// Address value to match against after applying the Address Mask.
-      /// </summary>
-      public byte Address { get; set; }
-      /// <summary>
-      /// Mask to apply to the Address.
-      /// </summary>
-      public byte AddressMask { get; set; }
+        /// <summary>
+        /// NAME value to match against after applying the NAME Mask.
+        /// </summary>
+        public ulong Name { get; set;}
+        /// <summary>
+        /// Mask to apply to the NAME.
+        /// </summary>
+        public ulong NameMask { get; set; }
+        /// <summary>
+        /// Parameter Group Number (PGN) to match against after applying the PGN Mask.
+        /// </summary>
+        public uint PGN { get; set; }
+        /// <summary>
+        /// Mask to apply to the PGN.
+        /// </summary>
+        public uint PGNMask { get; set; }
+        /// <summary>
+        /// Address value to match against after applying the Address Mask.
+        /// </summary>
+        public byte Address { get; set; }
+        /// <summary>
+        /// Mask to apply to the Address.
+        /// </summary>
+        public byte AddressMask { get; set; }
+
+        /// <summary>
+        /// Returns a string that represents the current J1939Filter object.
+        /// </summary>
+        /// <returns>A string that represents the current J1939Filter object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Name: 0x{Name:X16}");
+            stringBuilder.AppendLine($"NameMask: 0x{NameMask:X16}");
+            stringBuilder.AppendLine($"PGN: 0x{PGN:X8}");
+            stringBuilder.AppendLine($"PGNMask: 0x{PGNMask:X8}");
+            stringBuilder.AppendLine($"Address: 0x{Address:X2}");
+            stringBuilder.Append($"AddressMask: 0x{AddressMask:X2}");
+            return stringBuilder.ToString();
+        }
    }
 }

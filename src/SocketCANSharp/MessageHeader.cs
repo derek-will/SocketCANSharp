@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -77,5 +78,22 @@ namespace SocketCANSharp
         /// Message Flags.
         /// </summary>
         public MessageFlags Flags { get; set; }
+
+        /// <summary>
+        /// Returns a string that represents the current MessageHeader object.
+        /// </summary>
+        /// <returns>A string that represents the current MessageHeader object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Name: " + (IntPtr.Size == 4 ? $"0x{Name:X8}" : $"0x{Name:X16}"));
+            stringBuilder.AppendLine($"NameLength: {NameLength}");
+            stringBuilder.AppendLine($"IoVectors: " + (IntPtr.Size == 4 ? $"0x{IoVectors:X8}" : $"0x{IoVectors:X16}"));
+            stringBuilder.AppendLine($"IoVectorCount: {IoVectorCount}");
+            stringBuilder.AppendLine($"ControlMessage: " + (IntPtr.Size == 4 ? $"0x{ControlMessage:X8}" : $"0x{ControlMessage:X16}"));
+            stringBuilder.AppendLine($"ControlMessageLength: {ControlMessageLength}");
+            stringBuilder.Append($"Flags: {Flags}");
+            return stringBuilder.ToString();
+        }
     }
 }

@@ -95,5 +95,14 @@ namespace SocketCANSharp
             RxId = 0;
             TxId = 0;   
         }
+
+        /// <summary>
+        /// Returns a string that represents the current SockAddrCanIsoTp object.
+        /// </summary>
+        /// <returns>A string that represents the current SockAddrCanIsoTp object.</returns>
+        public override string ToString()
+        {
+            return $"Address Family: {CanFamily}; Interface Index: {CanIfIndex}; RxId: 0x{RxId:X}; TxId: 0x{TxId:X}";
+        }
     }
 }

@@ -72,5 +72,14 @@ namespace SocketCANSharp
         public SockAddrCanJ1939(int interfaceIndex) : base(interfaceIndex)
         {         
         }
+
+        /// <summary>
+        /// Returns a string that represents the current SockAddrCanJ1939 object.
+        /// </summary>
+        /// <returns>A string that represents the current SockAddrCanJ1939 object.</returns>
+        public override string ToString()
+        {
+            return $"Address Family: {CanFamily}; Interface Index: {CanIfIndex}; Name: 0x{Name:X16}; PGN: 0x{PGN:X8}; Address: 0x{Address:X2}";
+        }
     }
 }

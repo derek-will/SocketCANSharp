@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace SocketCANSharp
@@ -98,6 +99,23 @@ namespace SocketCANSharp
             Interval1 = new BcmTimeval(0, 0);
             Interval2 = new BcmTimeval(0, 0);
             CanId = 0x00;     
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current BcmMessageHeader object.
+        /// </summary>
+        /// <returns>A string that represents the current BcmMessageHeader object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"OperationalCode: {Opcode}");
+            stringBuilder.AppendLine($"NumberOfFrames: {NumberOfFrames}");
+            stringBuilder.AppendLine($"Flags: {Flags}");
+            stringBuilder.AppendLine($"Interval1Count: {Interval1Count}");
+            stringBuilder.AppendLine($"Interval1: [{Interval1}]");
+            stringBuilder.AppendLine($"Interval2: [{Interval2}]");
+            stringBuilder.Append($"CAN ID: 0x{CanId:X}");
+            return stringBuilder.ToString();
         }
     }
 }

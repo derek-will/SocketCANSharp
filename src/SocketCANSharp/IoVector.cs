@@ -51,5 +51,14 @@ namespace SocketCANSharp
         /// Size of the storage area in bytes.
         /// </summary>
         public IntPtr Length { get; set; }
+
+        /// <summary>
+        /// Returns a string that represents the current IoVector object.
+        /// </summary>
+        /// <returns>A string that represents the current IoVector object.</returns>
+        public override string ToString()
+        {
+            return $"Base: " + (IntPtr.Size == 4 ? $"0x{Base:X8}" : $"0x{Base:X16}") +  $", Length: {Length}";
+        }
     }
 }

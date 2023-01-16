@@ -89,5 +89,14 @@ namespace SocketCANSharp
             Seconds = seconds;
             Microseconds = microseconds;
         }
+
+        /// <summary>
+        /// Returns a string that represents the current BcmTimeval object.
+        /// </summary>
+        /// <returns>A string that represents the current BcmTimeval object.</returns>
+        public override string ToString()
+        {
+            return $"Seconds: {Seconds}; Microseconds: {Microseconds}";
+        }
     }
 }

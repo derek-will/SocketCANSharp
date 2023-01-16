@@ -61,5 +61,14 @@ namespace SocketCANSharp
             CanId = canId;
             CanMask = canMask;
         }
+
+        /// <summary>
+        /// Returns a string that represents the current CanFilter object.
+        /// </summary>
+        /// <returns>A string that represents the current CanFilter object.</returns>
+        public override string ToString()
+        {
+            return $"CAN ID: 0x{CanId:X}; Mask: 0x{CanMask:X}";
+        }
     }
 }

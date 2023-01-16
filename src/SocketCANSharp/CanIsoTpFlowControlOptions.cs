@@ -83,5 +83,14 @@ namespace SocketCANSharp
             Stmin = stmin;
             WftMax = wftMax;
         }
+
+        /// <summary>
+        /// Returns a string that represents the current CanIsoTpFlowControlOptions object.
+        /// </summary>
+        /// <returns>A string that represents the current CanIsoTpFlowControlOptions object.</returns>
+        public override string ToString()
+        {
+            return $"BlockSize: {BlockSize}, STmin: 0x{Stmin:X2}, WFTmax: {WftMax}";
+        }
     }
 }

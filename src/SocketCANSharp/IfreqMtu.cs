@@ -62,5 +62,14 @@ namespace SocketCANSharp
             Name = name;
             MTU = 0;
         }
+
+        /// <summary>
+        /// Returns a string that represents the current IfreqMtu object.
+        /// </summary>
+        /// <returns>A string that represents the current IfreqMtu object.</returns>
+        public override string ToString()
+        {
+            return $"Name: {Name}; MTU: {MTU}";
+        }
     }
 }
