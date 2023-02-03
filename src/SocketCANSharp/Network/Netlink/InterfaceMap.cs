@@ -90,7 +90,7 @@ namespace SocketCANSharp.Network.Netlink
             stringBuilder.AppendLine($"Base Address: 0x{BaseAddress:X8}");
             stringBuilder.AppendLine($"IRQ Number: {IRQ}");
             stringBuilder.AppendLine($"DMA Channel: {DMA}");
-            stringBuilder.AppendLine($"Port: {IRQ}");
+            stringBuilder.AppendLine($"Port: {Port}");
             return stringBuilder.ToString();
         }
     }
