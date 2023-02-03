@@ -282,7 +282,7 @@ namespace SocketCANSharpTest
             Assert.AreEqual(ushort.MaxValue, epollEvent.Data.Unsigned64BitNumber);
             Assert.AreEqual(ushort.MaxValue, epollEvent.Data.FileDescriptor);
             Assert.AreEqual(new IntPtr(ushort.MaxValue), epollEvent.Data.Pointer);
-            Assert.AreEqual(Environment.Is64BitProcess ? 16 : 12, Marshal.SizeOf<EpollEvent>());
+            Assert.AreEqual(16, Marshal.SizeOf<EpollEvent>());
         }
 
         [Test]
@@ -392,7 +392,7 @@ namespace SocketCANSharpTest
             Assert.AreEqual(0xFFFF, j1939Filter.PGNMask);
             Assert.AreEqual(0xF1, j1939Filter.Address);
             Assert.AreEqual(0xF1, j1939Filter.AddressMask);
-            Assert.AreEqual(Environment.Is64BitProcess ? 32 : 28, Marshal.SizeOf<J1939Filter>());
+            Assert.AreEqual(32, Marshal.SizeOf<J1939Filter>());
         }
 
         [Test]
@@ -576,7 +576,7 @@ namespace SocketCANSharpTest
             Assert.AreEqual(3, header.Interval2.Seconds);
             Assert.AreEqual(250000, header.Interval2.Microseconds);
             Assert.AreEqual(0x1F, header.CanId);
-            Assert.AreEqual(Environment.Is64BitProcess ? 56 : 40, Marshal.SizeOf<BcmMessageHeader>());
+            Assert.AreEqual(Environment.Is64BitProcess ? 56 : 36, Marshal.SizeOf<BcmMessageHeader>());
         }
 
         [Test]
