@@ -175,8 +175,33 @@ namespace SocketCANSharp.Network.Netlink
             try
             {
                 ptr = Marshal.AllocHGlobal(size);
-                Marshal.Copy(data, 0, ptr, size);
+                int copyLength = data.Length < size ? data.Length : size;
+                Marshal.Copy(data, 0, ptr, copyLength);
                 return Marshal.PtrToStructure<T>(ptr);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
+        }
+
+        /// <summary>
+        /// Converts a managed object of the type specified by the generic type parameter into a raw byte array.
+        /// </summary>
+        /// <typeparam name="T">Object Type</typeparam>
+        /// <param name="obj">Managed Object Instance</param>
+        /// <returns>A raw byte array that corresponds to the managed object instance.</returns>
+        public static byte[] ToBytes<T>(T obj)
+        {
+            int size = Marshal.SizeOf<T>();
+            byte[] data = new byte[size];
+            IntPtr ptr = IntPtr.Zero;
+            try
+            {
+                ptr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr<T>(obj, ptr, false);
+                Marshal.Copy(ptr, data, 0, size);
+                return data;
             }
             finally
             {

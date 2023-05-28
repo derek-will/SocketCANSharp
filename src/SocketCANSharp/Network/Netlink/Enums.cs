@@ -84,6 +84,18 @@ namespace SocketCANSharp.Network.Netlink
         /// Set information on a network interface.
         /// </summary>
 	    RTM_SETLINK     = 19,
+        /// <summary>
+        /// Create a network route.
+        /// </summary>
+        RTM_NEWROUTE    = 24,
+        /// <summary>
+        /// Remove a network route.
+        /// </summary>
+	    RTM_DELROUTE    = 25,
+        /// <summary>
+        /// Receive information about a network route.
+        /// </summary>
+	    RTM_GETROUTE    = 26,
     }
 
     /// <summary>
@@ -96,6 +108,14 @@ namespace SocketCANSharp.Network.Netlink
         /// Message is a Request Message.
         /// </summary>
         NLM_F_REQUEST   = 0x0001,
+        /// <summary>
+        /// Multi-part message which shall be terminated by a NLMSG_DONE message.
+        /// </summary>
+        NLM_F_MULTI     = 0X0002,
+        /// <summary>
+        /// Request an acknowledgement from the receiver.
+        /// </summary>
+        NLM_F_ACK       = 0x0004,
         /// <summary>
         /// Get Tree Root of Network Interfaces.
         /// </summary>
