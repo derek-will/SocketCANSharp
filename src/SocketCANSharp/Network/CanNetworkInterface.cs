@@ -112,6 +112,30 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// Bitrate of the CAN Network Interface (during Arbitration Phase).
+        /// </summary>
+        public uint? BitrateConstant
+        {
+            get
+            {
+                CanRoutingAttribute bitrateConst = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_BITRATE_CONST);
+                return bitrateConst == null ? (uint?)null : BitConverter.ToUInt32(bitrateConst.Data, 0);
+            }
+        }
+
+        /// <summary>
+        /// Bitrate of the CAN Network Interface during Data Phase.
+        /// </summary>
+        public uint? DataPhaseBitrateConstant
+        {
+            get
+            {
+                CanRoutingAttribute dataBitrateConst = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_DATA_BITRATE_CONST);
+                return dataBitrateConst == null ? (uint?)null : BitConverter.ToUInt32(dataBitrateConst.Data, 0);
+            }
+        }
+
+        /// <summary>
         /// Operational Status of the Interface (RFC2863 State).
         /// </summary>
         public InterfaceOperationalStatus OperationalStatus

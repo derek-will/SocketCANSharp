@@ -408,6 +408,18 @@ namespace CanNetlinkReader
                                                                     Console.WriteLine($"CAN Bit Rate Maximum: {bitRateMax}");
                                                                     break;
                                                                 }
+                                                            case CanRoutingAttributeType.IFLA_CAN_BITRATE_CONST:
+                                                                {
+                                                                    uint bitrateConst = BitConverter.ToUInt32(cra.Data);
+                                                                    Console.WriteLine($"CAN (Arbitration Phase) Bitrate Constant: {bitrateConst}");
+                                                                    break;
+                                                                }
+                                                            case CanRoutingAttributeType.IFLA_CAN_DATA_BITRATE_CONST:
+                                                                {
+                                                                    uint dataBitrateConst = BitConverter.ToUInt32(cra.Data);
+                                                                    Console.WriteLine($"CAN Data Phase Bitrate Constant: {dataBitrateConst}");
+                                                                    break;
+                                                                }
                                                         }
                                                     }
 
@@ -442,6 +454,8 @@ namespace CanNetlinkReader
             Console.WriteLine($"DeviceStats:{Environment.NewLine}{iface.DeviceStatistics}");
             Console.WriteLine($"BitTiming:{Environment.NewLine}{iface.BitTiming}");
             Console.WriteLine($"BitTimingConstant:{Environment.NewLine}{iface.BitTimingConstant}");
+            Console.WriteLine($"BitrateConstant:{Environment.NewLine}{iface.BitrateConstant}");
+            Console.WriteLine($"DataPhaseBitrateConstant:{Environment.NewLine}{iface.DataPhaseBitrateConstant}");
             Console.WriteLine($"MaximumTransmissionUnit:{Environment.NewLine}{iface.MaximumTransmissionUnit}");
         }
     }
