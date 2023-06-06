@@ -753,7 +753,7 @@ namespace SocketCANSharpTest
             CanNetworkInterface dstInterface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan1");
             req.AddCanGatewayAttribute(new CanGatewayRoutingAttribute(CanGatewayAttributeType.CGW_SRC_IF, NetlinkUtils.ToBytes<uint>((uint)srcInterface.Index)));
             req.AddCanGatewayAttribute(new CanGatewayRoutingAttribute(CanGatewayAttributeType.CGW_DST_IF, NetlinkUtils.ToBytes<uint>((uint)dstInterface.Index)));
-            req.AddCanGatewayAttribute(new CanGatewayRoutingAttribute(CanGatewayAttributeType.CGW_LIM_HOPS, NetlinkUtils.ToBytes<byte>(2)));
+            req.AddCanGatewayAttribute(new CanGatewayRoutingAttribute(CanGatewayAttributeType.CGW_LIM_HOPS, NetlinkUtils.ToBytes<byte>(1)));
             int numBytes = CanGatewayNativeMethods.Write(socketHandle, req, (int)req.Header.MessageLength);
             Assert.AreEqual((int)req.Header.MessageLength, numBytes);
 
