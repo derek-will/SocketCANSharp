@@ -61,6 +61,21 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         public byte InitialXorValue { get; set; }
 
         /// <summary>
+        /// Initializes a new instance of the CgwChecksumXor structure.
+        /// </summary>
+        /// <param name="fromIndex">Starting Index of CAN Frame for XOR Checksum Calculation.</param>
+        /// <param name="toIndex">Ending Index of CAN Frame for XOR Checksum Calculation.</param>
+        /// <param name="resultIndex">Index within CAN Frame to place the checksum result.</param>
+        /// <param name="initXorValue">Initial value to use in the calculation.</param>
+        public CgwChecksumXor(sbyte fromIndex, sbyte toIndex, sbyte resultIndex, byte initXorValue)
+        {
+            FromIndex = fromIndex;
+            ToIndex = toIndex;
+            ResultIndex = resultIndex;
+            InitialXorValue = initXorValue;
+        }
+
+        /// <summary>
         /// Returns a string that represents the current CgwChecksumXor object.
         /// </summary>
         /// <returns>A string that represents the current CgwChecksumXor object.</returns>

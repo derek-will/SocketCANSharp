@@ -32,47 +32,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
-using System.Text;
-using System.Runtime.InteropServices;
-
 namespace SocketCANSharp.Network.Netlink.Gateway
 {
     /// <summary>
-    /// CAN Gateway Classical CAN Frame Modification.
+    /// CGW CAN-to-CAN Routing Rule.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CgwCanFrameModification
+    public class CgwCanToCanRule : CgwBaseRule
     {
         /// <summary>
-        /// Classical CAN Frame.
+        /// Source CAN Network Interface Index.
         /// </summary>
-        public CanFrame CanFrame { get; set; }
+        public uint SourceIndex { get; set; }
         /// <summary>
-        /// Modification Type.
+        /// Destination CAN Network Interface Index.
         /// </summary>
-        public CanGatewayModificationType ModificationType { get; set; }
+        public uint DestinationIndex { get; set; }
+        /// <summary>
+        /// CAN Receive Filter on Source Interface.
+        /// </summary>
+        public CanFilter? ReceiveFilter { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the CgwCanFrameModification struct with the specified modification type and CAN Frame.
+        /// Initializes a new instance of the CgwCanToCanRule class.
         /// </summary>
-        /// <param name="type">Modification Type</param>
-        /// <param name="canFrame">CAN Frame</param>
-        public CgwCanFrameModification(CanGatewayModificationType type, CanFrame canFrame)
+        /// <param name="canFrameType">CAN Frame Type</param>
+        public CgwCanToCanRule(CgwCanFrameType canFrameType) : base(CanGatewayType.CGW_TYPE_CAN_CAN, canFrameType)
         {
-            ModificationType = type;
-            CanFrame = canFrame;
-        }
-
-        /// <summary>
-        /// Returns a string that represents the current CgwCanFrameModification object.
-        /// </summary>
-        /// <returns>A string that represents the current CgwCanFrameModification object.</returns>
-        public override string ToString()
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine(CanFrame.ToString());
-            stringBuilder.Append($"Modification Type: {ModificationType}");
-            return stringBuilder.ToString();
         }
     }
 }

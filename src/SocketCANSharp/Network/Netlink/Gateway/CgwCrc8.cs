@@ -44,6 +44,9 @@ namespace SocketCANSharp.Network.Netlink.Gateway
     [StructLayout(LayoutKind.Sequential)]
     public struct CgwCrc8
     {
+        private const int CRC_TABLE_SIZE = 256;
+        private const int CRC_PROFILE_DATA_SIZE = 20;
+
         /// <summary>
         /// From Index.
         /// </summary>
@@ -67,7 +70,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         /// <summary>
         /// CRC Table.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst=256)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=CRC_TABLE_SIZE)]
         public byte[] CrcTable;
         /// <summary>
         /// CRC Profile.
@@ -76,7 +79,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         /// <summary>
         /// CRC Profile Data.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst=20)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=CRC_PROFILE_DATA_SIZE)]
         public byte[] ProfileData;
 
         /// <summary>
@@ -95,6 +98,15 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             stringBuilder.AppendLine($"Profile: {Profile}");
             stringBuilder.Append($"Profile Data: {BitConverter.ToString(ProfileData)}");
             return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Determines if the structure is valid or not.
+        /// </summary>
+        /// <returns>True if the structure is valid.</returns>
+        public bool IsValid()
+        {
+            return CrcTable != null && CrcTable.Length == CRC_TABLE_SIZE && ProfileData != null && ProfileData.Length == CRC_PROFILE_DATA_SIZE && Enum.IsDefined(typeof(Crc8Profile), Profile) && Profile != Crc8Profile.CGW_CRC8PRF_UNSPEC;
         }
     }
 }

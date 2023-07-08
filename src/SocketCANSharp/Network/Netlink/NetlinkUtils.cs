@@ -425,5 +425,23 @@ namespace SocketCANSharp.Network.Netlink
                 }
             };
         }
+
+        /// <summary>
+        /// Peeks at the header using the provided buffer.
+        /// </summary>
+        /// <param name="buffer">Byte array which contains a Netlink message.</param>
+        /// <returns>Netlink Message Header object extracted from the buffer.</returns>
+        /// <exception cref="ArgumentNullException">Provided buffer is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Provided buffer is too small.</exception>
+        public static NetlinkMessageHeader PeekAtHeader(byte[] buffer)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException(nameof(buffer));
+
+            if (buffer.Length < Marshal.SizeOf<NetlinkMessageHeader>())
+                throw new ArgumentOutOfRangeException(nameof(buffer), "Buffer size must be at least 16 bytes to peek at header.");
+
+            return NetlinkMessageHeader.FromBytes(buffer);
+        }
     }
 }

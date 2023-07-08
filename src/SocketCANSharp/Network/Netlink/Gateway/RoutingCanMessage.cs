@@ -57,6 +57,18 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         public CanGatewayFlag GatewayFlags { get; set; }
 
         /// <summary>
+        /// Initializes a new instance of the RoutingCanMessage struct as CAN-to-CAN Gateway Type with the specified Gateway flags.
+        /// </summary>
+        /// <param name="gwType">Gateway Type</param>
+        /// <param name="gwFlags">Gateway Flags</param>
+        public RoutingCanMessage(CanGatewayType gwType, CanGatewayFlag gwFlags)
+        {
+            CanFamily = SocketCanConstants.AF_CAN;
+            GatewayType = gwType;
+            GatewayFlags = gwFlags;
+        }
+
+        /// <summary>
         /// Returns a string that represents the current RoutingCanMessage object.
         /// </summary>
         /// <returns>A string that represents the current RoutingCanMessage object.</returns>
@@ -77,6 +89,15 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         public static RoutingCanMessage FromBytes(byte[] data)
         {
             return NetlinkUtils.FromBytes<RoutingCanMessage>(data);
+        }
+        
+        /// <summary>
+        /// The unmanaged size, in bytes, of the Routing CAN Message.
+        /// </summary>
+        /// <returns>Unmanaged size of the Routing CAN Message in bytes.</returns>
+        public static int UnmanagedSize()
+        {
+            return Marshal.SizeOf<RoutingCanMessage>();
         }
     }
 }

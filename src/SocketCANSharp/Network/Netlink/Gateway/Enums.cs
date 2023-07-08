@@ -205,4 +205,41 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         CGW_CRC8PRF_SFFID_XOR,
     };
 
+    /// <summary>
+    /// CAN Gateway Operation.
+    /// </summary>
+    public enum CanGatewayOperation
+    {
+        /// <summary>
+        /// Add or update existing CGW rule.
+        /// </summary>
+        AddOrUpdate,
+        /// <summary>
+        /// Remove existing CGW rule.
+        /// </summary>
+        Remove,
+        /// <summary>
+        /// List CGW rules.
+        /// </summary>
+        List,
+        /// <summary>
+        /// Delete all CGW rules.
+        /// </summary>
+        RemoveAll,
+    }
+
+    /// <summary>
+    /// CAN Gateway CAN Frame Type.
+    /// </summary>
+    public enum CgwCanFrameType
+    {
+        /// <summary>
+        /// Classical CAN (2.0b) Frame Type.
+        /// </summary>
+        ClassicalCAN,
+        /// <summary>
+        /// CAN Flexible Data-Rate (FD) Frame Type.
+        /// </summary>
+        CANFD,
+    }
 }

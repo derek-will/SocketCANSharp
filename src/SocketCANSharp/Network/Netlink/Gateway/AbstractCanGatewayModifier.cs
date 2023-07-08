@@ -32,47 +32,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
-using System.Text;
-using System.Runtime.InteropServices;
-
 namespace SocketCANSharp.Network.Netlink.Gateway
 {
     /// <summary>
-    /// CAN Gateway Classical CAN Frame Modification.
+    /// CGW Modifier.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CgwCanFrameModification
+    public abstract class AbstractCanGatewayModifier
     {
         /// <summary>
-        /// Classical CAN Frame.
+        /// CGW Modification Target (CAN Identifier, CAN length field, CAN data, CAN flags).
         /// </summary>
-        public CanFrame CanFrame { get; set; }
-        /// <summary>
-        /// Modification Type.
-        /// </summary>
-        public CanGatewayModificationType ModificationType { get; set; }
+        public CanGatewayModificationType ModificationTarget { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the CgwCanFrameModification struct with the specified modification type and CAN Frame.
+        /// Base constructor provided by the AbstractCanGatewayModifier abstact class.
         /// </summary>
-        /// <param name="type">Modification Type</param>
-        /// <param name="canFrame">CAN Frame</param>
-        public CgwCanFrameModification(CanGatewayModificationType type, CanFrame canFrame)
+        /// <param name="target">Specifies target of the operation.</param>
+        public AbstractCanGatewayModifier(CanGatewayModificationType target)
         {
-            ModificationType = type;
-            CanFrame = canFrame;
-        }
-
-        /// <summary>
-        /// Returns a string that represents the current CgwCanFrameModification object.
-        /// </summary>
-        /// <returns>A string that represents the current CgwCanFrameModification object.</returns>
-        public override string ToString()
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine(CanFrame.ToString());
-            stringBuilder.Append($"Modification Type: {ModificationType}");
-            return stringBuilder.ToString();
+            ModificationTarget = target;
         }
     }
 }

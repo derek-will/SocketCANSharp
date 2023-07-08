@@ -32,47 +32,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
-using System.Text;
-using System.Runtime.InteropServices;
-
 namespace SocketCANSharp.Network.Netlink.Gateway
 {
     /// <summary>
-    /// CAN Gateway Classical CAN Frame Modification.
+    /// CGW CAN FD Modifier.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct CgwCanFrameModification
+    public class CanFdGatewayModifier : AbstractCanGatewayModifier
     {
         /// <summary>
-        /// Classical CAN Frame.
+        /// CAN FD Frame to utilize in modification operation.
         /// </summary>
-        public CanFrame CanFrame { get; set; }
-        /// <summary>
-        /// Modification Type.
-        /// </summary>
-        public CanGatewayModificationType ModificationType { get; set; }
+        public CanFdFrame CanFdFrame { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the CgwCanFrameModification struct with the specified modification type and CAN Frame.
+        /// Initializes a new instance of the CanFdGatewayModifier class.
         /// </summary>
-        /// <param name="type">Modification Type</param>
-        /// <param name="canFrame">CAN Frame</param>
-        public CgwCanFrameModification(CanGatewayModificationType type, CanFrame canFrame)
+        /// <param name="target">Specifies target of the operation.</param>
+        /// <param name="frame">CAN FD Frame to use in the modification operation.</param>
+        public CanFdGatewayModifier(CanGatewayModificationType target, CanFdFrame frame) : base (target)
         {
-            ModificationType = type;
-            CanFrame = canFrame;
-        }
-
-        /// <summary>
-        /// Returns a string that represents the current CgwCanFrameModification object.
-        /// </summary>
-        /// <returns>A string that represents the current CgwCanFrameModification object.</returns>
-        public override string ToString()
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine(CanFrame.ToString());
-            stringBuilder.Append($"Modification Type: {ModificationType}");
-            return stringBuilder.ToString();
+            CanFdFrame = frame;
         }
     }
 }

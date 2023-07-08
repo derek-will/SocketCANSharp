@@ -53,6 +53,17 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         public CanGatewayModificationType ModificationType { get; set; }
 
         /// <summary>
+        /// Initializes a new instance of the CgwCanFdFrameModification struct with the specified modification type and CAN FD Frame.
+        /// </summary>
+        /// <param name="type">Modification Type</param>
+        /// <param name="canFdFrame">CAN FD Frame</param>
+        public CgwCanFdFrameModification(CanGatewayModificationType type, CanFdFrame canFdFrame)
+        {
+            ModificationType = type;
+            CanFdFrame = canFdFrame;
+        }
+
+        /// <summary>
         /// Returns a string that represents the current CgwCanFdFrameModification object.
         /// </summary>
         /// <returns>A string that represents the current CgwCanFdFrameModification object.</returns>
