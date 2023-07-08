@@ -57,46 +57,22 @@ using (var j1939Socket = new J1939CanSocket())
 ## Broadcast Manager (BCM) Support
 
 ```cs
-using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Dgram, SocketCanProtocolType.CAN_BCM))
+CanNetworkInterface vcan0 = CanNetworkInterface.GetAllInterfaces(true).First(iface => iface.Name.Equals("vcan0"));
+
+using (var bcmCanSocket = new BcmCanSocket())
 {
-    var ifr = new Ifreq("vcan0");
-    int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
-
-    var addr = new SockAddrCan(ifr.IfIndex);
-    int connectResult = LibcNativeMethods.Connect(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
-
-    if (Environment.Is64BitProcess)
+    bcmCanSocket.Connect(vcan0);
+    var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+    var frames = new CanFrame[] { canFrame };
+    var config = new BcmCyclicTxTaskConfiguration()
     {
-        var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
-        var header = new BcmMessageHeader(BcmOpcode.TX_SETUP)
-        {
-            CanId = 0x333,
-            Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
-            Interval1Count = 10, // 10 messages
-            Interval1 = new BcmTimeval(0, 5000), // at 5 ms interval
-            Interval2 = new BcmTimeval(0, 100000), // then at 100 ms
-            NumberOfFrames = 1,
-        };
-
-        var bcmMessage = new BcmCanMessage(header, new CanFrame[] { canFrame });
-        int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
-    }
-    else // 32-bit process
-    {
-        var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
-        var header = new BcmMessageHeader32(BcmOpcode.TX_SETUP)
-        {
-            CanId = 0x333,
-            Flags = BcmFlags.SETTIMER | BcmFlags.STARTTIMER,
-            Interval1Count = 10, // 10 messages
-            Interval1 = new BcmTimeval(0, 5000), // at 5 ms interval
-            Interval2 = new BcmTimeval(0, 100000), // then at 100 ms
-            NumberOfFrames = 1,
-        };
-
-        var bcmMessage = new BcmCanMessage32(header, new CanFrame[] { canFrame });
-        int nBytes = LibcNativeMethods.Write(socketHandle, bcmMessage, Marshal.SizeOf(bcmMessage));
-    }
+        Id = 0x333,
+        StartTimer = true,
+        SetInterval = true,
+        InitialIntervalConfiguration = new BcmInitialIntervalConfiguration(10, new BcmTimeval(0, 5000)), // 10 messages at 5 ms
+        PostInitialInterval = new BcmTimeval(0, 100000), // Then at 100 ms
+    };
+    int nBytes = bcmCanSocket.CreateCyclicTransmissionTask(config, frames);
 }
 ```
 
