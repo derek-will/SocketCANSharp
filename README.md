@@ -203,6 +203,43 @@ using (SafeFileDescriptorHandle socketHandle = LibcNativeMethods.Socket(SocketCa
 }
 ```
 
+### CAN Gateway (CGW) Support
+```cs
+var vcan0 = CanNetworkInterface.GetAllInterfaces(true).FirstOrDefault(iface => iface.Name.Equals("vcan0"));
+var vcan1 = CanNetworkInterface.GetAllInterfaces(true).FirstOrDefault(iface => iface.Name.Equals("vcan1"));
+
+using (var cgwSocket = new CanGatewaySocket())
+{
+    cgwSocket.ReceiveTimeout = 1000;
+    cgwSocket.SendTimeout = 1000;
+    cgwSocket.Bind(new SockAddrNetlink(0, 0));
+    var rule = new CgwCanToCanRule(CgwCanFrameType.ClassicalCAN)
+    {
+        SourceIndex = (uint)vcan0.Index,
+        DestinationIndex = (uint)vcan1.Index,
+        EnableLocalCanSocketLoopback = true,
+        ReceiveFilter = new CanFilter(0x123, 0x7FF),
+        SetModifier = new ClassicalCanGatewayModifier(CanGatewayModificationType.CGW_MOD_LEN, new CanFrame(0x000, new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00 })),
+        ChecksumXorConfiguration = new CgwChecksumXor(0, 3, 4, 0xCC),
+        UpdateIdentifier = 0xFFEEEEDD,
+    };
+    cgwSocket.AddOrUpdateCanToCanRule(rule);
+    
+    var data = new byte[8192];
+    int bytesRead = cgwSocket.Read(data);
+    var realData = data.Take(bytesRead).ToArray();
+    NetlinkMessageHeader header = NetlinkUtils.PeekAtHeader(realData);
+    if (header.MessageType == NetlinkMessageType.NLMSG_ERROR)
+    {
+        NetlinkMessageError nlMsgErr = NetlinkMessageError.FromBytes(realData);
+        if (nlMsgErr.Error == 0)
+        {
+            Console.WriteLine("Successfully added CGW Rule!");
+        }
+    }
+}
+```
+
 ### Supported Environments
 Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN and BCM have been confirmed as far back as Linux Kernel 4.9. Testing on Alpine Linux has not been carried out yet.
 
