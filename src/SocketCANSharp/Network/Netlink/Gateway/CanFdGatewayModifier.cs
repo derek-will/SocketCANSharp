@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System.Text;
+
 namespace SocketCANSharp.Network.Netlink.Gateway
 {
     /// <summary>
@@ -52,6 +54,18 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         public CanFdGatewayModifier(CanGatewayModificationType target, CanFdFrame frame) : base (target)
         {
             CanFdFrame = frame;
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current CanFdGatewayModifier object.
+        /// </summary>
+        /// <returns>A string that represents the current CanFdGatewayModifier object.</returns>
+        public override string ToString()
+        {
+            var strBuilder = new StringBuilder();
+            strBuilder.AppendLine(base.ToString());
+            strBuilder.Append($"CAN FD Frame: {CanFdFrame}");
+            return strBuilder.ToString();
         }
     }
 }

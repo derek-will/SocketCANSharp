@@ -83,7 +83,7 @@ namespace SocketCANSharpTest
             var data = new byte[] { 0xde, 0xad, 0xbe, 0xef, 0x00 };
             var frame = new CanFdFrame(0x123, data, CanFdFlags.CANFD_BRS);
             var fdMod = new CanFdGatewayModifier(CanGatewayModificationType.CGW_MOD_DATA, frame);
-            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_DATA, fdMod.ModificationTarget);
+            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_DATA, fdMod.ModificationTargets);
             Assert.AreEqual(0x123, fdMod.CanFdFrame.CanId);
             Assert.AreEqual(5, fdMod.CanFdFrame.Length);
             Assert.IsTrue(fdMod.CanFdFrame.Data.Take(fdMod.CanFdFrame.Length).SequenceEqual(data));
@@ -96,7 +96,7 @@ namespace SocketCANSharpTest
             var data = new byte[] { 0xde, 0xad, 0xbe, 0xef, 0x00 };
             var frame = new CanFrame(0x123, data);
             var fdMod = new ClassicalCanGatewayModifier(CanGatewayModificationType.CGW_MOD_DATA, frame);
-            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_DATA, fdMod.ModificationTarget);
+            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_DATA, fdMod.ModificationTargets);
             Assert.AreEqual(0x123, fdMod.CanFrame.CanId);
             Assert.AreEqual(5, fdMod.CanFrame.Length);
             Assert.IsTrue(fdMod.CanFrame.Data.Take(fdMod.CanFrame.Length).SequenceEqual(data));
@@ -134,7 +134,7 @@ namespace SocketCANSharpTest
             Assert.AreEqual(false, rule.IsCanFdRule);
             Assert.AreEqual(false, rule.MaintainSourceTimestamp);
             Assert.NotNull(rule.OrModifier);
-            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_LEN, rule.OrModifier.ModificationTarget);
+            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_LEN, rule.OrModifier.ModificationTargets);
             Assert.AreEqual(0x123, ((ClassicalCanGatewayModifier)rule.OrModifier).CanFrame.CanId);
             Assert.AreEqual(3, ((ClassicalCanGatewayModifier)rule.OrModifier).CanFrame.Length);
             Assert.IsTrue(((ClassicalCanGatewayModifier)rule.OrModifier).CanFrame.Data.Take(3).SequenceEqual(new byte[] { 0x00, 0x01, 0x02 }));
@@ -179,7 +179,7 @@ namespace SocketCANSharpTest
             Assert.AreEqual(true, rule.IsCanFdRule);
             Assert.AreEqual(false, rule.MaintainSourceTimestamp);
             Assert.NotNull(rule.OrModifier);
-            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_LEN, rule.OrModifier.ModificationTarget);
+            Assert.AreEqual(CanGatewayModificationType.CGW_MOD_LEN, rule.OrModifier.ModificationTargets);
             Assert.AreEqual(0x123, ((CanFdGatewayModifier)rule.OrModifier).CanFdFrame.CanId);
             Assert.AreEqual(CanFdFlags.CANFD_BRS, ((CanFdGatewayModifier)rule.OrModifier).CanFdFrame.Flags);
             Assert.AreEqual(3, ((CanFdGatewayModifier)rule.OrModifier).CanFdFrame.Length);

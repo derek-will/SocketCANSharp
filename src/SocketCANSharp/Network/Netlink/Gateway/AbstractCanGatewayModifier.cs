@@ -42,7 +42,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         /// <summary>
         /// CGW Modification Target (CAN Identifier, CAN length field, CAN data, CAN flags).
         /// </summary>
-        public CanGatewayModificationType ModificationTarget { get; set; }
+        public CanGatewayModificationType ModificationTargets { get; set; }
 
         /// <summary>
         /// Base constructor provided by the AbstractCanGatewayModifier abstact class.
@@ -50,7 +50,16 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         /// <param name="target">Specifies target of the operation.</param>
         public AbstractCanGatewayModifier(CanGatewayModificationType target)
         {
-            ModificationTarget = target;
+            ModificationTargets = target;
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current AbstractCanGatewayModifier object.
+        /// </summary>
+        /// <returns>A string that represents the current AbstractCanGatewayModifier object.</returns>
+        public override string ToString()
+        {
+            return $"Modification Targets: {ModificationTargets}";
         }
     }
 }

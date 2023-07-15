@@ -206,7 +206,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFrame = ((ClassicalCanGatewayModifier)modifier).CanFrame,
                 };
 
@@ -217,7 +217,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFdFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFdFrame = ((CanFdGatewayModifier)modifier).CanFdFrame,
                 };
 
@@ -241,7 +241,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFrame = ((ClassicalCanGatewayModifier)modifier).CanFrame,
                 };
 
@@ -252,7 +252,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFdFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFdFrame = ((CanFdGatewayModifier)modifier).CanFdFrame,
                 };
 
@@ -276,7 +276,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFrame = ((ClassicalCanGatewayModifier)modifier).CanFrame,
                 };
 
@@ -287,7 +287,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFdFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFdFrame = ((CanFdGatewayModifier)modifier).CanFdFrame,
                 };
 
@@ -311,7 +311,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFrame = ((ClassicalCanGatewayModifier)modifier).CanFrame,
                 };
 
@@ -322,7 +322,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
             {
                 var cgwModifier = new CgwCanFdFrameModification()
                 {
-                    ModificationType = modifier.ModificationTarget,
+                    ModificationType = modifier.ModificationTargets,
                     CanFdFrame = ((CanFdGatewayModifier)modifier).CanFdFrame,
                 };
 

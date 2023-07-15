@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Text;
 
 namespace SocketCANSharp.Network.Netlink.Gateway
 {
@@ -184,6 +185,32 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         {
             GatewayType = gwType;
             IsCanFdRule = canFrameType == CgwCanFrameType.CANFD;
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current CgwBaseRule object.
+        /// </summary>
+        /// <returns>A string that represents the current CgwBaseRule object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Gateway Type: {GatewayType}");
+            stringBuilder.AppendLine($"Enable Local CAN Socket Loopback: {EnableLocalCanSocketLoopback}");
+            stringBuilder.AppendLine($"Maintain Source Timestamp: {MaintainSourceTimestamp}");
+            stringBuilder.AppendLine($"Allow Routing To Same Interface: {AllowRoutingToSameInterface}");
+            stringBuilder.AppendLine($"Is CAN FD Rule: {IsCanFdRule}");
+            stringBuilder.AppendLine($"AND Binary Modifier: {(AndModifier == null ? "<none>" : "{" + Environment.NewLine + AndModifier.ToString() + Environment.NewLine + "}")}");
+            stringBuilder.AppendLine($"OR Binary Modifier: {(OrModifier == null ? "<none>" : "{" + Environment.NewLine + OrModifier.ToString() + Environment.NewLine + "}")}");
+            stringBuilder.AppendLine($"XOR Binary Modifier: {(XorModifier == null ? "<none>" : "{" + Environment.NewLine + XorModifier.ToString() + Environment.NewLine + "}")}");
+            stringBuilder.AppendLine($"SET Binary Modifier: {(SetModifier == null ? "<none>" : "{" + Environment.NewLine + SetModifier.ToString() + Environment.NewLine + "}")}");
+            stringBuilder.AppendLine($"Check XOR Configuration: {(ChecksumXorConfiguration.HasValue ? "{" + Environment.NewLine + ChecksumXorConfiguration.ToString() + Environment.NewLine + "}" : "<none>")}");
+            stringBuilder.AppendLine($"CRC8 Configuration: {(Crc8Configuration.HasValue ? "{" + Environment.NewLine + Crc8Configuration.ToString() + Environment.NewLine + "}" : "<none>")}");
+            stringBuilder.AppendLine($"Hop Limit: {(HopLimit == 0 ? "<no override>" : HopLimit.ToString())}");
+            stringBuilder.AppendLine($"Update Identifier: 0x{UpdateIdentifier:X8}");
+            stringBuilder.AppendLine($"Handled Frames: {HandledFrames}");
+            stringBuilder.AppendLine($"Dropped Frames: {DroppedFrames}");
+            stringBuilder.Append($"Deleted Frames: {DeletedFrames}");
+            return stringBuilder.ToString();
         }
     }
 }

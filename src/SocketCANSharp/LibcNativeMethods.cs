@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Text;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -848,5 +849,22 @@ namespace SocketCANSharp
         /// <returns>The number of bytes received on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="recvmsg", SetLastError=true)]
         public static extern int RecvMsg(SafeFileDescriptorHandle socketHandle, ref MessageHeader canMessage, MessageFlags flags);
+        
+        /// <summary>
+        /// Retrieves the index of the network interface corresponding to the specified name.
+        /// </summary>
+        /// <param name="name">Interface Name</param>
+        /// <returns>Interface Index on success, 0 on failure</returns>
+        [DllImport("libc", EntryPoint="if_nametoindex", SetLastError=true)]
+        public static extern uint IfNameToIndex(string name);
+
+        /// <summary>
+        /// Retrieves the name of the network interface corresponding to the specified index.
+        /// </summary>
+        /// <param name="index">Interface Index</param>
+        /// <param name="namePtr">Pointer to the buffer where the Interface Name is set</param>
+        /// <returns>Valid IntPtr pointing to a buffer containing the Interface Name on success, IntPtr.Zero (null) on failure.</returns>
+        [DllImport("libc", EntryPoint="if_indextoname", SetLastError=true)]
+        public static extern IntPtr IfIndexToName(uint index, IntPtr namePtr);
     }
 }

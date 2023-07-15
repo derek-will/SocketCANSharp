@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanNetlinkReader", "example
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "J1939Sniffer", "examples\J1939Sniffer\J1939Sniffer.csproj", "{45143CDF-5504-4C74-98B4-74709F83F09E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanGatewayConfigTool", "examples\CanGatewayConfigTool\CanGatewayConfigTool.csproj", "{36E1B291-F765-48D9-9070-05661910C966}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,5 +130,17 @@ Global
 		{45143CDF-5504-4C74-98B4-74709F83F09E}.Release|x64.Build.0 = Release|Any CPU
 		{45143CDF-5504-4C74-98B4-74709F83F09E}.Release|x86.ActiveCfg = Release|Any CPU
 		{45143CDF-5504-4C74-98B4-74709F83F09E}.Release|x86.Build.0 = Release|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Debug|x64.Build.0 = Debug|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Debug|x86.Build.0 = Debug|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Release|x64.ActiveCfg = Release|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Release|x64.Build.0 = Release|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Release|x86.ActiveCfg = Release|Any CPU
+		{36E1B291-F765-48D9-9070-05661910C966}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

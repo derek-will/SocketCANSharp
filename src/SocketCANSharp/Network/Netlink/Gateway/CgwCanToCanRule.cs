@@ -32,6 +32,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+
 namespace SocketCANSharp.Network.Netlink.Gateway
 {
     /// <summary>
@@ -58,6 +62,57 @@ namespace SocketCANSharp.Network.Netlink.Gateway
         /// <param name="canFrameType">CAN Frame Type</param>
         public CgwCanToCanRule(CgwCanFrameType canFrameType) : base(CanGatewayType.CGW_TYPE_CAN_CAN, canFrameType)
         {
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current CgwCanToCanRule object.
+        /// </summary>
+        /// <returns>A string that represents the current CgwCanToCanRule object.</returns>
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine(base.ToString());
+
+            if (SourceIndex != 0)
+            {
+                var ptr = Marshal.AllocHGlobal(SocketCanConstants.IF_NAMESIZE);
+                try
+                {
+                    IntPtr p = LibcNativeMethods.IfIndexToName(SourceIndex, ptr);
+                    string srcName = p == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ptr);
+                    stringBuilder.AppendLine($"Source: {(srcName == null ? SourceIndex.ToString() : srcName)}");
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
+            }
+            else
+            {
+                stringBuilder.AppendLine($"Source: <none>");
+            }
+
+            if (DestinationIndex != 0)
+            {
+                var ptr = Marshal.AllocHGlobal(SocketCanConstants.IF_NAMESIZE);
+                try
+                {
+                    IntPtr p = LibcNativeMethods.IfIndexToName(DestinationIndex, ptr);
+                    string dstName = p == IntPtr.Zero ? null : Marshal.PtrToStringAnsi(ptr);
+                    stringBuilder.AppendLine($"Destination: {(dstName == null ? DestinationIndex.ToString() : dstName)}");
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
+            }
+            else
+            {
+                stringBuilder.AppendLine($"Destination: <none>");
+            }
+
+            stringBuilder.AppendLine($"Receive Filter: {(ReceiveFilter.HasValue ? ReceiveFilter.ToString() : "<none>")}");
+            return stringBuilder.ToString();
         }
     }
 }

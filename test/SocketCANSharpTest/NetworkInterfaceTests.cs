@@ -57,7 +57,10 @@ namespace SocketCANSharpTest
         [TearDown]
         public void Cleanup()
         {
-            socketHandle.Close();
+            if (socketHandle != null)
+            {
+                socketHandle.Close();
+            }
         }
 
         [Test]
@@ -486,6 +489,61 @@ namespace SocketCANSharpTest
             uint? mtu = iface.MaximumTransmissionUnit;
             Assert.IsTrue(mtu.HasValue);
             Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU)); // some devices may support CAN FD while other may support Classic CAN only
+        }
+
+        [Test]
+        public void IfNameToIndex_Success()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            foreach (var canInterface in collection)
+            {
+                uint index = LibcNativeMethods.IfNameToIndex(canInterface.Name);
+                Assert.AreEqual(canInterface.Index, index);
+            }
+        }
+
+        [Test]
+        public void IfNameToIndex_BadName_Failure()
+        {
+            uint index = LibcNativeMethods.IfNameToIndex("BlahNotReal");
+            Assert.AreEqual(0, index);
+        }
+
+        [Test]
+        public void IfIndexToName_Success()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            foreach (var canInterface in collection)
+            {
+                var ptr = Marshal.AllocHGlobal(SocketCanConstants.IF_NAMESIZE);
+                try
+                {
+                    IntPtr p = LibcNativeMethods.IfIndexToName((uint)canInterface.Index, ptr);
+                    Assert.AreNotEqual(IntPtr.Zero, p);
+                    Assert.AreEqual(p, ptr);
+                    string name = Marshal.PtrToStringAnsi(ptr);
+                    Assert.AreEqual(canInterface.Name, name);
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
+            }
+        }
+
+        [Test]
+        public void IfIndexToName_BadIndex_Failure()
+        {
+            var ptr = Marshal.AllocHGlobal(SocketCanConstants.IF_NAMESIZE);
+            try
+            {
+                IntPtr p = LibcNativeMethods.IfIndexToName(0, ptr);
+                Assert.AreEqual(IntPtr.Zero, p);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
         }
     }
 }

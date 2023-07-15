@@ -131,5 +131,9 @@ namespace SocketCANSharp
         /// J1939 PGN Maximum Value (Limit).
         /// </summary>
         public const uint J1939_PGN_MAX = 0x3ffff;
+        /// <summary>
+        /// Interface Name Buffer Size.
+        /// </summary>
+        public const int IF_NAMESIZE = 16;
     }
 }

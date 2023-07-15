@@ -45,7 +45,7 @@ namespace SocketCANSharp
         /// <summary>
         /// Interface Name.
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst=16)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst=SocketCanConstants.IF_NAMESIZE)]
         public string Name;
 
         /// <summary>
