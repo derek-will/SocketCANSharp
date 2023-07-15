@@ -33,7 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
-using System.Linq;
 using System.Text;
 
 namespace SocketCANSharp.Network.Netlink.Gateway
@@ -87,9 +86,16 @@ namespace SocketCANSharp.Network.Netlink.Gateway
                 return false;
             }
 
-            int length = NetlinkUtils.FromBytes<ushort>(attrData.Take(LengthSize).ToArray());
-            CanGatewayAttributeType type = (CanGatewayAttributeType)NetlinkUtils.FromBytes<ushort>(attrData.Skip(LengthSize).Take(TypeSize).ToArray());
-            byte[] data = attrData.Skip(TypeLengthSize).Take(length - TypeLengthSize).ToArray();
+            var lengthData = new byte[LengthSize];
+            Buffer.BlockCopy(attrData, 0, lengthData, 0, lengthData.Length);
+            int length = NetlinkUtils.FromBytes<ushort>(lengthData);
+
+            var typeData = new byte[TypeSize];
+            Buffer.BlockCopy(attrData, LengthSize, typeData, 0, typeData.Length);
+            CanGatewayAttributeType type = (CanGatewayAttributeType)NetlinkUtils.FromBytes<ushort>(typeData);
+
+            var data = new byte[length - TypeLengthSize];
+            Buffer.BlockCopy(attrData, TypeLengthSize, data, 0, data.Length);
 
             attribute = new CanGatewayRoutingAttribute(type, data);
             return true;
