@@ -112,26 +112,26 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
-        /// Bitrate of the CAN Network Interface (during Arbitration Phase).
+        /// Data Phase Bit Timing of the CAN Network Interface.
         /// </summary>
-        public uint? BitrateConstant
+        public CanBitTiming DataPhaseBitTiming
         {
             get
             {
-                CanRoutingAttribute bitrateConst = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_BITRATE_CONST);
-                return bitrateConst == null ? (uint?)null : BitConverter.ToUInt32(bitrateConst.Data, 0);
+                CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_DATA_BITTIMING);
+                return cbtAttr == null ? null : CanBitTiming.FromBytes(cbtAttr.Data);
             }
         }
 
         /// <summary>
-        /// Bitrate of the CAN Network Interface during Data Phase.
+        /// Hardware-dependent Data Phase Bit Timing of the CAN Network Interface.
         /// </summary>
-        public uint? DataPhaseBitrateConstant
+        public CanBitTimingConstant DataPhaseBitTimingConstant
         {
             get
             {
-                CanRoutingAttribute dataBitrateConst = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_DATA_BITRATE_CONST);
-                return dataBitrateConst == null ? (uint?)null : BitConverter.ToUInt32(dataBitrateConst.Data, 0);
+                CanRoutingAttribute cbtcAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_DATA_BITTIMING_CONST);
+                return cbtcAttr == null ? null : CanBitTimingConstant.FromBytes(cbtcAttr.Data);
             }
         }
 

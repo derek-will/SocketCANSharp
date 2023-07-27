@@ -420,6 +420,18 @@ namespace CanNetlinkReader
                                                                     Console.WriteLine($"CAN Data Phase Bitrate Constant: {dataBitrateConst}");
                                                                     break;
                                                                 }
+                                                            case CanRoutingAttributeType.IFLA_CAN_DATA_BITTIMING:
+                                                                {
+                                                                    CanBitTiming timing = CanBitTiming.FromBytes(cra.Data);
+                                                                    Console.WriteLine($"CAN Data Phase Bit Timing:{Environment.NewLine}{timing}");
+                                                                    break;
+                                                                }
+                                                            case CanRoutingAttributeType.IFLA_CAN_DATA_BITTIMING_CONST:
+                                                                {
+                                                                    CanBitTimingConstant timing = CanBitTimingConstant.FromBytes(cra.Data);
+                                                                    Console.WriteLine($"CAN Data Phase Bit Timing Constant:{Environment.NewLine}{timing}");
+                                                                    break;
+                                                                }
                                                         }
                                                     }
 
@@ -454,8 +466,8 @@ namespace CanNetlinkReader
             Console.WriteLine($"DeviceStats:{Environment.NewLine}{iface.DeviceStatistics}");
             Console.WriteLine($"BitTiming:{Environment.NewLine}{iface.BitTiming}");
             Console.WriteLine($"BitTimingConstant:{Environment.NewLine}{iface.BitTimingConstant}");
-            Console.WriteLine($"BitrateConstant:{Environment.NewLine}{iface.BitrateConstant}");
-            Console.WriteLine($"DataPhaseBitrateConstant:{Environment.NewLine}{iface.DataPhaseBitrateConstant}");
+            Console.WriteLine($"DataPhaseBitTiming:{Environment.NewLine}{iface.DataPhaseBitTiming}");
+            Console.WriteLine($"DataPhaseBitTimingConstant:{Environment.NewLine}{iface.DataPhaseBitTimingConstant}");
             Console.WriteLine($"MaximumTransmissionUnit:{Environment.NewLine}{iface.MaximumTransmissionUnit}");
         }
     }
