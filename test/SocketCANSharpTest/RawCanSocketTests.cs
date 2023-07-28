@@ -692,7 +692,7 @@ namespace SocketCANSharpTest
                 Assert.AreEqual(72, bytesRead);
                 Assert.AreEqual(0x123, frame.CanId);
                 Assert.IsTrue(frame.Data.Take(frame.Length).SequenceEqual(new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
-                Assert.AreEqual(CanFdFlags.CANFD_BRS, frame.Flags);
+                Assert.IsTrue(frame.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
             }
         }
 
