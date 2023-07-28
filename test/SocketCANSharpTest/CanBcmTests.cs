@@ -1532,7 +1532,7 @@ namespace SocketCANSharpTest
                 Assert.AreEqual(1, receiveMessage.Header.NumberOfFrames);
 
                 var readFrame = receiveMessage.Frames.First();
-                Assert.AreEqual(CanFdFlags.CANFD_BRS, readFrame.Flags);
+                Assert.IsTrue(readFrame.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
                 Assert.AreEqual((uint)0x12, readFrame.CanId);
                 Assert.IsTrue(readFrame.Data.Take(readFrame.Length).SequenceEqual(new byte[] { 0x0F, 0xED, 0x0F, 0xED, 0x0F, 0xED, 0x0F, 0xED, 0x0F, 0xED, 0x0F, 0xED, 0x0F, 0xED, 0x0F, 0xED }));
             }
@@ -1775,7 +1775,7 @@ namespace SocketCANSharpTest
 
                 var readFrame = receiveMessage.Frames.First();
                 Assert.AreEqual((uint)0x400, readFrame.CanId);
-                Assert.AreEqual(CanFdFlags.CANFD_BRS, readFrame.Flags);
+                Assert.IsTrue(readFrame.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
                 Assert.IsTrue(readFrame.Data.Take(readFrame.Length).SequenceEqual(new byte[] { 0x0F, 0xED }));
             }
         }
