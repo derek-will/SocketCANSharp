@@ -251,6 +251,7 @@ Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Ra
 * J1939EngineSpeedTransmit : Simple application that sends the J1939 Engine Speed signal a couple of different ways using SocketCAN#
 * CanNetlinkReader : Simple application that reads out CAN interface information using Netlink through various options offered by the SocketCAN# library
 * J1939Sniffer : Basic J1939 bus sniffer utility to illustrate how to use SocketCAN# to monitor a J1939 network.
+* CanGatewayConfigTool : Sample application which adds a CAN GW rule, tests it, and then clears all CAN GW rules.
 
 
 ### Additional Information:
