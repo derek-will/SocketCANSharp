@@ -76,7 +76,7 @@ using (var bcmCanSocket = new BcmCanSocket())
 }
 ```
 
-### CAN Gateway (CGW) Support
+## CAN Gateway (CGW) Support
 ```cs
 var vcan0 = CanNetworkInterface.GetAllInterfaces(true).FirstOrDefault(iface => iface.Name.Equals("vcan0"));
 var vcan1 = CanNetworkInterface.GetAllInterfaces(true).FirstOrDefault(iface => iface.Name.Equals("vcan1"));
