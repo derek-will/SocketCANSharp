@@ -906,7 +906,7 @@ namespace SocketCANSharpTest
                 Assert.IsTrue(frame2.Data.Take(frame2.Length).SequenceEqual(new byte[] { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF }));
                 Assert.AreEqual(false, txSuccess2);
                 Assert.AreEqual(true, localhost2);
-                Assert.IsTrue(frame.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
+                Assert.IsTrue(frame2.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
             }
         }
     }
