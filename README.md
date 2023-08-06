@@ -9,6 +9,28 @@ Using this library you can either use the higher level classes or the lower leve
 
 The classes such as `CanNetworkInterface`, `RawCanSocket`, and `IsoTpCanSocket` provide a simpler interface via object-oriented abstraction. This approach should be familiar to developers acquainted with C# and other higher level languages. Invoking the libc calls will be easier to those who prefer or are more familiar with C style (procedural) programming. This approach should also ease the process of porting over code written in C.
 
+#### Feature Chart
+
+| Feature                          | Kernel | SocketCAN#                | 
+|:---------------------------------|:-------|:--------------------------|
+| Raw CAN Socket                   | 2.6.25 | 0.1[^2], 0.5              | 
+| BCM Socket                       | 2.6.25 | 0.1[^2][^1], 0.8[^4], 0.9 |
+| ISO-TP (ISO 15765-2) Socket      | 5.10   | 0.1[^2], 0.3              | 
+| SAE J1939 Socket                 | 5.4    | 0.1[^2], 0.8              |
+| CAN Network Interface Query      | 2.6.25 | 0.2                       |
+| CAN Network Interface Attributes | 2.6.31 | 0.10[^3]                  |
+| CAN-to-CAN Gateway               | 3.2    | 0.11                      |
+| Classical CAN                    | 2.6.25 | 0.1                       |
+| CAN FD                           | 3.6    | 0.1                       |
+| CAN XL                           | 6.2    | Planned Support ([#50](//github.com/derek-will/SocketCANSharp/issues/50)) |
+| epoll API                        | 2.5.44 | 0.4[^1], 0.8[^4]          |
+| Capabilities API                 | 2.2    | 0.11                      |
+
+[^1]: 64-bit process support only
+[^2]: Low-level API only 
+[^3]: Read-only
+[^4]: Added 32-bit process support
+
 ### Raw CAN Support
 
 #### Object-Oriented Style
@@ -241,7 +263,9 @@ using (var cgwSocket = new CanGatewaySocket())
 ```
 
 ### Supported Environments
-Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN and BCM have been confirmed as far back as Linux Kernel 4.9. Testing on Alpine Linux has not been carried out yet.
+Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN, Broadcast Manager, and CAN Gateway have been confirmed as far back as Linux Kernel 4.9. Testing on Alpine Linux has not been carried out yet.
+
+SocketCAN# releases prior to 0.7.0 target .NET 5. SocketCAN# v0.7.0 and later target .NET Standard 2.0.
 
 ### Example Code
 
