@@ -829,5 +829,85 @@ namespace SocketCANSharpTest
                 Assert.AreEqual(0, addr.CanIfIndex);
             }
         }
+
+        [Test]
+        public void RawCanSocket_Read_CanFrame_TxSuccess_And_Localhost_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var senderSocket = new RawCanSocket())
+            using (var receiverSocket = new RawCanSocket())
+            {
+                senderSocket.ReceiveOwnMessages = true;
+                senderSocket.ReceiveTimeout = 1000;
+                receiverSocket.ReceiveTimeout = 1000;
+                senderSocket.Bind(iface);
+                receiverSocket.Bind(iface);
+
+                int bytesWritten = senderSocket.Write(new CanFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
+                Assert.AreEqual(16, bytesWritten);
+
+                int bytesRead = senderSocket.Read(out CanFrame frame, out bool txSuccess, out bool localhost);
+                Assert.AreEqual(16, bytesRead);
+                Assert.AreEqual(0x123, frame.CanId);
+                Assert.IsTrue(frame.Data.Take(frame.Length).SequenceEqual(new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
+                Assert.AreEqual(true, txSuccess);
+                Assert.AreEqual(true, localhost);
+
+                int bytesRead2 = receiverSocket.Read(out CanFrame frame2, out bool txSuccess2, out bool localhost2);
+                Assert.AreEqual(16, bytesRead2);
+                Assert.AreEqual(0x123, frame2.CanId);
+                Assert.IsTrue(frame2.Data.Take(frame2.Length).SequenceEqual(new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
+                Assert.AreEqual(false, txSuccess2);
+                Assert.AreEqual(true, localhost2);
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_Read_CanFdFrame_TxSuccess_And_Localhost_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var senderSocket = new RawCanSocket())
+            using (var receiverSocket = new RawCanSocket())
+            {
+                senderSocket.ReceiveOwnMessages = true;
+                senderSocket.ReceiveTimeout = 1000;
+                receiverSocket.ReceiveTimeout = 1000;
+                senderSocket.EnableCanFdFrames = true;
+                receiverSocket.EnableCanFdFrames = true;
+                senderSocket.Bind(iface);
+                receiverSocket.Bind(iface);
+
+                int bytesWritten = senderSocket.Write(new CanFdFrame(0x777, new byte[] { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF }, CanFdFlags.CANFD_BRS));
+                Assert.AreEqual(72, bytesWritten);
+
+                int bytesRead = senderSocket.Read(out CanFdFrame frame, out bool txSuccess, out bool localhost);
+                Assert.AreEqual(72, bytesRead);
+                Assert.AreEqual(0x777, frame.CanId);
+                Assert.IsTrue(frame.Data.Take(frame.Length).SequenceEqual(new byte[] { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF }));
+                Assert.AreEqual(true, txSuccess);
+                Assert.AreEqual(true, localhost);
+                Assert.IsTrue(frame.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
+
+                int bytesRead2 = receiverSocket.Read(out CanFdFrame frame2, out bool txSuccess2, out bool localhost2);
+                Assert.AreEqual(72, bytesRead2);
+                Assert.AreEqual(0x777, frame2.CanId);
+                Assert.IsTrue(frame2.Data.Take(frame2.Length).SequenceEqual(new byte[] { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF }));
+                Assert.AreEqual(false, txSuccess2);
+                Assert.AreEqual(true, localhost2);
+                Assert.IsTrue(frame.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
+            }
+        }
     }
 }

@@ -256,6 +256,40 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// Reads a Classical CAN Frame from the socket.
+        /// </summary>
+        /// <param name="canFrame">Classical CAN Frame to receive from the CAN network.</param>
+        /// <param name="txSuccess">Indicates whether the previous transmission attempt was successful or not.</param>
+        /// <param name="localhost">Indicates whether the received CAN frame was generated on the localhost or not.</param>
+        /// <returns>Number of bytes read from the socket.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="SocketCanException">Reading from the underlying CAN_RAW socket failed.</exception>
+        public int Read(out CanFrame canFrame, out bool txSuccess, out bool localhost)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            return Read<CanFrame>(out canFrame, out txSuccess, out localhost);
+        }
+
+        /// <summary>
+        /// Reads a CAN FD Frame from the socket.
+        /// </summary>
+        /// <param name="canFdFrame">CAN FD Frame to receive from the CAN network.</param>
+        /// <param name="txSuccess">Indicates whether the previous transmission attempt was successful or not.</param>
+        /// <param name="localhost">Indicates whether the received CAN FD frame was generated on the localhost or not.</param>
+        /// <returns>Number of bytes read from the socket.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="SocketCanException">Reading from the underlying CAN_RAW socket failed.</exception>
+        public int Read(out CanFdFrame canFdFrame, out bool txSuccess, out bool localhost)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            return Read<CanFdFrame>(out canFdFrame, out txSuccess, out localhost);
+        }
+
+        /// <summary>
         /// Reads a CAN FD Frame from the socket. ** Note: Check the number of bytes read to determine if frame is Classic CAN (16) of CAN FD (72). **
         /// </summary>
         /// <param name="canFdFrame">CAN FD Frame to receive from the CAN network.</param>
@@ -463,6 +497,51 @@ namespace SocketCANSharp.Network
                 throw new SocketCanException("Unable to get name on CAN_RAW socket.");
 
             return addr;
+        }
+
+        private int Read<T>(out T frame, out bool txSuccess, out bool localhost)
+        {
+            int ctrlMsgSize = ControlMessageMacros.CMSG_SPACE(Marshal.SizeOf<Timeval>()) + ControlMessageMacros.CMSG_SPACE(Marshal.SizeOf<UInt32>());     
+            IntPtr addrPtr = Marshal.AllocHGlobal(Marshal.SizeOf<SockAddrCan>());
+            IntPtr iovecPtr = Marshal.AllocHGlobal(Marshal.SizeOf<IoVector>());
+            IntPtr framePtr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+            IntPtr ctrlMsgPtr = Marshal.AllocHGlobal(ctrlMsgSize);
+            
+            try
+            {
+                var iovec = new IoVector() { Base = framePtr, Length = new IntPtr(Marshal.SizeOf<T>()) };
+                Marshal.StructureToPtr<SockAddrCan>(Address, addrPtr, false);
+                Marshal.StructureToPtr<IoVector>(iovec, iovecPtr, false);
+                var msgHdr = new MessageHeader()
+                {
+                    Name = addrPtr,
+                    NameLength = Marshal.SizeOf<SockAddrCan>(),
+                    IoVectors = iovecPtr,
+                    IoVectorCount = new IntPtr(1),
+                    ControlMessage = ctrlMsgPtr,
+                    ControlMessageLength = new IntPtr(ctrlMsgSize),
+                };
+
+                int bytesRead = LibcNativeMethods.RecvMsg(SafeHandle, ref msgHdr, MessageFlags.None);
+                if (bytesRead == -1)
+                {
+                    frame = default(T);
+                    throw new SocketCanException("Reading from the underlying CAN_RAW socket failed.");
+                }
+
+                IoVector iov = Marshal.PtrToStructure<IoVector>(msgHdr.IoVectors);
+                frame = Marshal.PtrToStructure<T>(iov.Base);
+                txSuccess = msgHdr.Flags.HasFlag(MessageFlags.MSG_CONFIRM);
+                localhost = msgHdr.Flags.HasFlag(MessageFlags.MSG_DONTROUTE);
+                return bytesRead;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ctrlMsgPtr);
+                Marshal.FreeHGlobal(iovecPtr);
+                Marshal.FreeHGlobal(addrPtr);
+                Marshal.FreeHGlobal(framePtr);
+            }
         }
     }
 }
