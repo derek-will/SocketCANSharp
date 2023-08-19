@@ -58,7 +58,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             int can_fd_enabled = 1;
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));
@@ -144,7 +144,7 @@ namespace SocketCANSharpTest
                 var ifrMtu = new IfreqMtu("vcan0");
                 ioctlResult = LibcNativeMethods.Ioctl(sockHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
                 Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-                Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
                 int can_fd_enabled = 1;
                 int result = LibcNativeMethods.SetSockOpt(sockHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));

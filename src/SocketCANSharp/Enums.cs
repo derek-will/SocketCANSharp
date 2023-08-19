@@ -123,6 +123,10 @@ namespace SocketCANSharp
         /// All filters must match
         /// </summary>
         CAN_RAW_JOIN_FILTERS    = 6,
+        /// <summary>
+        /// Allow for CAN XL frames (off by default)
+        /// </summary>
+        CAN_RAW_XL_FRAMES       = 7,
     }
 
     /// <summary>
@@ -807,5 +811,49 @@ namespace SocketCANSharp
         /// The default behavior for epoll is level-triggered.
         /// </summary>
         EPOLLET         = 0x80000000,
+    }
+
+    /// <summary>
+    /// CAN XL specific flags.
+    /// </summary>
+    [Flags]
+    public enum CanXlFlags : byte
+    {
+        /// <summary>
+        /// Simple Extended Content (i.e., security, fragmentation, etc.).
+        /// </summary>
+        CANXL_SEC = 0x01,
+        /// <summary>
+        /// Mandatory flag which must be set to indicate a valid CAN XL frame.
+        /// </summary>
+        CANXL_XLF = 0x80,
+    }
+
+    /// <summary>
+    /// CAN XL SDU (Service Data Unit) Type.
+    /// </summary>
+    public enum CanXlSduType : byte
+    {
+        /// <summary>
+        /// CAN XL Frames with Message ID in the Acceptance Field.
+        /// </summary>
+        ContentBasedAddressing          = 0x01,
+        /// <summary>
+        /// CAN XL Frames with Destination and Source Address in the Acceptance Field.
+        /// </summary>
+        NodeAddressing                  = 0x02,
+        /// <summary>
+        /// Classical and CAN FD Frame Tunneling with CAN ID in the Acceptance Field.
+        /// </summary>
+        ClassicalAndFdFrameTunneling    = 0x03,
+        /// <summary>
+        /// Unmapped Ethernet Frame Tunneling with a user-defined value in the Acceptance Field.
+        /// </summary>
+        UnmappedEthernetFrameTunneling  = 0x04,
+        /// <summary>
+        /// Mapped Ethernet Frame Tunneling with a truncated destination MAC address in the Acceptance Field.
+        /// </summary>
+        MappedEthernetFrameTunneling    = 0x05,
+
     }
 }

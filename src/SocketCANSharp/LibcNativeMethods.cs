@@ -33,7 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
-using System.Text;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -158,6 +157,16 @@ namespace SocketCANSharp
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
         public static extern int Write(SafeFileDescriptorHandle socketHandle, ref CanFdFrame frame, int frameSize);
+
+        /// <summary>
+        /// Write the CanXlFrame to the socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="frame">CAN XL Frame to write</param>
+        /// <param name="frameSize">Size of CAN XL Frame in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, ref CanXlFrame frame, int frameSize);
 
         /// <summary>
         /// Write the BcmCanMessage to the socket.
@@ -288,6 +297,16 @@ namespace SocketCANSharp
         /// <returns>The number of bytes read on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="read", SetLastError=true)]
         public static extern int Read(SafeFileDescriptorHandle socketHandle, ref CanFdFrame frame, int frameSize);
+
+        /// <summary>
+        /// Read a CanXlFrame from the socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="frame">CAN XL Frame structure to populate</param>
+        /// <param name="frameSize">Size of CAN XL Frame structure</param>
+        /// <returns>The number of bytes read on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="read", SetLastError=true)]
+        public static extern int Read(SafeFileDescriptorHandle socketHandle, ref CanXlFrame frame, int frameSize);
 
         /// <summary>
         /// Read a BcmCanMessage from the socket.

@@ -130,6 +130,22 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// Allows the socket to handle CAN XL frames.
+        /// </summary>
+        public bool EnableCanXlFrames 
+        {
+            get
+            {
+                return GetEnableCanXlFrames();
+            }
+            set
+            {
+                SetEnableCanXlFrames(value);
+            }
+        }
+
+
+        /// <summary>
         /// If true, then all CAN filters must match (logical AND) for a CAN frame to be placed into the receive queue. If false, then if any CAN filter matches (logical OR) then a CAN frame will be placed into the receive queue. 
         /// </summary>
         public bool AllCanFiltersMustMatch 
@@ -236,6 +252,25 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// Writes the supplied CAN XL Frame to the socket.
+        /// </summary>
+        /// <param name="canXlFrame">CAN XL Frame to transmit onto the CAN network.</param>
+        /// <returns>Number of bytes written to the socket.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="SocketCanException">Writing to the underlying CAN_RAW socket failed.</exception>
+        public int Write(CanXlFrame canXlFrame)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            int bytesWritten = LibcNativeMethods.Write(SafeHandle, ref canXlFrame, SocketCanUtils.CanXlHeaderSize + canXlFrame.Length);
+            if (bytesWritten == -1)
+                throw new SocketCanException("Writing to the underlying CAN_RAW socket failed.");
+
+            return bytesWritten;
+        }
+
+        /// <summary>
         /// Reads a Classical CAN Frame from the socket.
         /// </summary>
         /// <param name="canFrame">Classical CAN Frame to receive from the CAN network.</param>
@@ -303,6 +338,43 @@ namespace SocketCANSharp.Network
 
             canFdFrame = new CanFdFrame();
             int bytesRead = LibcNativeMethods.Read(SafeHandle, ref canFdFrame, Marshal.SizeOf(typeof(CanFdFrame)));
+            if (bytesRead == -1)
+                throw new SocketCanException("Reading from the underlying CAN_RAW socket failed.");
+
+            return bytesRead;
+        }
+
+        /// <summary>
+        /// Reads a CAN XL Frame from the socket.
+        /// </summary>
+        /// <param name="canXlFrame">CAN XL Frame to receive from the CAN network.</param>
+        /// <param name="txSuccess">Indicates whether the previous transmission attempt was successful or not.</param>
+        /// <param name="localhost">Indicates whether the received CAN XL frame was generated on the localhost or not.</param>
+        /// <returns>Number of bytes read from the socket.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="SocketCanException">Reading from the underlying CAN_RAW socket failed.</exception>
+        public int Read(out CanXlFrame canXlFrame, out bool txSuccess, out bool localhost)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            return Read<CanXlFrame>(out canXlFrame, out txSuccess, out localhost);
+        }
+
+        /// <summary>
+        /// Reads a CAN XL Frame from the socket.
+        /// </summary>
+        /// <param name="canXlFrame">CAN XL Frame to receive from the CAN network.</param>
+        /// <returns>Number of bytes read from the socket.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="SocketCanException">Reading from the underlying CAN_RAW socket failed.</exception>
+        public int Read(out CanXlFrame canXlFrame)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            canXlFrame = new CanXlFrame();
+            int bytesRead = LibcNativeMethods.Read(SafeHandle, ref canXlFrame, Marshal.SizeOf<CanXlFrame>());
             if (bytesRead == -1)
                 throw new SocketCanException("Reading from the underlying CAN_RAW socket failed.");
 
@@ -455,6 +527,33 @@ namespace SocketCANSharp.Network
                 throw new SocketCanException("Unable to get CAN_RAW_FD_FRAMES on CAN_RAW socket.");
 
             return can_fd_enabled > 0;
+        }
+
+        private void SetEnableCanXlFrames(bool enable)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            int can_xl_enabled = enable ? 1 : 0;
+            int result = LibcNativeMethods.SetSockOpt(SafeHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_FRAMES, ref can_xl_enabled, Marshal.SizeOf<int>());
+            
+            if (result != 0)
+                throw new SocketCanException("Unable to set CAN_RAW_XL_FRAMES on CAN_RAW socket.");
+        }
+
+        private bool GetEnableCanXlFrames()
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            int can_xl_enabled = 0;
+            int len = Marshal.SizeOf<int>();
+            int result = LibcNativeMethods.GetSockOpt(SafeHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_FRAMES, ref can_xl_enabled, ref len);
+
+            if (result != 0)
+                throw new SocketCanException("Unable to get CAN_RAW_XL_FRAMES on CAN_RAW socket.");
+
+            return can_xl_enabled > 0;
         }
 
         private void SetAllCanFiltersMustMatch(bool enable)

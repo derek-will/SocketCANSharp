@@ -658,7 +658,7 @@ namespace SocketCANSharpTest
 
             using (var rawCanSocket = new RawCanSocket())
             {
-                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
                 rawCanSocket.EnableCanFdFrames = true;
                 rawCanSocket.Bind(iface);
                 int bytesWritten = rawCanSocket.Write(new CanFdFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }, CanFdFlags.CANFD_BRS));
@@ -679,7 +679,7 @@ namespace SocketCANSharpTest
             using (var senderSocket = new RawCanSocket())
             using (var receiverSocket = new RawCanSocket())
             {
-                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
                 senderSocket.EnableCanFdFrames = true;
                 receiverSocket.EnableCanFdFrames = true;
                 senderSocket.Bind(iface);
@@ -708,7 +708,7 @@ namespace SocketCANSharpTest
 
             using (var rawCanSocket = new RawCanSocket())
             {
-                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
                 rawCanSocket.Bind(iface);
                 SocketCanException ex = Assert.Throws<SocketCanException>(() => rawCanSocket.Write(new CanFdFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }, CanFdFlags.CANFD_BRS)));
                 Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
@@ -729,7 +729,7 @@ namespace SocketCANSharpTest
             using (var senderSocket = new RawCanSocket())
             using (var receiverSocket = new RawCanSocket())
             {
-                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(iface.MaximumTransmissionUnit, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
                 senderSocket.EnableCanFdFrames = true;
                 receiverSocket.ReceiveTimeout = 100;
                 senderSocket.Bind(iface);
@@ -907,6 +907,177 @@ namespace SocketCANSharpTest
                 Assert.AreEqual(false, txSuccess2);
                 Assert.AreEqual(true, localhost2);
                 Assert.IsTrue(frame2.Flags.HasFlag(CanFdFlags.CANFD_BRS)); // In Kernel 6.1 and higher - CANFD_FDF flag will also be set. Changing to just check for BRS to be backwards compatible.
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_EnableCanXlFrames_Success_Test()
+        {
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                rawCanSocket.EnableCanXlFrames = true;
+                Assert.IsTrue(rawCanSocket.EnableCanXlFrames);
+                rawCanSocket.EnableCanXlFrames = false;
+                Assert.IsFalse(rawCanSocket.EnableCanXlFrames);
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_EnableCanXlFrames_ObjectDisposedException_Failure_Test()
+        {
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                rawCanSocket.Close();
+
+                Assert.Throws<ObjectDisposedException>(() =>
+                {
+                    rawCanSocket.EnableCanXlFrames = true;
+                });
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_EnableCanXlFrames_Post_Bind_Assignment_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i => i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                rawCanSocket.Bind(iface);
+                rawCanSocket.EnableCanXlFrames = true;
+                Assert.IsTrue(rawCanSocket.EnableCanXlFrames);
+                rawCanSocket.EnableCanXlFrames = false;
+                Assert.IsFalse(rawCanSocket.EnableCanXlFrames);
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_Write_CanXlFrame_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANXL_MTU));
+                rawCanSocket.EnableCanXlFrames = true;
+                rawCanSocket.Bind(iface);
+                var data = new byte[] { 0x33, 0x22, 0x11 };
+                int bytesWritten = rawCanSocket.Write(new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, data, CanXlFlags.CANXL_XLF));
+                Assert.AreEqual(SocketCanUtils.CanXlHeaderSize + data.Length, bytesWritten);
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_Read_CanXlFrame_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var senderSocket = new RawCanSocket())
+            using (var receiverSocket = new RawCanSocket())
+            {
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANXL_MTU));
+                senderSocket.EnableCanXlFrames = true;
+                receiverSocket.EnableCanXlFrames = true;
+                senderSocket.Bind(iface);
+                receiverSocket.Bind(iface);
+
+                var data = new byte[] { 0x33, 0x22, 0x11 };
+                int bytesWritten = senderSocket.Write(new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, data, CanXlFlags.CANXL_XLF));
+                Assert.AreEqual(SocketCanUtils.CanXlHeaderSize + data.Length, bytesWritten);
+
+                int bytesRead = receiverSocket.Read(out CanXlFrame frame);
+                Assert.AreEqual(SocketCanUtils.CanXlHeaderSize + data.Length, bytesRead);
+                Assert.AreEqual(0x654, frame.Priority);
+                Assert.AreEqual(CanXlSduType.ClassicalAndFdFrameTunneling, frame.SduType);
+                Assert.AreEqual(0x321, frame.AcceptanceField);
+                Assert.AreEqual(data.Length, frame.Length);
+                Assert.AreEqual(CanXlFlags.CANXL_XLF, frame.Flags);
+                Assert.IsTrue(data.SequenceEqual(frame.Data.Take(frame.Length)));
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_Write_CanXlFrame_SocketCanException_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var rawCanSocket = new RawCanSocket())
+            {
+                Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANXL_MTU));
+                rawCanSocket.Bind(iface);
+                var data = new byte[] { 0x33, 0x22, 0x11 };
+                SocketCanException ex = Assert.Throws<SocketCanException>(() => rawCanSocket.Write(new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, data, CanXlFlags.CANXL_XLF)));
+                Assert.AreEqual(SocketError.InvalidArgument, ex.SocketErrorCode);
+                Assert.AreEqual(22, ex.NativeErrorCode);
+            }
+        }
+
+        [Test]
+        public void RawCanSocket_Read_CanXlFrame_TxSuccess_And_Localhost_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var senderSocket = new RawCanSocket())
+            using (var receiverSocket = new RawCanSocket())
+            {
+                senderSocket.ReceiveOwnMessages = true;
+                senderSocket.ReceiveTimeout = 1000;
+                receiverSocket.ReceiveTimeout = 1000;
+                senderSocket.EnableCanXlFrames = true;
+                receiverSocket.EnableCanXlFrames = true;
+                senderSocket.Bind(iface);
+                receiverSocket.Bind(iface);
+
+                var data = new byte[] { 0x33, 0x22, 0x11 };
+                int bytesWritten = senderSocket.Write(new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, data, CanXlFlags.CANXL_XLF));
+                Assert.AreEqual(SocketCanUtils.CanXlHeaderSize + data.Length, bytesWritten);
+
+                int bytesRead = senderSocket.Read(out CanXlFrame frame, out bool txSuccess, out bool localhost);
+                Assert.AreEqual(SocketCanUtils.CanXlHeaderSize + data.Length, bytesRead);
+                Assert.AreEqual(0x654, frame.Priority);
+                Assert.AreEqual(CanXlSduType.ClassicalAndFdFrameTunneling, frame.SduType);
+                Assert.AreEqual(0x321, frame.AcceptanceField);
+                Assert.AreEqual(data.Length, frame.Length);
+                Assert.AreEqual(CanXlFlags.CANXL_XLF, frame.Flags);
+                Assert.IsTrue(data.SequenceEqual(frame.Data.Take(frame.Length)));
+                Assert.AreEqual(true, txSuccess);
+                Assert.AreEqual(true, localhost);
+
+                int bytesRead2 = receiverSocket.Read(out CanXlFrame frame2, out bool txSuccess2, out bool localhost2);
+                Assert.AreEqual(SocketCanUtils.CanXlHeaderSize + data.Length, bytesRead2);
+                Assert.AreEqual(0x654, frame2.Priority);
+                Assert.AreEqual(CanXlSduType.ClassicalAndFdFrameTunneling, frame2.SduType);
+                Assert.AreEqual(0x321, frame2.AcceptanceField);
+                Assert.AreEqual(data.Length, frame2.Length);
+                Assert.AreEqual(CanXlFlags.CANXL_XLF, frame2.Flags);
+                Assert.IsTrue(data.SequenceEqual(frame2.Data.Take(frame2.Length)));
+                Assert.AreEqual(false, txSuccess2);
+                Assert.AreEqual(true, localhost2);
             }
         }
     }

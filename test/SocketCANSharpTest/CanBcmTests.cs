@@ -112,7 +112,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -242,7 +242,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -355,7 +355,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -525,7 +525,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -585,7 +585,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -733,7 +733,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -833,7 +833,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -957,7 +957,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -1064,7 +1064,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -1250,7 +1250,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -1462,7 +1462,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {
@@ -1700,7 +1700,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             if (Environment.Is64BitProcess)
             {

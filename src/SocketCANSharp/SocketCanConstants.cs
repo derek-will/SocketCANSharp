@@ -76,6 +76,10 @@ namespace SocketCANSharp
         /// </summary>
         public const uint CAN_ERR_MASK = 0x1FFFFFFF;
         /// <summary>
+        /// Valid bits in CAN XL Priority field.
+        /// </summary>
+        public const uint CANXL_PRIO_MASK = 0x000007FF;
+        /// <summary>
         /// Special flag to be set in the CAN ID of a CAN Filter to invert the CAN Filter.
         /// </summary>
         public const uint CAN_INV_FILTER = 0x20000000;
@@ -92,6 +96,10 @@ namespace SocketCANSharp
         /// </summary>
         public const byte CANFD_MTU = 72;
         /// <summary>
+        /// Maximum Transmission Unit for CAN XL.
+        /// </summary>
+        public const int CANXL_MTU = 2060;
+        /// <summary>
         /// Maximum Data Payload for Classic CAN.
         /// </summary>
         public const byte CAN_MAX_DLEN = 8;
@@ -99,6 +107,10 @@ namespace SocketCANSharp
         /// Maximum Data Payload for CAN FD.
         /// </summary>
         public const byte CANFD_MAX_DLEN = 64;
+        /// <summary>
+        /// Maximum Data Payload for CAN XL.
+        /// </summary>
+        public const int CANXL_MAX_DLEN = 2048;
         /// <summary>
         /// Valid CAN FD Data Payloads.
         /// </summary>

@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
+using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
 
 namespace SocketCANSharp
@@ -42,6 +43,11 @@ namespace SocketCANSharp
     /// </summary>
     public static class SocketCanUtils
     {
+        /// <summary>
+        /// Returns CAN XL Header Size.
+        /// </summary>
+        public static int CanXlHeaderSize { get { return Marshal.OffsetOf<CanXlFrame>("Data").ToInt32(); } }
+
         /// <summary>
         /// Validates the SocketCAN CAN Identifier structure.
         /// </summary>

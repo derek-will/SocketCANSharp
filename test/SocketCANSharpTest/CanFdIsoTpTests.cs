@@ -69,7 +69,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             ioctlResult = LibcNativeMethods.Ioctl(testerSocketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             // Set CAN FD
             var canIsoTpLlOpts = new CanIsoTpLinkLayerOptions(72, 64, CanFdFlags.CANFD_BRS);

@@ -240,7 +240,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             int can_fd_enabled = 1;
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));
@@ -260,7 +260,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             int can_fd_enabled = 1;
             int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, Marshal.SizeOf(can_fd_enabled));
@@ -271,6 +271,52 @@ namespace SocketCANSharpTest
             result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_FD_FRAMES, ref can_fd_enabled, ref len);
             Assert.AreEqual(0, result);
             Assert.AreEqual(1, can_fd_enabled);
+        }
+
+        [Test]
+        public void SocketOption_Set_CAN_RAW_XL_FRAMES_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var ifrMtu = new IfreqMtu("vcan0");
+            ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANXL_MTU));
+
+            int can_xl_enabled = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_FRAMES, ref can_xl_enabled, Marshal.SizeOf(can_xl_enabled));
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_CAN_RAW_XL_FRAMES_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var ifrMtu = new IfreqMtu("vcan0");
+            ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANXL_MTU));
+
+            int can_xl_enabled = 1;
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_FRAMES, ref can_xl_enabled, Marshal.SizeOf(can_xl_enabled));
+            Assert.AreEqual(0, result);
+
+            can_xl_enabled = 0;
+            int len = Marshal.SizeOf(can_xl_enabled);
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_FRAMES, ref can_xl_enabled, ref len);
+            Assert.AreEqual(0, result);
+            Assert.AreEqual(1, can_xl_enabled);
         }
 
         [Test]

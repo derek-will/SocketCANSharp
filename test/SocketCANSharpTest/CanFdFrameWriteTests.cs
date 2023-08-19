@@ -58,7 +58,7 @@ namespace SocketCANSharpTest
             var ifrMtu = new IfreqMtu("vcan0");
             ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
             Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-            Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
             var addr = new SockAddrCan(ifr.IfIndex);
             int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
@@ -126,7 +126,7 @@ namespace SocketCANSharpTest
                 var ifrMtu = new IfreqMtu("vcan0");
                 ioctlResult = LibcNativeMethods.Ioctl(sockHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
                 Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
-                Assume.That(ifrMtu.MTU, Is.EqualTo(SocketCanConstants.CANFD_MTU));
+                Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANFD_MTU));
 
                 var anyAddr = new SockAddrCan(0);
                 int bindResult = LibcNativeMethods.Bind(sockHandle, anyAddr, Marshal.SizeOf(typeof(SockAddrCan)));

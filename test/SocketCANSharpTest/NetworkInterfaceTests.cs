@@ -114,7 +114,7 @@ namespace SocketCANSharpTest
 #pragma warning disable 0618
             int mtu = iface.ReadSupportedMtu(socketHandle);
 #pragma warning restore 0618
-            Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU)); // some devices may support CAN FD while other may support Classic CAN only
+            Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU) | Is.EqualTo(SocketCanConstants.CANXL_MTU)); // some devices may support CAN XL, CAN FD while other may support Classic CAN only
         }
 
         [Test]
@@ -488,7 +488,7 @@ namespace SocketCANSharpTest
 
             uint? mtu = iface.MaximumTransmissionUnit;
             Assert.IsTrue(mtu.HasValue);
-            Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU)); // some devices may support CAN FD while other may support Classic CAN only
+            Assert.That(mtu, Is.EqualTo(SocketCanConstants.CAN_MTU) | Is.EqualTo(SocketCanConstants.CANFD_MTU) | Is.EqualTo(SocketCanConstants.CANXL_MTU)); // some devices may support CAN XL, CAN FD while other may support Classic CAN only
         }
 
         [Test]
