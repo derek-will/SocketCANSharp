@@ -105,16 +105,18 @@ namespace SocketCANSharpTest
         }
 
         [Test]
-        public void CanXlFrameWrite_InvalidAddress_Ctor_Failure_Test()
+        public void CanXlFrameWrite_InvalidAddress_Ctor_Pass_Test()
         {
-            Assert.Throws<ArgumentException>(() => new CanXlFrame(0x800, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF));
+            var frame = new CanXlFrame(0x800, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
+            Assert.AreEqual(0x800, frame.Priority);
         }
 
         [Test]
-        public void CanXlFrameWrite_InvalidAddress_Property_Failure_Test()
+        public void CanXlFrameWrite_InvalidAddress_Property_Pass_Test()
         {
             var canXlFrame = new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
-            Assert.Throws<ArgumentException>(() => canXlFrame.Priority = 0x800);
+            canXlFrame.Priority = 0x800;
+            Assert.AreEqual(0x800, canXlFrame.Priority);
         }
 
         [Test]

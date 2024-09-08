@@ -45,25 +45,12 @@ namespace SocketCANSharp
     [StructLayout(LayoutKind.Sequential)]
     public struct CanXlFrame
     {
-        private uint _priority;
-
         /// <summary>
-        /// 11-bit arbitration priority field.
+        /// Priority property contains multiple elements: 
+        ///     Bits 0-10: 11-bit Priority ID for bus arbitration purposes on the CAN XL network.
+        ///     Bits 15-23: 8-bit Virtual CAN network ID which allows running up to 256 logical networks on a single physical CAN XL network.
         /// </summary>
-        public uint Priority 
-        {
-            get
-            {
-                return _priority;
-            }
-            set
-            {
-                if (value > 0x7ff)
-                    throw new ArgumentException("Priority field cannot exceed 11 bits.", nameof(value));
-
-                _priority = value;
-            }
-        }
+        public uint Priority { get; set; }
         /// <summary>
         /// CAN XL specific flags for SEC, XL Format.
         /// </summary>
@@ -81,7 +68,7 @@ namespace SocketCANSharp
         /// </summary>
         public uint AcceptanceField { get; set; }
         /// <summary>
-        /// CAN FD Frame payload.
+        /// CAN XL Frame payload.
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst=SocketCanConstants.CANXL_MAX_DLEN)]
         public byte[] Data;
@@ -89,23 +76,20 @@ namespace SocketCANSharp
         /// <summary>
         /// Initializes a new instance of the CanXlFrame structure using the supplied priority, SDT, acceptance field, flags and data.
         /// </summary>
-        /// <param name="priority">11-bit arbitration priority field.</param>
+        /// <param name="priority">Priority property containing Priority ID and VCID.</param>
         /// <param name="sdt">SDU (Service Data Unit) Type.</param>
         /// <param name="acceptanceField">Acceptance field containing address information.</param>
         /// <param name="data">Payload data.</param>
         /// <param name="flags">CAN XL specific flags.</param>
         public CanXlFrame(uint priority, CanXlSduType sdt, uint acceptanceField, byte[] data, CanXlFlags flags)
         {
-            if (priority > 0x7ff)
-                throw new ArgumentException("Priority field cannot exceed 11 bits.", nameof(priority));
-
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
             if (data.Length > SocketCanConstants.CANXL_MAX_DLEN)
                 throw new ArgumentOutOfRangeException(nameof(data), $"Data must be {SocketCanConstants.CANXL_MAX_DLEN} bytes or less");
 
-            _priority = priority;
+            Priority = priority;
             SduType = sdt;
             AcceptanceField = acceptanceField;
             Length = (ushort) data?.Length;
@@ -116,6 +100,42 @@ namespace SocketCANSharp
             {
                 Data[i] = data[i];
             }
+        }
+
+        /// <summary>
+        /// Shortcut to set the Priority ID element on the Priority property.
+        /// </summary>
+        /// <param name="priorityId">11-bit Priority ID</param>
+        public void SetPriorityId(ushort priorityId)
+        {
+            Priority = SocketCanUtils.SetCanXlPriorityId(Priority, priorityId);
+        }
+
+        /// <summary>
+        /// Shortcut to get the Priority ID element from the Priority property.
+        /// </summary>
+        /// <returns>11-bit Priority ID</returns>
+        public ushort GetPriorityId()
+        {
+            return SocketCanUtils.GetCanXlPriorityId(Priority);
+        }
+
+        /// <summary>
+        /// Shortcut to set the VCID element on the Priority property.
+        /// </summary>
+        /// <param name="vcid">8-bit Virtual CAN network ID</param>
+        public void SetVCID(byte vcid)
+        {
+            Priority = SocketCanUtils.SetCanXlVCID(Priority, vcid);
+        }
+
+        /// <summary>
+        /// Shortcut to get the VCID element from the Priority property.
+        /// </summary>
+        /// <returns>8-bit Virtual CAN network ID</returns>
+        public byte GetVCID()
+        {
+            return SocketCanUtils.GetCanXlVCID(Priority);
         }
 
         /// <summary>

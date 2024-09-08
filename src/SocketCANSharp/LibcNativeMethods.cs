@@ -765,6 +765,30 @@ namespace SocketCANSharp
         /// <returns>0 on success, -1 on error</returns>
         [DllImport("libc", EntryPoint = "getsockopt", SetLastError = true)]
         public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, int optionName, IntPtr optionValue, ref int optionValueSize);
+        
+        /// <summary>
+        /// Set the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_RAW socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_RAW</param>
+        /// <param name="optionName">SOL_CAN_RAW socket option</param>
+        /// <param name="optionValue">VCID Options object</param>
+        /// <param name="optionValueSize">Size of VCID Options object in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="setsockopt", SetLastError=true)]
+        public static extern int SetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, CanRawVcidOptions optionValue, int optionValueSize);
+
+        /// <summary>
+        /// Get the socket option specified by the option name and socket level to the provided option value for the supplied socket.
+        /// </summary>
+        /// <param name="socketHandle">CAN_RAW Socket handle</param>
+        /// <param name="socketLevel">SOL_CAN_RAW</param>
+        /// <param name="optionName">SOL_CAN_RAW socket option</param>
+        /// <param name="optionValue">VCID Options object</param>
+        /// <param name="optionValueSize">Size of VCID Options object in bytes</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="getsockopt", SetLastError=true)]
+        public static extern int GetSockOpt(SafeFileDescriptorHandle socketHandle, SocketLevel socketLevel, CanSocketOptions optionName, CanRawVcidOptions optionValue, ref int optionValueSize);
 
         /// <summary>
         /// Returns a pointer to an array of IfNameIndex objects. Each IfNameIndex object includes information about one of the network interfaces on the local system.

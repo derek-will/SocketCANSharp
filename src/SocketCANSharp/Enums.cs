@@ -127,6 +127,10 @@ namespace SocketCANSharp
         /// Allow for CAN XL frames (off by default)
         /// </summary>
         CAN_RAW_XL_FRAMES       = 7,
+        /// <summary>
+        /// CAN XL Virtual CAN network ID (VCID) Configuration Options
+        /// </summary>
+        CAN_RAW_XL_VCID_OPTS    = 8, 
     }
 
     /// <summary>
@@ -854,6 +858,27 @@ namespace SocketCANSharp
         /// Mapped Ethernet Frame Tunneling with a truncated destination MAC address in the Acceptance Field.
         /// </summary>
         MappedEthernetFrameTunneling    = 0x05,
+    }
 
+    /// <summary>
+    /// Option flags for CAN XL Virtual CAN network ID (VCID) handling.
+    /// </summary>
+    [Flags]
+    public enum CanXlVcidHandlingOption : byte
+    {
+        /// <summary>
+        /// Set VCID in the transmitted CAN XL Frame in kernel space.
+        /// </summary>
+        CAN_RAW_XL_VCID_TX_SET      = 0x01,
+        /// <summary>
+        /// Accept VCID value set from user space and do not clear it.
+        /// Note: If CAN_RAW_XL_VCID_TX_SET is also enabled, then the associated VCID value for that option will override any value set from user space leveraging this option.
+        /// </summary>
+        CAN_RAW_XL_VCID_TX_PASS     = 0x02,
+        /// <summary>
+        /// Apply VCID receive filter to received CAN XL Frames before passing them to user space. 
+        /// Note: If this option is not set, then only untagged CAN XL Frames (VCID = 0x00) are passed to user space.
+        /// </summary>
+        CAN_RAW_XL_VCID_RX_FILTER   = 0x04,
     }
 }

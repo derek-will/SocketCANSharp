@@ -657,5 +657,44 @@ namespace SocketCANSharpTest
             Assert.IsNotNull(str);
             Console.WriteLine(str);
         }
+
+        [Test]
+        public void CanXlFrame_Priority_GetPriorityId_Test()
+        {
+            var canXlFrame = new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
+            Assert.AreEqual(0x654, canXlFrame.GetPriorityId());
+        }
+
+        [Test]
+        public void CanXlFrame_Priority_GetVCID_Test()
+        {
+            var canXlFrame = new CanXlFrame(0xAB0654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
+            Assert.AreEqual(0xAB, canXlFrame.GetVCID());
+        } 
+
+        [Test]
+        public void CanXlFrame_Priority_SetPriorityId_Test()
+        {
+            var canXlFrame = new CanXlFrame(0xDD0654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
+            canXlFrame.SetPriorityId(0x555);
+            Assert.AreEqual(0x555, canXlFrame.GetPriorityId());
+            Assert.AreEqual(0xDD0555, canXlFrame.Priority);
+        }
+
+        [Test]
+        public void CanXlFrame_Priority_SetPriorityId_Failure_Test()
+        {
+            var canXlFrame = new CanXlFrame(0xDD0654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
+            Assert.Throws<ArgumentException>(() => canXlFrame.SetPriorityId(0xABC));
+        }
+
+        [Test]
+        public void CanXlFrame_Priority_SetVCID_Test()
+        {
+            var canXlFrame = new CanXlFrame(0x654, CanXlSduType.ClassicalAndFdFrameTunneling, 0x321, new byte[] { 0x33, 0x22, 0x11 }, CanXlFlags.CANXL_XLF);
+            canXlFrame.SetVCID(0xEE);
+            Assert.AreEqual(0xEE, canXlFrame.GetVCID());
+            Assert.AreEqual(0xEE0654, canXlFrame.Priority);
+        } 
     }
 }

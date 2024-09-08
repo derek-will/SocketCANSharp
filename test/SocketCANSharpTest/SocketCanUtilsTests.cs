@@ -150,5 +150,47 @@ namespace SocketCANSharpTest
             Assert.Throws<ArgumentException>(() => SocketCanUtils.CreateCanIdWithFormatFlag(0x10 | (uint)CanIdFlags.CAN_ERR_FLAG));
             Assert.Throws<ArgumentException>(() => SocketCanUtils.CreateCanIdWithFormatFlag(0x10 | (uint)CanIdFlags.CAN_RTR_FLAG));
         }
+
+        [Test]
+        public void GetCanXlPriorityId_Test()
+        {
+            Assert.AreEqual(0x7FF, SocketCanUtils.GetCanXlPriorityId(0xFF07FF));
+            Assert.AreEqual(0x80, SocketCanUtils.GetCanXlPriorityId(0x660080));
+            Assert.AreEqual(0x100, SocketCanUtils.GetCanXlPriorityId(0x7A0100));
+            Assert.AreEqual(0x222, SocketCanUtils.GetCanXlPriorityId(0x4B0222));
+            Assert.AreEqual(0x0, SocketCanUtils.GetCanXlPriorityId(0x000800));
+        }
+
+        [Test]
+        public void GetCanXlVCID_Test()
+        {
+            Assert.AreEqual(0xFF, SocketCanUtils.GetCanXlVCID(0xFF07FF));
+            Assert.AreEqual(0x66, SocketCanUtils.GetCanXlVCID(0x660080));
+            Assert.AreEqual(0x7A, SocketCanUtils.GetCanXlVCID(0x7A0100));
+            Assert.AreEqual(0x4B, SocketCanUtils.GetCanXlVCID(0x4B0222));
+            Assert.AreEqual(0x0, SocketCanUtils.GetCanXlVCID(0x1000800));
+        }
+
+        [Test]
+        public void SetCanXlPriorityId_Test()
+        {
+            Assert.AreEqual(0xFF07FF, SocketCanUtils.SetCanXlPriorityId(0xFF0000, 0x7FF));
+            Assert.AreEqual(0x660080, SocketCanUtils.SetCanXlPriorityId(0x660000, 0x80));
+            Assert.AreEqual(0x7A0100, SocketCanUtils.SetCanXlPriorityId(0x7A0000, 0x100));
+            Assert.AreEqual(0x4B0222, SocketCanUtils.SetCanXlPriorityId(0x4B0000, 0x222));
+            Assert.AreEqual(0x4B0222, SocketCanUtils.SetCanXlPriorityId(0x4B0F0F, 0x222));
+            Assert.Throws<ArgumentException>(() => SocketCanUtils.SetCanXlPriorityId(0x0, 0x800));
+        }
+
+        [Test]
+        public void SetCanXlVCID_Test()
+        {
+            Assert.AreEqual(0xFF07FF, SocketCanUtils.SetCanXlVCID(0x0007FF, 0xFF));
+            Assert.AreEqual(0x660080, SocketCanUtils.SetCanXlVCID(0x000080, 0x66));
+            Assert.AreEqual(0x7A0100, SocketCanUtils.SetCanXlVCID(0x000100, 0x7A));
+            Assert.AreEqual(0x4B0222, SocketCanUtils.SetCanXlVCID(0x000222, 0x4B));
+            Assert.AreEqual(0x4B0222, SocketCanUtils.SetCanXlVCID(0xEEE222, 0x4B));
+            Assert.AreEqual(0x0, SocketCanUtils.SetCanXlVCID(0x1000800, 0x00));
+        }
     }
 }

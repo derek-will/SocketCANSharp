@@ -202,5 +202,55 @@ namespace SocketCANSharp
             else
                 return rawCanId;
         }
+        
+        /// <summary>
+        /// Helper method to set the Priority ID sub-element on the provided Priority composite element.
+        /// </summary>
+        /// <param name="priority">Priority composite element</param>
+        /// <param name="priorityId">11-bit Priority ID</param>
+        /// <returns>Priority composite element with the 11-bit Priority ID set to the provided value.</returns>
+        /// <exception cref="ArgumentException">Priority ID cannot exceed 11 bits.</exception>
+        public static uint SetCanXlPriorityId(uint priority, ushort priorityId)
+        {
+            if (priorityId > 0x7ff)
+                throw new ArgumentException("Priority ID cannot exceed 11 bits.", nameof(priorityId));
+
+            priority &= SocketCanConstants.CANXL_VCID_MASK;
+            priority |= priorityId;
+            return priority;
+        }
+
+        /// <summary>
+        /// Helper method to get the Priority ID sub-element from the provided Priority composite element.
+        /// </summary>
+        /// <param name="priority">Priority composite element</param>
+        /// <returns>11-bit Priority ID from the Priority composite element.</returns>
+        public static ushort GetCanXlPriorityId(uint priority)
+        {
+            return (ushort)(priority & SocketCanConstants.CANXL_PRIO_MASK);
+        }
+
+        /// <summary>
+        /// Helper method to set the VCID sub-element on the provided Priority composite element.
+        /// </summary>
+        /// <param name="priority">Priority composite element</param>
+        /// <param name="vcid">8-bit Virtual CAN network ID</param>
+        /// <returns>Priority composite element with the 8-bit Virtual CAN network ID set to the provided value.</returns>
+        public static uint SetCanXlVCID(uint priority, byte vcid)
+        {
+            priority &= SocketCanConstants.CANXL_PRIO_MASK;
+            priority |= (uint)(vcid << SocketCanConstants.CANXL_VCID_OFFSET);
+            return priority;
+        }
+
+        /// <summary>
+        /// Helper method to get the VCID sub-element from the provided Priority composite element.
+        /// </summary>
+        /// <param name="priority">Priority composite element</param>
+        /// <returns>8-bit Virtual CAN network ID from the Priority composite element.</returns>
+        public static byte GetCanXlVCID(uint priority)
+        {
+            return (byte)((priority & SocketCanConstants.CANXL_VCID_MASK) >> SocketCanConstants.CANXL_VCID_OFFSET);
+        }
     }
 }

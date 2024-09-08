@@ -929,5 +929,77 @@ namespace SocketCANSharpTest
             result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVBUF, ref recvBufferSize, Marshal.SizeOf(typeof(int)));
             Assert.AreEqual(0, result);
         }
+
+        [Test]
+        public void SocketOption_Set_CAN_RAW_XL_VCID_OPTS_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var ifrMtu = new IfreqMtu("vcan0");
+            ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANXL_MTU));
+
+            var vcidOptions = new CanRawVcidOptions()
+            {
+                Flags = CanXlVcidHandlingOption.CAN_RAW_XL_VCID_TX_SET | CanXlVcidHandlingOption.CAN_RAW_XL_VCID_RX_FILTER,
+                TxVCID = 0x99,
+                RxVCID = 0xC0,
+                RxVCIDMask = 0xF0,
+            };
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_VCID_OPTS, vcidOptions, Marshal.SizeOf(typeof(CanRawVcidOptions)));
+            if (result != 0)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(92)); // ENOPROTOOPT - Supported in Kernel 6.9 and higher.
+            }
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void SocketOption_Get_CAN_RAW_XL_VCID_OPTS_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            var ifr = new Ifreq("vcan0");
+            int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+            Assert.AreNotEqual(-1, ioctlResult);
+
+            var ifrMtu = new IfreqMtu("vcan0");
+            ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFMTU, ifrMtu);
+            Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
+            Assume.That(ifrMtu.MTU, Is.GreaterThanOrEqualTo(SocketCanConstants.CANXL_MTU));
+
+            var vcidOptions = new CanRawVcidOptions()
+            {
+                Flags = CanXlVcidHandlingOption.CAN_RAW_XL_VCID_TX_SET | CanXlVcidHandlingOption.CAN_RAW_XL_VCID_RX_FILTER,
+                TxVCID = 0x99,
+                RxVCID = 0xC0,
+                RxVCIDMask = 0xF0,
+            };
+            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_VCID_OPTS, vcidOptions, Marshal.SizeOf(typeof(CanRawVcidOptions)));
+            if (result != 0)
+            {
+                Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(92)); // ENOPROTOOPT - Supported in Kernel 6.9 and higher.
+            }
+            Assert.AreEqual(0, result);
+
+            var vcidOptionsGet = new CanRawVcidOptions();
+            int len = Marshal.SizeOf(typeof(CanRawVcidOptions));
+            result = LibcNativeMethods.GetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_XL_VCID_OPTS, vcidOptionsGet, ref len);
+            Assume.That(LibcNativeMethods.Errno, Is.Not.EqualTo(42));
+            Assert.AreEqual(0, result);
+            Assert.IsTrue(vcidOptionsGet.Flags.HasFlag(CanXlVcidHandlingOption.CAN_RAW_XL_VCID_TX_SET));
+            Assert.IsFalse(vcidOptionsGet.Flags.HasFlag(CanXlVcidHandlingOption.CAN_RAW_XL_VCID_TX_PASS));
+            Assert.IsTrue(vcidOptionsGet.Flags.HasFlag(CanXlVcidHandlingOption.CAN_RAW_XL_VCID_RX_FILTER));
+            Assert.AreEqual(0x99, vcidOptionsGet.TxVCID);
+            Assert.AreEqual(0xC0, vcidOptionsGet.RxVCID);
+            Assert.AreEqual(0xF0, vcidOptionsGet.RxVCIDMask);
+        }
     }
 }

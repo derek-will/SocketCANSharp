@@ -23,6 +23,7 @@ The classes such as `CanNetworkInterface`, `RawCanSocket`, and `IsoTpCanSocket` 
 | Classical CAN                    | 2.6.25 | 0.1                       |
 | CAN FD                           | 3.6    | 0.1                       |
 | CAN XL                           | 6.2    | Planned Support ([#50](//github.com/derek-will/SocketCANSharp/issues/50)) |
+| CAN XL VCID                      | 6.9    | Planned Support ([#81](//github.com/derek-will/SocketCANSharp/issues/81)) |
 | epoll API                        | 2.5.44 | 0.4[^1], 0.8[^4]          |
 | Capabilities API                 | 2.2    | 0.11                      |
 

@@ -76,9 +76,13 @@ namespace SocketCANSharp
         /// </summary>
         public const uint CAN_ERR_MASK = 0x1FFFFFFF;
         /// <summary>
-        /// Valid bits in CAN XL Priority field.
+        /// Mask used to retrieve the 11-bit Priority ID embedded in the priority field of the CAN XL Frame struct.
         /// </summary>
         public const uint CANXL_PRIO_MASK = 0x000007FF;
+        /// <summary>
+        /// Mask used to retrieve the 8-bit VCID embedded in the priority field of the CAN XL Frame struct.
+        /// </summary>
+        public const uint CANXL_VCID_MASK = 0x00FF0000;
         /// <summary>
         /// Special flag to be set in the CAN ID of a CAN Filter to invert the CAN Filter.
         /// </summary>
@@ -147,5 +151,9 @@ namespace SocketCANSharp
         /// Interface Name Buffer Size.
         /// </summary>
         public const int IF_NAMESIZE = 16;
+        /// <summary>
+        /// Bit Offset of the VCID in the priority field of the CAN XL Frame struct
+        /// </summary>
+        public const int CANXL_VCID_OFFSET = 16;
     }
 }
