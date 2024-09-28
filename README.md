@@ -268,6 +268,8 @@ Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Ra
 
 SocketCAN# releases prior to 0.7.0 target .NET 5. SocketCAN# v0.7.0 and later target .NET Standard 2.0.
 
+SocketCAN# has been tested to run on Windows via the WSL (Windows Subsystem for Linux). Instructions on how to set up a WSL instance for running SocketCAN# are available [here](doc/WSLSetup.md).
+
 ### Example Code
 
 * CanBusSniffer : Simple CAN bus analyzer
