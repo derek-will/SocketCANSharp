@@ -284,3 +284,4 @@ SocketCAN# has been tested to run on Windows via the WSL (Windows Subsystem for 
 ### Additional Information:
 
 * [License](LICENSE.md)
+* [Comparison with Iot.Device.SocketCan](doc/IotDeviceSocketCanComparison.md)
