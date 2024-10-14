@@ -264,7 +264,7 @@ using (var cgwSocket = new CanGatewaySocket())
 ```
 
 ### Supported Environments
-Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN, Broadcast Manager, and CAN Gateway have been confirmed as far back as Linux Kernel 4.9. Testing on Alpine Linux has not been carried out yet.
+Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN, Broadcast Manager, and CAN Gateway have been confirmed as far back as Linux Kernel 4.9. Support for Alpine Linux has been verified.
 
 SocketCAN# releases prior to 0.7.0 target .NET 5. SocketCAN# v0.7.0 and later target .NET Standard 2.0.
 
@@ -284,4 +284,5 @@ SocketCAN# has been tested to run on Windows via the WSL (Windows Subsystem for 
 ### Additional Information:
 
 * [License](LICENSE.md)
+* [Documentation](doc/Home.md)
 * [Comparison with Iot.Device.SocketCan](doc/IotDeviceSocketCanComparison.md)
