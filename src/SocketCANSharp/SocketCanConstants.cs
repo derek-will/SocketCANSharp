@@ -60,6 +60,10 @@ namespace SocketCANSharp
         /// </summary>
         public const int SIOCGIFNAME = 0x8910; // ioctls.h
         /// <summary>
+        /// Used to obtain a timeval struct with the received timestamp of the last packet passed to the user.
+        /// </summary>
+        public const int SIOCGSTAMP = 0x8906; // sockios.h
+        /// <summary>
         /// Used to enable or disable non-blocking mode on a socket.
         /// </summary>
         public const int FIONBIO = 0x5421; // ioctls.h

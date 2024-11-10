@@ -36,6 +36,8 @@ using System;
 using NUnit.Framework;
 using SocketCANSharp;
 using System.Net.Sockets;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace SocketCANSharpTest
 {
@@ -135,6 +137,46 @@ namespace SocketCANSharpTest
                 ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFNAME, ifreq);
                 Assert.AreNotEqual(-1, ioctlResult, $"Errno: {LibcNativeMethods.Errno}");
                 Assert.AreEqual("vcan0", ifreq.Name);
+            }
+        }
+
+        [Test]
+        public void GetTimestamp_Success()
+        {
+            using (var socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW))
+            {
+                Assert.IsFalse(socketHandle.IsInvalid);
+
+                int value = 1;
+                int recv_own_msgs_result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_CAN_RAW, CanSocketOptions.CAN_RAW_RECV_OWN_MSGS, ref value, Marshal.SizeOf(1));
+                Assert.AreEqual(0, recv_own_msgs_result);
+
+                var ifr = new Ifreq("vcan0");
+                int ioctlResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGIFINDEX, ifr);
+                Assert.AreNotEqual(-1, ioctlResult);
+
+                var addr = new SockAddrCan(ifr.IfIndex);
+
+                int bindResult = LibcNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrCan)));
+                Assert.AreNotEqual(-1, bindResult);
+
+                var writeFrame = new CanFrame(0x123, new byte[] { 0x11, 0x22 });
+
+                int nWriteBytes = LibcNativeMethods.Write(socketHandle, ref writeFrame, Marshal.SizeOf(typeof(CanFrame)));
+                Assert.AreEqual(16, nWriteBytes);
+
+                var readFrame = new CanFrame();
+                int nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, Marshal.SizeOf(typeof(CanFrame)));
+
+                Assert.AreEqual(16, nReadBytes);
+                Assert.AreEqual(0x123, readFrame.CanId);
+                Assert.AreEqual(2, readFrame.Length);
+                Assert.IsTrue(writeFrame.Data.SequenceEqual(readFrame.Data));
+
+                var timeval = new Timeval();
+                int timestampResult = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGSTAMP, timeval);
+                Assert.AreNotEqual(-1, timestampResult, $"Errno: {LibcNativeMethods.Errno}");
+                Assert.AreNotEqual(0, timeval.Seconds + timeval.Microseconds);
             }
         }
     }

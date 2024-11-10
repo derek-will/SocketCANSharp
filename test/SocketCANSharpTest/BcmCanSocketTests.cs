@@ -800,6 +800,80 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void BcmCanSocket_GetLatestPacketReceiveTimestamp_Success_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i => i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var bcmCanSocket = new BcmCanSocket())
+            {
+                bcmCanSocket.ReceiveTimeout = 250;
+                bcmCanSocket.Connect(iface);
+                Assert.AreEqual(false, bcmCanSocket.IsBound);
+                Assert.AreEqual(true, bcmCanSocket.Connected);
+
+                var canFrame = new CanFrame(0x333, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+                var frames = new CanFrame[] { canFrame };
+                var config = new BcmCyclicTxTaskConfiguration()
+                {
+                    Id = 0x333,
+                    StartTimer = true,
+                    SetInterval = true,
+                    InitialIntervalConfiguration = new BcmInitialIntervalConfiguration(10, new BcmTimeval(0, 5000)), // 10 messages at 5 ms
+                    PostInitialInterval = new BcmTimeval(0, 100000), // Then at 100 ms
+                };
+                int nBytes = bcmCanSocket.CreateCyclicTransmissionTask(config, frames);
+                if (Environment.Is64BitProcess)
+                {
+                    Assert.AreEqual(72, nBytes);
+                }
+                else
+                {
+                    Assert.AreEqual(56, nBytes);
+                }
+
+                nBytes = bcmCanSocket.QueueCyclicTransmissionTaskProperties(0x333, BcmCanFrameType.ClassicCAN);
+                if (Environment.Is64BitProcess)
+                {
+                    Assert.AreEqual(56, nBytes);
+                }
+                else
+                {
+                    Assert.AreEqual(40, nBytes);
+                }
+
+                nBytes = bcmCanSocket.Read(out BcmCanMessageResponse response);
+                Assert.AreEqual(BcmCanFrameType.ClassicCAN, response.FrameType);
+                Assert.AreEqual(BcmResponseType.TransmissionTaskConfiguration, response.ResponseType);
+                Assert.AreEqual(0x333, response.CyclicTransmissionTaskConfiguration.Id);
+                Assert.IsNotNull(response.ClassicFrames);
+                Assert.AreEqual(1, response.ClassicFrames.Length);
+                CanFrame firstFrame = response.ClassicFrames.First();
+                Assert.AreEqual(0x333, firstFrame.CanId);
+                Assert.IsTrue(firstFrame.Data.Take(firstFrame.Length).SequenceEqual(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }));
+                Assert.AreEqual(true, response.CyclicTransmissionTaskConfiguration.StartTimer);
+                Assert.AreEqual(true, response.CyclicTransmissionTaskConfiguration.SetInterval);
+                Assert.AreEqual(false, response.CyclicTransmissionTaskConfiguration.CopyCanIdInHeaderToEachCanFrame);
+                Assert.AreEqual(true, response.CyclicTransmissionTaskConfiguration.ImmediatelyQueueNewFrame); // Will read as True as StartTimer is set to True
+                Assert.AreEqual(false, response.CyclicTransmissionTaskConfiguration.NotifyWhenFirstIntervalComplete);
+                Assert.AreEqual(false, response.CyclicTransmissionTaskConfiguration.RestartMultipleFrameTxAtIndexZero);
+                Assert.GreaterOrEqual(10, response.CyclicTransmissionTaskConfiguration.InitialIntervalConfiguration.Count);
+                Assert.AreEqual(0, response.CyclicTransmissionTaskConfiguration.InitialIntervalConfiguration.Interval.Seconds);
+                Assert.AreEqual(5000, response.CyclicTransmissionTaskConfiguration.InitialIntervalConfiguration.Interval.Microseconds);
+                Assert.AreEqual(0, response.CyclicTransmissionTaskConfiguration.PostInitialInterval.Seconds);
+                Assert.AreEqual(100000, response.CyclicTransmissionTaskConfiguration.PostInitialInterval.Microseconds);
+
+                Timeval timeval = bcmCanSocket.GetLatestPacketReceiveTimestamp();
+                Assert.IsNotNull(timeval);
+                Assert.AreNotEqual(0, timeval.Seconds + timeval.Microseconds);
+            }
+        }
+
+        [Test]
         public void BcmCanSocket_CANFD_Read_CyclicTransmissionTaskProperties_Success_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);

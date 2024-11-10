@@ -89,6 +89,16 @@ namespace SocketCANSharp
         public static extern int Ioctl(SafeFileDescriptorHandle socketHandle, int request, [In][Out] IfreqMtu ifreq);
 
         /// <summary>
+        /// Used to obtain a timeval struct with the receive timestamp of the last packet passed to the user. 
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrapper Instance</param>
+        /// <param name="request">Request Code</param>
+        /// <param name="timeval">Timeval structure</param>
+        /// <returns>0 on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
+        public static extern int Ioctl(SafeFileDescriptorHandle socketHandle, int request, [In][Out] Timeval timeval);
+
+        /// <summary>
         /// Assigns the specified SocketCAN base address to the socket.
         /// </summary>
         /// <param name="socketHandle">Socket Handle Wrapper Instance</param>

@@ -43,5 +43,20 @@ namespace SocketCANSharp.Network
         /// The protocol type of the CAN socket.
         /// </summary>
         public SocketCanProtocolType ProtocolType { get; protected set; }
+
+        /// <summary>
+        /// Obtains the timestamp of the last received packet which has been passed to the user.
+        /// </summary>
+        /// <returns>Timeval containing timestamp of the latest packet.</returns>
+        /// <exception cref="SocketCanException">Failed to obtain timestamp of the last received packet.</exception>
+        public Timeval GetLatestPacketReceiveTimestamp()
+        {
+            var timeval = new Timeval();
+            int result = LibcNativeMethods.Ioctl(SafeHandle, SocketCanConstants.SIOCGSTAMP, timeval);
+            if (result == -1)
+                throw new SocketCanException("Failed to obtain timestamp of the last received packet.");
+
+            return timeval;
+        }
     }
 }

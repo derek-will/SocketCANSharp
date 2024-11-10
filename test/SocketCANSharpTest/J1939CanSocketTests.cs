@@ -861,6 +861,38 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void J1939CanSocket_GetLatestPacketReceiveTimestamp_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var j1939CanSocketTester = new J1939CanSocket())
+            using (var j1939CanSocketEcu = new J1939CanSocket())
+            {
+                j1939CanSocketTester.Bind(iface, SocketCanConstants.J1939_NO_NAME, 0x1b100, 0x25);
+                j1939CanSocketTester.Connect(iface, SocketCanConstants.J1939_NO_NAME, 0x1b100, 0x50);
+                j1939CanSocketEcu.Bind(iface, SocketCanConstants.J1939_NO_NAME, 0x1b100, 0x50);
+                j1939CanSocketEcu.Connect(iface, SocketCanConstants.J1939_NO_NAME, 0x1b100, 0x25);
+
+                int bytesWritten = j1939CanSocketTester.Write(new byte[] { 0xFF, 0xFE, 0xFD });
+                Assert.AreEqual(3, bytesWritten);
+
+                var data = new byte[3];
+                int bytesRead = j1939CanSocketEcu.Read(data);
+                Assert.AreEqual(3, bytesRead);
+                Assert.IsTrue(data.SequenceEqual(new byte[] { 0xFF, 0xFE, 0xFD }));
+
+                SocketCanException ex = Assert.Throws<SocketCanException>(() => j1939CanSocketEcu.GetLatestPacketReceiveTimestamp());
+                Assert.AreEqual(SocketError.SocketError, ex.SocketErrorCode);
+                Assert.AreEqual(25, ex.NativeErrorCode); // ENOTTY
+            }
+        }
+
+        [Test]
         public void J1939CanSocket_Read_ObjectDisposedException_Failure_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);

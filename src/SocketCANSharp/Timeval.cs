@@ -77,6 +77,15 @@ namespace SocketCANSharp
         }
 
         /// <summary>
+        /// Initializes a time interval object with 0 seconds and 0 microseconds.
+        /// </summary>
+        public Timeval()
+        {
+            Seconds = 0;
+            Microseconds = 0;
+        }
+
+        /// <summary>
         /// Initializes a time interval object with the specified seconds and microseconds.
         /// </summary>
         /// <param name="seconds">Number of seconds</param>
