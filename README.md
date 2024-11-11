@@ -42,7 +42,7 @@ using (var rawCanSocket = new RawCanSocket())
 {
     rawCanSocket.Bind(vcan0);
     int bytesWritten = rawCanSocket.Write(new CanFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
-    int bytesRead = receiverSocket.Read(out CanFrame frame);
+    int bytesRead = rawCanSocket.Read(out CanFrame frame);
 }
 ```
 
