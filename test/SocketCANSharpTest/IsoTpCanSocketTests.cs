@@ -767,6 +767,31 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void IsoTpCanSocket_GetLatestPacketReceiveTimestamp_No_Read_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var isoTpCanSocketTester = new IsoTpCanSocket())
+            using (var isoTpCanSocketEcu = new IsoTpCanSocket())
+            {
+                isoTpCanSocketTester.Bind(iface, 0x7e0, 0x7e8);
+                isoTpCanSocketEcu.Bind(iface, 0x7e8, 0x7e0);
+
+                int bytesWritten = isoTpCanSocketTester.Write(new byte[] { 0x22, 0xf1, 0x8c });
+                Assert.AreEqual(3, bytesWritten);
+
+                SocketCanException ex = Assert.Throws<SocketCanException>(() => isoTpCanSocketEcu.GetLatestPacketReceiveTimestamp());
+                Assert.AreEqual(SocketError.AddressNotAvailable, ex.SocketErrorCode);
+                Assert.AreEqual(2, ex.NativeErrorCode); // ENOENT
+            }
+        }
+
+        [Test]
         public void IsoTpCanSocket_Read_ObjectDisposedException_Failure_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);

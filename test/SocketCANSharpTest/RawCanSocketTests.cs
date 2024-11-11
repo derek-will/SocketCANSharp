@@ -626,6 +626,31 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void RawCanSocket_GetLatestPacketReceiveTimestamp_No_Read_Failure_Test()
+        {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+
+            using (var senderSocket = new RawCanSocket())
+            using (var receiverSocket = new RawCanSocket())
+            {
+                senderSocket.Bind(iface);
+                receiverSocket.Bind(iface);
+
+                int bytesWritten = senderSocket.Write(new CanFrame(0x123, new byte[] { 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef }));
+                Assert.AreEqual(16, bytesWritten);
+
+                SocketCanException ex = Assert.Throws<SocketCanException>(() => receiverSocket.GetLatestPacketReceiveTimestamp());
+                Assert.AreEqual(SocketError.AddressNotAvailable, ex.SocketErrorCode);
+                Assert.AreEqual(2, ex.NativeErrorCode); // ENOENT
+            }
+        }
+
+        [Test]
         public void RawCanSocket_Read_ObjectDisposedException_Failure_Test()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);

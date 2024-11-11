@@ -47,7 +47,7 @@ namespace CanBusSniffer
     /// </summary>
     class Program
     {
-        private static readonly BlockingCollection<CanFrame> concurrentQueue = new BlockingCollection<CanFrame>();
+        private static readonly BlockingCollection<TimestampedCanFrame> concurrentQueue = new BlockingCollection<TimestampedCanFrame>();
 
         static void Main(string[] args)
         {
@@ -84,7 +84,17 @@ namespace CanBusSniffer
                     int nReadBytes = LibcNativeMethods.Read(socketHandle, ref readFrame, frameSize); 
                     if (nReadBytes > 0)
                     {
-                        concurrentQueue.Add(readFrame);
+                        var timeval = new Timeval();
+                        int result = LibcNativeMethods.Ioctl(socketHandle, SocketCanConstants.SIOCGSTAMP, timeval);
+                        if (result != -1)
+                        {
+                            var tsCanFrame = new TimestampedCanFrame(timeval, readFrame);
+                            concurrentQueue.Add(tsCanFrame);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error receiving timestamp. Errno: {LibcNativeMethods.Errno}");
+                        }
                     }
                 }
             }
@@ -94,14 +104,14 @@ namespace CanBusSniffer
         {
             while (true)
             {
-                CanFrame readFrame = concurrentQueue.Take();
-                if ((readFrame.CanId & (uint)CanIdFlags.CAN_RTR_FLAG) != 0)
+                TimestampedCanFrame tsReadFrame = concurrentQueue.Take();
+                if ((tsReadFrame.CanFrame.CanId & (uint)CanIdFlags.CAN_RTR_FLAG) != 0)
                 {
-                    Console.WriteLine($"{SocketCanConstants.CAN_ERR_MASK & readFrame.CanId,8:X}   [{readFrame.Length:D2}]  RTR");
+                    Console.WriteLine($"{tsReadFrame.Timeval.Seconds:D19}.{tsReadFrame.Timeval.Microseconds:D6}:{SocketCanConstants.CAN_ERR_MASK & tsReadFrame.CanFrame.CanId,8:X}   [{tsReadFrame.CanFrame.Length:D2}]  RTR");
                 }
                 else
                 {
-                    Console.WriteLine($"{SocketCanConstants.CAN_ERR_MASK & readFrame.CanId,8:X}   [{readFrame.Length:D2}]  {BitConverter.ToString(readFrame.Data.Take(readFrame.Length).ToArray()).Replace("-", " ")}");
+                    Console.WriteLine($"{tsReadFrame.Timeval.Seconds:D19}.{tsReadFrame.Timeval.Microseconds:D6}:{SocketCanConstants.CAN_ERR_MASK & tsReadFrame.CanFrame.CanId,8:X}   [{tsReadFrame.CanFrame.Length:D2}]  {BitConverter.ToString(tsReadFrame.CanFrame.Data.Take(tsReadFrame.CanFrame.Length).ToArray()).Replace("-", " ")}");
                 }
             }
         }
