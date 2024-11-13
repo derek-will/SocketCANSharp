@@ -968,6 +968,14 @@ namespace SocketCANSharpTest
         [Test]
         public void RawCanSocket_EnableCanXlFrames_Success_Test()
         {
+            IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);
+            Assert.IsNotNull(collection);
+            Assert.GreaterOrEqual(collection.Count(), 1);
+
+            var iface = collection.FirstOrDefault(i => i.Name.Equals("vcan0"));
+            Assert.IsNotNull(iface);
+            Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANXL_MTU));
+
             using (var rawCanSocket = new RawCanSocket())
             {
                 rawCanSocket.EnableCanXlFrames = true;
@@ -1000,6 +1008,7 @@ namespace SocketCANSharpTest
 
             var iface = collection.FirstOrDefault(i => i.Name.Equals("vcan0"));
             Assert.IsNotNull(iface);
+            Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANXL_MTU));
 
             using (var rawCanSocket = new RawCanSocket())
             {
@@ -1096,6 +1105,7 @@ namespace SocketCANSharpTest
 
             var iface = collection.FirstOrDefault(i =>  i.Name.Equals("vcan0"));
             Assert.IsNotNull(iface);
+            Assume.That(iface.MaximumTransmissionUnit, Is.EqualTo(SocketCanConstants.CANXL_MTU));
 
             using (var senderSocket = new RawCanSocket())
             using (var receiverSocket = new RawCanSocket())
