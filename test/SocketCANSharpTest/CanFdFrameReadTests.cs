@@ -235,7 +235,7 @@ namespace SocketCANSharpTest
                 int nReadBytes = LibcNativeMethods.RecvMsg(socketHandle, ref readCanMessage, MessageFlags.None);
 
                 Assert.AreEqual(72, nReadBytes);
-                Assert.AreEqual(8, readCanMessage.NameLength);
+                Assert.That(readCanMessage.NameLength, Is.EqualTo(8) | Is.EqualTo(16)); // Pre-5.4 kernels will return 16, 5.4+ kernels will return 8.
                 Assert.AreEqual(1, readCanMessage.IoVectorCount.ToInt32());
                 Assert.AreEqual(0, readCanMessage.ControlMessageLength.ToInt32());
 
