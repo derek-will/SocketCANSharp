@@ -83,7 +83,7 @@ In my case, the output showed `5.15.153.1-microsoft-standard-WSL+`. Note the plu
 ## Running SocketCAN# on your Customized Ubuntu WSL instance
 
 1. Clone the SocketCAN# repository via `git clone https://github.com/derek-will/SocketCANSharp.git`.
-2. Install ***dotnet*** via `apt install dotnet-sdk-6.0`.
+2. Install ***dotnet*** via `apt install dotnet-sdk-8.0`.
 3. Navigate to the *SocketCANSharp* directory.
 4. Run the test environment setup script included in the SocketCAN# repo via `./test/SocketCANSharpTest/test_env_setup.sh`.
 5. Navigate to the *examples/ObjectOrientedDiagAppSimulator* directory.

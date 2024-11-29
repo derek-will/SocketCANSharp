@@ -26,8 +26,8 @@ As of SocketCAN# 0.11.0 and Iot.Device.Bindings 3.2.0:
 | Joining of Filters                     | :heavy_check_mark:     | :x: |
 | Classical CAN Frames                   | :heavy_check_mark:     | :heavy_check_mark: | 
 | CAN FD Frames                          | :heavy_check_mark:     | :x: | 
-| CAN XL Frames                          | Coming Soon - :clock9: | :x: | 
-| CAN XL VCID Configuration              | Coming Soon - :clock9: | :x: |
+| CAN XL Frames                          | :heavy_check_mark:     | :x: | 
+| CAN XL VCID Configuration              | :heavy_check_mark:     | :x: |
 | Broadcast Manager                      | :heavy_check_mark:     | :x: | 
 | ISO-TP (ISO 15765-2)                   | :heavy_check_mark:     | :x: | 
 | SAE J1939                              | :heavy_check_mark:     | :x: | 

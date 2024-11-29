@@ -2,9 +2,10 @@
 
 ## Testing Notes
 - Tested on Alpine Linux v3.20, Kernel v6.6.49
-- Tested using .NET SDK v6.0.135
-- Tested using .NET Runtime v6.0.35
-- Unit Test Results: 613 Passed, 2 Skipped (CAN XL VCID Options)
+- Running NET SDK v6.0.135 and .NET Runtime v6.0.35
+    - Unit Test Results: 613 Passed, 2 Skipped (CAN XL VCID Options)
+- Running NET SDK v8.0.111 and .NET Runtime v8.0.11
+    - Unit Test Results: 620 Passed, 2 Skipped (CAN XL VCID Options)
 - All example applications confirmed to work
 
 ## System Setup
