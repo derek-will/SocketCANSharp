@@ -81,5 +81,15 @@ namespace SocketCANSharp.Network.Netlink
         /// <returns>The number of bytes written on success, -1 on error</returns>
         [DllImport("libc", EntryPoint="write", SetLastError=true)]
         public static extern int Write(SafeFileDescriptorHandle socketHandle, NetworkInterfaceInfoRequest req, int reqSize);
+
+        /// <summary>
+        /// Write the Network Interface Modifier Request to the socket.
+        /// </summary>
+        /// <param name="socketHandle">Socket Handle Wrappper Instance</param>
+        /// <param name="req">Network Interface Modifier Request to write</param>
+        /// <param name="reqSize">Size of Network Interface Modifier Request in bytes</param>
+        /// <returns>The number of bytes written on success, -1 on error</returns>
+        [DllImport("libc", EntryPoint="write", SetLastError=true)]
+        public static extern int Write(SafeFileDescriptorHandle socketHandle, NetworkInterfaceModifierRequest req, int reqSize);
     }
 }

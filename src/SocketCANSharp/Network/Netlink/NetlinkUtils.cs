@@ -427,6 +427,133 @@ namespace SocketCANSharp.Network.Netlink
         }
 
         /// <summary>
+        /// Generates a Network Interface Modifier Request Message for the Interface specified by the Index number.
+        /// </summary>
+        /// <param name="index">Interface Index</param>
+        /// <param name="canDevProperties">CAN Device Properties to set, can be set to null if none need to be set in the request.</param>
+        /// <param name="setInterfaceUp">Set to true to put device interface state to up, false to put device interface state to down, and null to do nothing.</param>
+        /// <returns>Network Interface Request Message for the Interface specified by the Index number.</returns>
+        public static NetworkInterfaceModifierRequest GenerateRequestForLinkModifierByIndex(int index, CanDeviceProperties canDevProperties, bool? setInterfaceUp)
+        {
+            var hdr = new NetlinkMessageHeader()
+            {
+                MessageLength = (uint)NetlinkMessageMacros.NLMSG_LENGTH(Marshal.SizeOf<InterfaceInfoMessage>()),
+                MessageType = NetlinkMessageType.RTM_NEWLINK,
+                Flags = NetlinkMessageFlags.NLM_F_REQUEST | NetlinkMessageFlags.NLM_F_ACK,
+                SenderPortId = 0,
+                SequenceNumber = 0,
+            };
+
+            var info = new InterfaceInfoMessage()
+            {
+                AddressFamily = 0,
+                InterfaceIndex = index
+            };
+
+            if (setInterfaceUp.HasValue)
+            {
+                if (setInterfaceUp.Value)
+                {
+                    info.ChangeMask |= (uint)NetDeviceFlags.IFF_UP;
+                    info.DeviceFlags |= NetDeviceFlags.IFF_UP;
+                }
+                else
+                {
+                    info.ChangeMask |= (uint)NetDeviceFlags.IFF_UP;
+                    info.DeviceFlags &= ~NetDeviceFlags.IFF_UP;
+                }
+            }
+
+            var request = new NetworkInterfaceModifierRequest();
+            if (canDevProperties != null)
+            {
+                List<RoutingAttributeWithData>  infoAttributes = GenerateRoutingInfoAttributes(canDevProperties);
+                byte[] infoAttrBytes = GeneratePayloadFromNestedAttributes(infoAttributes);
+                List<RoutingAttributeWithData> dataAttributes = GenerateRoutingDataAttributes(canDevProperties);
+                byte[] dataAttrBytes = GeneratePayloadFromNestedAttributes(dataAttributes);
+
+                ushort dLength = (ushort)dataAttrBytes.Length;
+                var infoDataAttr = new RoutingAttributeWithData(new RoutingAttribute(dLength, (ushort)LinkInfoAttributeType.IFLA_INFO_DATA));
+                ushort liLength = (ushort)(infoAttrBytes.Length + dataAttrBytes.Length + Marshal.SizeOf(infoDataAttr.Attribute));
+                var linkInfoAttr = new RoutingAttributeWithData(new RoutingAttribute(liLength, (ushort)InterfaceLinkAttributeType.IFLA_LINKINFO));
+
+                var payload = new List<byte>();
+                payload.AddRange(linkInfoAttr.ToBytes());
+                payload.AddRange(infoAttrBytes);
+                payload.AddRange(infoDataAttr.ToBytes());
+                payload.AddRange(dataAttrBytes);
+                byte[] payloadArray = payload.ToArray();
+                hdr.MessageLength = (uint)NetlinkMessageMacros.NLMSG_ALIGN((int)hdr.MessageLength + payloadArray.Length);
+                Buffer.BlockCopy(payloadArray, 0, request.Payload, 0, payloadArray.Length);
+            }
+
+            request.Header = hdr;
+            request.Information = info;
+            return request;
+        }
+
+        private static byte[] GeneratePayloadFromNestedAttributes(IEnumerable<RoutingAttributeWithData> attrs)
+        {
+            var payload = new List<byte>();
+            foreach (var attr in attrs)
+            {
+                payload.AddRange(attr.ToBytes());
+                int padCount = NetlinkMessageMacros.RTA_ALIGN(attr.Attribute.Length) - attr.Attribute.Length;
+                if (padCount > 0)
+                {
+                    payload.AddRange(Enumerable.Repeat<byte>(0x00, padCount));
+                }
+            }
+            return payload.ToArray();
+        }
+
+        private static List<RoutingAttributeWithData> GenerateRoutingInfoAttributes(CanDeviceProperties canDevProperties)
+        {
+            var infoAttributes = new List<RoutingAttributeWithData>()
+            {
+                new RoutingAttributeWithData((ushort)LinkInfoAttributeType.IFLA_INFO_KIND, canDevProperties.LinkKind)
+            };        
+            return infoAttributes;
+        }
+
+        private static List<RoutingAttributeWithData> GenerateRoutingDataAttributes(CanDeviceProperties canDevProperties)
+        {
+            var dataAttributes = new List<RoutingAttributeWithData>();
+
+            if (canDevProperties.RestartDelay.HasValue)
+            {
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_RESTART_MS, canDevProperties.RestartDelay.Value));
+            }
+
+            if (canDevProperties.TriggerRestart)
+            {
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_RESTART, 1));
+            }
+
+            if (canDevProperties.BitTiming != null)
+            {
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_BITTIMING, canDevProperties.BitTiming));
+            }
+
+            if (canDevProperties.DataPhaseBitTiming != null)
+            {
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_DATA_BITTIMING, canDevProperties.DataPhaseBitTiming));
+            }
+
+            if (canDevProperties.ControllerMode != null)
+            {
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_CTRLMODE, canDevProperties.ControllerMode));
+            }
+            
+            if (canDevProperties.TerminationResistance.HasValue)
+            {
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_TERMINATION, canDevProperties.TerminationResistance.Value));
+            }
+
+            return dataAttributes;
+        }
+
+        /// <summary>
         /// Peeks at the header using the provided buffer.
         /// </summary>
         /// <param name="buffer">Byte array which contains a Netlink message.</param>

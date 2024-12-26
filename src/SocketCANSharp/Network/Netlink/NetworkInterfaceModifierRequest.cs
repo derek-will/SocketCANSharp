@@ -2,7 +2,7 @@
 /* 
 BSD 3-Clause License
 
-Copyright (c) 2022, Derek Will
+Copyright (c) 2024, Derek Will
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,39 +37,28 @@ using System.Runtime.InteropServices;
 namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
-    /// Represents a Netlink Routing Attribute.
+    /// Network Interface Modifier Request.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct RoutingAttribute
+    public class NetworkInterfaceModifierRequest : NetworkInterfaceInfoRequest
     {
         /// <summary>
-        /// Length of Route Option.
+        /// Maximum Payload Size Supported.
         /// </summary>
-        public ushort Length { get; set; }
-        /// <summary>
-        /// Type of Route Option.
-        /// </summary>
-        public ushort Type { get; set; }
+        public const int PayloadMaximum = 8192;
 
         /// <summary>
-        /// Initializes a Routing Attribute structure for the specified data length and type.
+        /// Payload with interface modification data.
         /// </summary>
-        /// <param name="dataLength">Length of Routing Attribute Data</param>
-        /// <param name="type">Routing Attribute Type</param>
-        public RoutingAttribute(ushort dataLength, ushort type)
-        {
-            Length = (ushort)NetlinkMessageMacros.RTA_LENGTH(dataLength);
-            Type = type;
-        }
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = PayloadMaximum)]
+        public byte[] Payload;
 
         /// <summary>
-        /// Converts a raw byte array into a RoutingAttribute instance.
+        /// Initializes a Network Interface Modifier Request.
         /// </summary>
-        /// <param name="data">Raw Byte Array.</param>
-        /// <returns>RoutingAttribute instance</returns>
-        public static RoutingAttribute FromBytes(byte[] data)
+        public NetworkInterfaceModifierRequest()
         {
-            return NetlinkUtils.FromBytes<RoutingAttribute>(data);
+            Payload = new byte[PayloadMaximum];
         }
     }
 }

@@ -74,6 +74,28 @@ namespace SocketCANSharp.Network.Netlink
 
             return bytesWritten;
         }
+        
+        /// <summary>
+        /// Writes the supplied Network Interface Modifier request to the socket.
+        /// </summary>
+        /// <param name="request">Network Interface Modifier to transmit.</param>
+        /// <returns>Number of bytes written to the socket.</returns>
+        /// <exception cref="ObjectDisposedException">The socket has been closed.</exception>
+        /// <exception cref="SocketCanException">Writing to the underlying NETLINK_ROUTE socket failed.</exception>
+        public int Write(NetworkInterfaceModifierRequest request)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().FullName);
+
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            int bytesWritten = NetlinkNativeMethods.Write(SafeHandle, request, (int)request.Header.MessageLength);
+            if (bytesWritten == -1)
+                throw new SocketCanException("Writing to the underlying NETLINK_ROUTE socket failed.");
+
+            return bytesWritten;
+        }
 
         /// <summary>
         /// Reads data from the socket into the supplied receive buffer.

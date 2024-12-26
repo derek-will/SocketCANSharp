@@ -2,7 +2,7 @@
 /* 
 BSD 3-Clause License
 
-Copyright (c) 2022, Derek Will
+Copyright (c) 2024, Derek Will
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,44 +32,47 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
 
-using System.Runtime.InteropServices;
-
 namespace SocketCANSharp.Network.Netlink
 {
     /// <summary>
-    /// Represents a Netlink Routing Attribute.
+    /// CAN device properties that can be set via Netlink.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct RoutingAttribute
+    public class CanDeviceProperties
     {
         /// <summary>
-        /// Length of Route Option.
+        /// Link Kind (i.e., can or vcan).
         /// </summary>
-        public ushort Length { get; set; }
-        /// <summary>
-        /// Type of Route Option.
-        /// </summary>
-        public ushort Type { get; set; }
+        public string LinkKind { get; set; }
 
         /// <summary>
-        /// Initializes a Routing Attribute structure for the specified data length and type.
+        /// How soon in milliseconds the CAN device shall automatically restart the interface whenever BUS OFF state is detected.
         /// </summary>
-        /// <param name="dataLength">Length of Routing Attribute Data</param>
-        /// <param name="type">Routing Attribute Type</param>
-        public RoutingAttribute(ushort dataLength, ushort type)
-        {
-            Length = (ushort)NetlinkMessageMacros.RTA_LENGTH(dataLength);
-            Type = type;
-        }
+        public uint? RestartDelay { get; set; }
 
         /// <summary>
-        /// Converts a raw byte array into a RoutingAttribute instance.
+        /// Restart the CAN interface.
+        /// Note: This is only possible when Auto-Restart is disabled (delay is set to 0) and the device is in BUS OFF state. 
         /// </summary>
-        /// <param name="data">Raw Byte Array.</param>
-        /// <returns>RoutingAttribute instance</returns>
-        public static RoutingAttribute FromBytes(byte[] data)
-        {
-            return NetlinkUtils.FromBytes<RoutingAttribute>(data);
-        }
+        public bool TriggerRestart { get; set; }
+
+        /// <summary>
+        /// CAN Bit Timing Parameters in Arbitration Phase.
+        /// </summary>
+        public CanBitTiming BitTiming { get; set; }
+
+        /// <summary>
+        /// CAN Bit Timing Parameters in Data Phase.
+        /// </summary>
+        public CanBitTiming DataPhaseBitTiming { get; set; }
+
+        /// <summary>
+        /// CAN Controller Mode option.
+        /// </summary>
+        public CanControllerMode ControllerMode { get; set; }
+
+        /// <summary>
+        /// Switchable Termination Resistance option.
+        /// </summary>
+        public uint? TerminationResistance { get; set; }
     }
 }

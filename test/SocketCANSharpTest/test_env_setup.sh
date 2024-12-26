@@ -37,4 +37,11 @@ ip link set vcan1 mtu 72 # Try setting MTU to CANFD_MTU
 ip link set vcan1 mtu 2060 # Try setting MTU to CANXL_MTU
 ip link set up vcan1
 
+echo "Adding vcan2 device and setting link up."
+ip link add dev vcan2 type vcan
+ip link set dev vcan2 down # Put link down for configuring MTU
+ip link set vcan2 mtu 72 # Try setting MTU to CANFD_MTU
+ip link set vcan2 mtu 2060 # Try setting MTU to CANXL_MTU
+ip link set up vcan2
+
 echo "Test environment setup script complete!"
