@@ -656,5 +656,49 @@ namespace SocketCANSharpTest
                 }
             }
         }
+
+        [Test]
+        public void CanNetworkInterface_Get_CanControllerModeFlags_Virtual_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            CanControllerModeFlags flags = iface.CanControllerModeFlags;
+            Assert.AreEqual((CanControllerModeFlags)0, flags);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_CanControllerModeFlags_Virtual_Set_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK;
+            }
+            catch (SocketCanException ex)
+            {
+                bool isCapable = CapabilityUtils.IsCurrentProcessCapable(Capability.CAP_NET_ADMIN);
+                if (isCapable)
+                {
+                    Assert.AreEqual(95, ex.ErrorCode);
+                }
+                else
+                {
+                    Assert.AreEqual(1, ex.ErrorCode);
+                }
+            }
+        }
     }
 }

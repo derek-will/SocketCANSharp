@@ -79,10 +79,12 @@ namespace CanNetlinkReader
             iface.SetLinkDown();
             Console.WriteLine("Configuring...");
             iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
+            iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_LISTENONLY;
             Console.WriteLine("Bringing Link Up...");
             iface.SetLinkUp();
 
             Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate}");
+            Console.WriteLine($"Controller Mode Flags: {iface.CanControllerModeFlags}");
         }
 
         private static void SetDeviceProperties(RoutingNetlinkSocket rtNetlinkSocket, CanNetworkInterface iface)

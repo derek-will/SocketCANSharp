@@ -162,6 +162,32 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// CAN Controller Mode Flags of the CAN Network Interface.
+        /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
+        /// </summary>
+        public CanControllerModeFlags CanControllerModeFlags
+        {
+            get
+            {
+                CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_CTRLMODE);
+                return cbtAttr == null ? 0 : CanControllerMode.FromBytes(cbtAttr.Data).Flags;
+            }
+            set
+            {
+                var canDevProps = new CanDeviceProperties()
+                {
+                    ControllerMode = new CanControllerMode()
+                    {
+                        Mask = 0xffffffff,
+                        Flags = value,
+                    },
+                };
+
+                SetLinkInfo(canDevProps);
+            }
+        }
+
+        /// <summary>
         /// Operational Status of the Interface (RFC2863 State).
         /// </summary>
         public InterfaceOperationalStatus OperationalStatus
