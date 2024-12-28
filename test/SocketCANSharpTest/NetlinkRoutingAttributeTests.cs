@@ -2,7 +2,7 @@
 /* 
 BSD 3-Clause License
 
-Copyright (c) 2022, Derek Will
+Copyright (c) 2024, Derek Will
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -33,52 +33,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion
 
 using System;
-using System.Text;
 using System.Linq;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using NUnit.Framework;
-using SocketCANSharp;
-using SocketCANSharp.Network;
 using SocketCANSharp.Network.Netlink;
-using System.Net.Sockets;
 
 namespace SocketCANSharpTest
 {
     public class NetlinkRoutingAttributeTests
     {
-        SafeFileDescriptorHandle socketHandle;
-
-        [SetUp]
-        public void Setup()
-        {
-            socketHandle = NetlinkNativeMethods.Socket(NetlinkConstants.PF_NETLINK, SocketType.Raw, NetlinkProtocolType.NETLINK_ROUTE);
-            Assert.IsFalse(socketHandle.IsInvalid);
-
-            int sendBufferSize = 32768;
-            int recvBufferSize = 32768;
-
-            int result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_SNDBUF, ref sendBufferSize, Marshal.SizeOf(typeof(int)));
-            Assert.AreEqual(0, result);
-
-            result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVBUF, ref recvBufferSize, Marshal.SizeOf(typeof(int)));
-            Assert.AreEqual(0, result);
-
-            var timeval = new Timeval(1, 0);
-            result = LibcNativeMethods.SetSockOpt(socketHandle, SocketLevel.SOL_SOCKET, SocketLevelOptions.SO_RCVTIMEO, timeval, Marshal.SizeOf(typeof(Timeval)));
-            Assert.AreEqual(0, result);
-
-            var addr = new SockAddrNetlink(0, 0);
-            int bindResult = NetlinkNativeMethods.Bind(socketHandle, addr, Marshal.SizeOf(typeof(SockAddrNetlink)));
-            Assert.AreNotEqual(-1, bindResult);
-        }
-
-        [TearDown]
-        public void Cleanup()
-        {
-            socketHandle.Close();
-        }
-
         [Test]
         public void RoutingAttributeWithData_Attribute_Test()
         {
