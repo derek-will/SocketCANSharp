@@ -89,6 +89,7 @@ namespace SocketCANSharp.Network
 
         /// <summary>
         /// Bit Timing of the CAN Network Interface.
+        /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
         /// </summary>
         public CanBitTiming BitTiming
         {
@@ -96,6 +97,18 @@ namespace SocketCANSharp.Network
             {
                 CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_BITTIMING);
                 return cbtAttr == null ? null : CanBitTiming.FromBytes(cbtAttr.Data);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value), "Cannot set Bit Timing to null.");
+
+                var canDevProps = new CanDeviceProperties()
+                {
+                    BitTiming = value,
+                };
+
+                SetLinkInfo(canDevProps);
             }
         }
 
@@ -113,6 +126,7 @@ namespace SocketCANSharp.Network
 
         /// <summary>
         /// Data Phase Bit Timing of the CAN Network Interface.
+        /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
         /// </summary>
         public CanBitTiming DataPhaseBitTiming
         {
@@ -120,6 +134,18 @@ namespace SocketCANSharp.Network
             {
                 CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_DATA_BITTIMING);
                 return cbtAttr == null ? null : CanBitTiming.FromBytes(cbtAttr.Data);
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value), "Cannot set Data Phase Bit Timing to null.");
+
+                var canDevProps = new CanDeviceProperties()
+                {
+                    DataPhaseBitTiming = value,
+                };
+
+                SetLinkInfo(canDevProps);
             }
         }
 
@@ -206,6 +232,24 @@ namespace SocketCANSharp.Network
             Index = index;
             Name = name;
             IsVirtual = isVirtual;
+        }
+
+        /// <summary>
+        /// Brings the link up.
+        /// Note: The caller must have CAP_NET_ADMIN capability for this to be successful.
+        /// </summary>
+        public void SetLinkUp()
+        {
+            InterfaceStateChange(true);
+        }
+
+        /// <summary>
+        /// Brings the link down.
+        /// Note: The caller must have CAP_NET_ADMIN capability for this to be successful.
+        /// </summary>
+        public void SetLinkDown()
+        {
+            InterfaceStateChange(false);
         }
 
         /// <summary>
@@ -357,6 +401,67 @@ namespace SocketCANSharp.Network
                 int bytesRead = rtNetlinkSocket.Read(rxBuffer);
 
                 return rxBuffer.Take(bytesRead).ToArray();
+            }
+        }
+
+        private void SetLinkInfo(CanDeviceProperties canDevProps)
+        {
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
+            {
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+                canDevProps.LinkKind = LinkKind;
+
+                NetworkInterfaceModifierRequest req = NetlinkUtils.GenerateRequestForLinkModifierByIndex(Index, canDevProps, null);
+                int bytesWritten = rtNetlinkSocket.Write(req);
+
+                byte[] rxBuffer = new byte[8192];
+                int numBytes = rtNetlinkSocket.Read(rxBuffer);
+                if (numBytes < NetlinkMessageMacros.NLMSG_HDRLEN)
+                    throw new SocketCanException("Read insufficient bytes from the rtnetlink socket for a Netlink message header.");
+
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(rxBuffer);
+                if (msgHeader.MessageType != NetlinkMessageType.NLMSG_ERROR)
+                    throw new SocketCanException($"Unexpected Netlink message received: {msgHeader.MessageType}.");
+
+                if (numBytes < Marshal.SizeOf<NetlinkMessageError>())
+                    throw new SocketCanException("Read insufficient bytes from the rtnetlink socket for a NLMSG_ERROR message.");
+
+                NetlinkMessageError nlMsgErr = NetlinkMessageError.FromBytes(rxBuffer);    
+                if (nlMsgErr.Error != 0)
+                    throw new SocketCanException(-1 * nlMsgErr.Error, $"Errno Set on Netlink Response.");
+            }
+        }
+
+        private void InterfaceStateChange(bool interfaceUp)
+        {
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
+            {
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+
+                NetworkInterfaceModifierRequest req = NetlinkUtils.GenerateRequestForLinkModifierByIndex(Index, null, interfaceUp);
+                int bytesWritten = rtNetlinkSocket.Write(req);
+
+                byte[] rxBuffer = new byte[8192];
+                int numBytes = rtNetlinkSocket.Read(rxBuffer);
+                if (numBytes < NetlinkMessageMacros.NLMSG_HDRLEN)
+                    throw new SocketCanException("Read insufficient bytes from the rtnetlink socket for a Netlink message header.");
+
+                NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(rxBuffer);
+                if (msgHeader.MessageType != NetlinkMessageType.NLMSG_ERROR)
+                    throw new SocketCanException($"Unexpected Netlink message received: {msgHeader.MessageType}.");
+
+                if (numBytes < Marshal.SizeOf<NetlinkMessageError>())
+                    throw new SocketCanException("Read insufficient bytes from the rtnetlink socket for a NLMSG_ERROR message.");
+
+                NetlinkMessageError nlMsgErr = NetlinkMessageError.FromBytes(rxBuffer);    
+                if (nlMsgErr.Error != 0)
+                    throw new SocketCanException(-1 * nlMsgErr.Error, $"Errno Set on Netlink Response.");
             }
         }
 

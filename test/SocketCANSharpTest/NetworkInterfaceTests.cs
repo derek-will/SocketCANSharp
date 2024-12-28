@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using NUnit.Framework;
 using SocketCANSharp;
+using SocketCANSharp.Capabilities;
 using SocketCANSharp.Network;
 using SocketCANSharp.Network.Netlink;
 using System;
@@ -368,6 +369,49 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CanNetworkInterface_Set_BitTiming_NullArg_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            Assert.Throws<ArgumentNullException>(() => iface.BitTiming = null);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_BitTiming_Virtual_Set_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.BitTiming = new CanBitTiming() { BitRate = 250000 };
+            }
+            catch (SocketCanException ex)
+            {
+                bool isCapable = CapabilityUtils.IsCurrentProcessCapable(Capability.CAP_NET_ADMIN);
+                if (isCapable)
+                {
+                    Assert.AreEqual(95, ex.ErrorCode);
+                }
+                else
+                {
+                    Assert.AreEqual(1, ex.ErrorCode);
+                }
+            }
+        }
+
+        [Test]
         public void CanNetworkInterface_Get_BitTimingConstant_Success_Test()
         {
             socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
@@ -543,6 +587,73 @@ namespace SocketCANSharpTest
             finally
             {
                 Marshal.FreeHGlobal(ptr);
+            }
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_SetLink_UpDown_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan2");
+            Assert.AreEqual("vcan2", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.SetLinkDown();
+                Assert.AreEqual(InterfaceOperationalStatus.IF_OPER_DOWN, iface.OperationalStatus);
+                iface.SetLinkUp();
+                Assert.AreEqual(InterfaceOperationalStatus.IF_OPER_UNKNOWN, iface.OperationalStatus);
+            }
+            catch (SocketCanException ex)
+            {
+                Assert.AreEqual(1, ex.ErrorCode);
+            }
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_DataPhaseBitTiming_NullArg_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            Assert.Throws<ArgumentNullException>(() => iface.DataPhaseBitTiming = null);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_DataPhaseBitTiming_Virtual_Set_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.DataPhaseBitTiming = new CanBitTiming() { BitRate = 2000000 };
+            }
+            catch (SocketCanException ex)
+            {
+                bool isCapable = CapabilityUtils.IsCurrentProcessCapable(Capability.CAP_NET_ADMIN);
+                if (isCapable)
+                {
+                    Assert.AreEqual(95, ex.ErrorCode);
+                }
+                else
+                {
+                    Assert.AreEqual(1, ex.ErrorCode);
+                }
             }
         }
     }

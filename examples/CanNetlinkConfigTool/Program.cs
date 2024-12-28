@@ -73,6 +73,16 @@ namespace CanNetlinkReader
                 Console.WriteLine("Starting Interface...");
                 SetInterfaceUp(rtNetlinkSocket, iface);
             }
+
+            Console.WriteLine("Using Interface class...");
+            Console.WriteLine("Bringing Link Down...");
+            iface.SetLinkDown();
+            Console.WriteLine("Configuring...");
+            iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
+            Console.WriteLine("Bringing Link Up...");
+            iface.SetLinkUp();
+
+            Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate}");
         }
 
         private static void SetDeviceProperties(RoutingNetlinkSocket rtNetlinkSocket, CanNetworkInterface iface)
