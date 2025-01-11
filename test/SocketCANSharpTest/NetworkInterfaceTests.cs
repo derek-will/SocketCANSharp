@@ -610,8 +610,106 @@ namespace SocketCANSharpTest
             }
             catch (SocketCanException ex)
             {
-                Assert.AreEqual(1, ex.ErrorCode);
+                Assert.AreEqual(1, ex.ErrorCode); // EPERM
             }
+        }
+
+        [Test]
+        public void CanNetworkInterface_Restart_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan2");
+            Assert.AreEqual("vcan2", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.Restart();
+            }
+            catch (SocketCanException ex)
+            {
+                bool isCapable = CapabilityUtils.IsCurrentProcessCapable(Capability.CAP_NET_ADMIN);
+                if (isCapable)
+                {
+                    Assert.AreEqual(95, ex.ErrorCode); // EOPNOTSUPP
+                }
+                else
+                {
+                    Assert.AreEqual(1, ex.ErrorCode); // EPERM
+                }
+            }
+        }
+
+        [Test]
+        public void CanNetworkInterface_AutoRestartDelay_Get_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+            Assert.IsNull(iface.AutoRestartDelay);
+        }
+
+        [Test]
+        public void CanNetworkInterface_AutoRestartDelay_Set_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan2");
+            Assert.AreEqual("vcan2", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.AutoRestartDelay = 5;
+            }
+            catch (SocketCanException ex)
+            {
+                bool isCapable = CapabilityUtils.IsCurrentProcessCapable(Capability.CAP_NET_ADMIN);
+                if (isCapable)
+                {
+                    Assert.AreEqual(95, ex.ErrorCode); // EOPNOTSUPP
+                }
+                else
+                {
+                    Assert.AreEqual(1, ex.ErrorCode); // EPERM
+                }
+            }
+        }
+
+        [Test]
+        public void CanNetworkInterface_AutoRestartDelay_Set_Null_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan2");
+            Assert.AreEqual("vcan2", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            Assert.Throws<ArgumentNullException>(() => iface.AutoRestartDelay = null);
+        }
+
+        [Test]
+        public void CanNetworkInterface_CanControllerState_Get_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+            Assert.IsNull(iface.CanControllerState);
         }
 
         [Test]

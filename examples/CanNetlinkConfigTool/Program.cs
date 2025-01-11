@@ -80,10 +80,40 @@ namespace CanNetlinkReader
             Console.WriteLine("Configuring...");
             iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
             iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_LISTENONLY;
+            iface.AutoRestartDelay = 0;
+
             Console.WriteLine("Bringing Link Up...");
             iface.SetLinkUp();
+            Console.WriteLine($"Inteface Device Flags: {iface.DeviceFlags}");
+            Console.WriteLine($"Inteface Operational Status: {iface.OperationalStatus}");
+            Console.WriteLine($"Controller State: {iface.CanControllerState}");
+            Console.WriteLine($"Auto-Restart Delay: {iface.AutoRestartDelay} ms");
+            
+            Console.WriteLine("Attempting to Restart CAN Controller...");
+            try
+            {    
+                iface.Restart();
+            }
+            catch (SocketCanException ex)
+            {
+                if (ex.ErrorCode == 16 || ex.ErrorCode == 22) // EBUSY when not BUS OFF, EINVAL when not 0 ms delay
+                {
+                    if (iface.CanControllerState != CanState.CAN_STATE_BUS_OFF || iface.AutoRestartDelay != 0)
+                    {
+                        Console.WriteLine("Expected CAN controller restart to fail.");;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Did not expect CAN controller restart to fail...");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Trigger Restart resulted in unexpected Error Code {ex.ErrorCode}");
+                }
+            }
 
-            Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate}");
+            Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate} bit/s");
             Console.WriteLine($"Controller Mode Flags: {iface.CanControllerModeFlags}");
         }
 
@@ -117,7 +147,9 @@ namespace CanNetlinkReader
                     {
                         if (nlMsgErr.Error == 0) // Success
                         {
-                            Console.WriteLine($"Bitrate: {iface.BitTiming.BitRate}");
+                            Console.WriteLine($"Bitrate: {iface.BitTiming.BitRate} bit/s");
+                            Console.WriteLine($"Auto-Restart Delay: {iface.AutoRestartDelay} ms");
+                            Console.WriteLine($"Controller Mode Flags: {iface.CanControllerModeFlags}");
                         }
                         else
                         {

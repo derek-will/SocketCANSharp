@@ -162,6 +162,18 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// The current state of the CAN controller.
+        /// </summary>
+        public CanState? CanControllerState
+        {
+            get
+            {
+                CanRoutingAttribute cbtcAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_STATE);
+                return cbtcAttr == null ? (CanState?)null : (CanState)BitConverter.ToUInt32(cbtcAttr.Data, 0);;
+            }
+        }
+
+        /// <summary>
         /// CAN Controller Mode Flags of the CAN Network Interface.
         /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
         /// </summary>
@@ -181,6 +193,32 @@ namespace SocketCANSharp.Network
                         Mask = 0xffffffff,
                         Flags = value,
                     },
+                };
+
+                SetLinkInfo(canDevProps);
+            }
+        }
+
+        /// <summary>
+        /// CAN controller automatic restart delay time in milliseconds. An automatic restart of the CAN controller 
+        /// will be triggered in the event of a BUS OFF state after the specified delay time. Set to 0 to disable auto-restart. 
+        /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
+        /// </summary>
+        public uint? AutoRestartDelay
+        {
+            get
+            {
+                CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_RESTART_MS);
+                return cbtAttr == null ? (uint?)null : BitConverter.ToUInt32(cbtAttr.Data, 0);
+            }
+            set
+            {
+                if (value.HasValue == false)
+                    throw new ArgumentNullException(nameof(value), "Auto-Restart delay cannot be set to null.");
+
+                var canDevProps = new CanDeviceProperties()
+                {
+                    RestartDelay = value,
                 };
 
                 SetLinkInfo(canDevProps);
@@ -276,6 +314,21 @@ namespace SocketCANSharp.Network
         public void SetLinkDown()
         {
             InterfaceStateChange(false);
+        }
+         
+        /// <summary>
+        /// Restart the CAN controller.
+        /// Note #1: This is only possible when the interface is running, Auto-Restart is disabled (delay is set to 0) and the device is in BUS OFF state. 
+        /// Note #2: The caller must have CAP_NET_ADMIN capability for this to be successful.
+        /// </summary>
+        public void Restart()
+        {
+            var canDevProps = new CanDeviceProperties()
+            {
+                TriggerRestart = true,
+            };
+
+            SetLinkInfo(canDevProps);
         }
 
         /// <summary>

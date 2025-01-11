@@ -45,13 +45,13 @@ namespace SocketCANSharp.Network.Netlink
         public string LinkKind { get; set; }
 
         /// <summary>
-        /// How soon in milliseconds the CAN device shall automatically restart the interface whenever BUS OFF state is detected.
+        /// How soon in milliseconds the CAN controller shall automatically restart whenever BUS OFF state is detected.
         /// </summary>
         public uint? RestartDelay { get; set; }
 
         /// <summary>
-        /// Restart the CAN interface.
-        /// Note: This is only possible when Auto-Restart is disabled (delay is set to 0) and the device is in BUS OFF state. 
+        /// Restart the CAN controller.
+        /// Note: This is only possible when the interface is running, Auto-Restart is disabled (delay is set to 0) and the device is in BUS OFF state. 
         /// </summary>
         public bool TriggerRestart { get; set; }
 
