@@ -798,5 +798,49 @@ namespace SocketCANSharpTest
                 }
             }
         }
+
+        [Test]
+        public void CanNetworkInterface_Get_TerminationResistance_Virtual_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            ushort? term = iface.TerminationResistance;
+            Assert.IsNull(term);
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_TerminationResistance_Virtual_Set_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan0");
+            Assert.AreEqual("vcan0", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.TerminationResistance = 120;
+            }
+            catch (SocketCanException ex)
+            {
+                bool isCapable = CapabilityUtils.IsCurrentProcessCapable(Capability.CAP_NET_ADMIN);
+                if (isCapable)
+                {
+                    Assert.AreEqual(95, ex.ErrorCode);
+                }
+                else
+                {
+                    Assert.AreEqual(1, ex.ErrorCode);
+                }
+            }
+        }
     }
 }

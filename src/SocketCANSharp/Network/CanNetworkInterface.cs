@@ -226,6 +226,31 @@ namespace SocketCANSharp.Network
         }
 
         /// <summary>
+        /// CAN termination resistance value.
+        /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
+        /// </summary>
+        public ushort? TerminationResistance
+        {
+            get
+            {
+                CanRoutingAttribute cbtAttr = GetCanRoutingAttribute(CanRoutingAttributeType.IFLA_CAN_TERMINATION);
+                return cbtAttr == null ? (ushort?)null : BitConverter.ToUInt16(cbtAttr.Data, 0);
+            }
+            set
+            {
+                if (value.HasValue == false)
+                    throw new ArgumentNullException(nameof(value), "Termination Resistance cannot be set to null.");
+
+                var canDevProps = new CanDeviceProperties()
+                {
+                    TerminationResistance = value,
+                };
+
+                SetLinkInfo(canDevProps);
+            }
+        }
+
+        /// <summary>
         /// Operational Status of the Interface (RFC2863 State).
         /// </summary>
         public InterfaceOperationalStatus OperationalStatus

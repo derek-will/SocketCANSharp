@@ -73,6 +73,6 @@ namespace SocketCANSharp.Network.Netlink
         /// <summary>
         /// Switchable Termination Resistance option.
         /// </summary>
-        public uint? TerminationResistance { get; set; }
+        public ushort? TerminationResistance { get; set; }
     }
 }

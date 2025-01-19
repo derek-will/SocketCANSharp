@@ -86,6 +86,17 @@ namespace SocketCANSharp.Network.Netlink
         }
 
         /// <summary>
+        /// Initializes a Routing Attribute with Data structure using the specified type and unsigned 16-bit integer value.
+        /// </summary>
+        /// <param name="type">Routing Attribute Type</param>
+        /// <param name="value">Unsigned 16-bit integer value</param>
+        public RoutingAttributeWithData(ushort type, ushort value)
+        {
+            Attribute = new RoutingAttribute((ushort)Marshal.SizeOf<ushort>(), type);
+            Data = BitConverter.GetBytes(value);
+        }
+
+        /// <summary>
         /// Initializes a Routing Attribute with Data structure using the specified type and CanBitTiming struct value.
         /// </summary>
         /// <param name="type">Routing Attribute Type</param>

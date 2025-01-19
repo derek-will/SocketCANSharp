@@ -527,7 +527,7 @@ namespace SocketCANSharp.Network.Netlink
 
             if (canDevProperties.TriggerRestart)
             {
-                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_RESTART, 1));
+                dataAttributes.Add(new RoutingAttributeWithData((ushort)CanRoutingAttributeType.IFLA_CAN_RESTART, (uint)1));
             }
 
             if (canDevProperties.BitTiming != null)

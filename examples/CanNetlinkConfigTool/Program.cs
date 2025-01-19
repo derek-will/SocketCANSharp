@@ -81,6 +81,14 @@ namespace CanNetlinkReader
             iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
             iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_LISTENONLY;
             iface.AutoRestartDelay = 0;
+            if (iface.TerminationResistance != null)
+            {
+                iface.TerminationResistance = 120;
+            }
+            else
+            {
+                Console.WriteLine("Note: CAN controller does not support switchable termination resistance.");
+            }
 
             Console.WriteLine("Bringing Link Up...");
             iface.SetLinkUp();
@@ -88,7 +96,8 @@ namespace CanNetlinkReader
             Console.WriteLine($"Inteface Operational Status: {iface.OperationalStatus}");
             Console.WriteLine($"Controller State: {iface.CanControllerState}");
             Console.WriteLine($"Auto-Restart Delay: {iface.AutoRestartDelay} ms");
-            
+            Console.WriteLine($"Termination Resistance: {(iface.TerminationResistance.HasValue ? iface.TerminationResistance.Value.ToString() : "N/A")} Ohm");
+
             Console.WriteLine("Attempting to Restart CAN Controller...");
             try
             {    
