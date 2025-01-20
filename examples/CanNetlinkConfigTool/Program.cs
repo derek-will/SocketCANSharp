@@ -81,6 +81,7 @@ namespace CanNetlinkReader
             iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
             iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_LISTENONLY;
             iface.AutoRestartDelay = 0;
+            iface.MaximumTransmissionUnit = SocketCanConstants.CAN_MTU;
             if (iface.TerminationResistance != null)
             {
                 iface.TerminationResistance = 120;
@@ -96,8 +97,7 @@ namespace CanNetlinkReader
             Console.WriteLine($"Inteface Operational Status: {iface.OperationalStatus}");
             Console.WriteLine($"Controller State: {iface.CanControllerState}");
             Console.WriteLine($"Auto-Restart Delay: {iface.AutoRestartDelay} ms");
-            Console.WriteLine($"Termination Resistance: {(iface.TerminationResistance.HasValue ? iface.TerminationResistance.Value.ToString() : "N/A")} Ohm");
-
+            
             Console.WriteLine("Attempting to Restart CAN Controller...");
             try
             {    
@@ -124,6 +124,8 @@ namespace CanNetlinkReader
 
             Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate} bit/s");
             Console.WriteLine($"Controller Mode Flags: {iface.CanControllerModeFlags}");
+            Console.WriteLine($"Termination Resistance: {(iface.TerminationResistance.HasValue ? iface.TerminationResistance.Value.ToString() : "N/A")} Ohm");
+            Console.WriteLine($"MTU: {iface.MaximumTransmissionUnit}");
         }
 
         private static void SetDeviceProperties(RoutingNetlinkSocket rtNetlinkSocket, CanNetworkInterface iface)

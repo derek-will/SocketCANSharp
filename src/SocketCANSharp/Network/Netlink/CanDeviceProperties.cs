@@ -45,6 +45,11 @@ namespace SocketCANSharp.Network.Netlink
         public string LinkKind { get; set; }
 
         /// <summary>
+        /// Maximum Transmission Unit.
+        /// </summary>
+        public uint? MaximumTransmissionUnit { get; set; }
+
+        /// <summary>
         /// How soon in milliseconds the CAN controller shall automatically restart whenever BUS OFF state is detected.
         /// </summary>
         public uint? RestartDelay { get; set; }

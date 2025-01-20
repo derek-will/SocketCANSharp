@@ -536,6 +536,69 @@ namespace SocketCANSharpTest
         }
 
         [Test]
+        public void CanNetworkInterface_Set_MaximumTransmissionUnit_Success_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan2");
+            Assert.AreEqual("vcan2", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            try
+            {
+                iface.SetLinkDown(); // set link down to change interface mtu size
+                uint originalMtu = iface.MaximumTransmissionUnit.Value;
+
+                // classic CAN
+                iface.MaximumTransmissionUnit = SocketCanConstants.CAN_MTU;
+                Assert.AreEqual(SocketCanConstants.CAN_MTU, iface.MaximumTransmissionUnit);
+                try
+                {
+                    // CAN FD
+                    iface.MaximumTransmissionUnit = SocketCanConstants.CANFD_MTU;
+                    Assert.AreEqual(SocketCanConstants.CANFD_MTU, iface.MaximumTransmissionUnit);
+
+                    // CAN XL
+                    iface.MaximumTransmissionUnit = SocketCanConstants.CANXL_MTU;
+                    Assert.AreEqual(SocketCanConstants.CANXL_MTU, iface.MaximumTransmissionUnit);
+                }
+                catch (SocketCanException ex)
+                {
+                    Assert.AreEqual(22, ex.ErrorCode); // EINVAL - Some kernels may not have a vcan that supports all of the above.
+                }
+                finally
+                {
+                    // reset MTU to original value
+                    iface.MaximumTransmissionUnit = originalMtu;
+                    Assert.AreEqual(originalMtu, iface.MaximumTransmissionUnit);
+                    iface.SetLinkUp();
+                    Assert.IsTrue(iface.DeviceFlags.HasFlag(NetDeviceFlags.IFF_UP));
+                }         
+            }
+            catch (SocketCanException ex)
+            {
+                Console.WriteLine(ex);
+                Assert.AreEqual(1, ex.ErrorCode); // EPERM - When permissions not granted.
+            }
+        }
+
+        [Test]
+        public void CanNetworkInterface_Set_MaximumTransmissionUnit_Null_Failure_Test()
+        {
+            socketHandle = LibcNativeMethods.Socket(SocketCanConstants.PF_CAN, SocketType.Raw, SocketCanProtocolType.CAN_RAW);
+            Assert.IsFalse(socketHandle.IsInvalid);
+
+            CanNetworkInterface iface = CanNetworkInterface.GetInterfaceByName(socketHandle, "vcan2");
+            Assert.AreEqual("vcan2", iface.Name);
+            Assert.AreEqual(true, iface.IsVirtual);
+            Assert.Greater(iface.Index, -1);
+
+            Assert.Throws<ArgumentNullException>(() => iface.MaximumTransmissionUnit = null);
+        }
+
+        [Test]
         public void IfNameToIndex_Success()
         {
             IEnumerable<CanNetworkInterface> collection = CanNetworkInterface.GetAllInterfaces(true);

@@ -467,7 +467,9 @@ namespace SocketCANSharp.Network.Netlink
             var request = new NetworkInterfaceModifierRequest();
             if (canDevProperties != null)
             {
-                List<RoutingAttributeWithData>  infoAttributes = GenerateRoutingInfoAttributes(canDevProperties);
+                List<RoutingAttributeWithData> linkAttributes = GenerateRoutingLinkAttributes(canDevProperties);
+                byte[] linkAttrBytes = GeneratePayloadFromNestedAttributes(linkAttributes);
+                List<RoutingAttributeWithData> infoAttributes = GenerateRoutingInfoAttributes(canDevProperties);
                 byte[] infoAttrBytes = GeneratePayloadFromNestedAttributes(infoAttributes);
                 List<RoutingAttributeWithData> dataAttributes = GenerateRoutingDataAttributes(canDevProperties);
                 byte[] dataAttrBytes = GeneratePayloadFromNestedAttributes(dataAttributes);
@@ -478,10 +480,14 @@ namespace SocketCANSharp.Network.Netlink
                 var linkInfoAttr = new RoutingAttributeWithData(new RoutingAttribute(liLength, (ushort)InterfaceLinkAttributeType.IFLA_LINKINFO));
 
                 var payload = new List<byte>();
-                payload.AddRange(linkInfoAttr.ToBytes());
-                payload.AddRange(infoAttrBytes);
-                payload.AddRange(infoDataAttr.ToBytes());
-                payload.AddRange(dataAttrBytes);
+                payload.AddRange(linkAttrBytes);
+                if (dataAttributes.Count > 0) // don't include IFLA_LINKINFO and IFLA_INFO_DATA nested sections if there are no data attributes specified
+                {
+                    payload.AddRange(linkInfoAttr.ToBytes());
+                    payload.AddRange(infoAttrBytes);
+                    payload.AddRange(infoDataAttr.ToBytes());
+                    payload.AddRange(dataAttrBytes);
+                }
                 byte[] payloadArray = payload.ToArray();
                 hdr.MessageLength = (uint)NetlinkMessageMacros.NLMSG_ALIGN((int)hdr.MessageLength + payloadArray.Length);
                 Buffer.BlockCopy(payloadArray, 0, request.Payload, 0, payloadArray.Length);
@@ -505,6 +511,18 @@ namespace SocketCANSharp.Network.Netlink
                 }
             }
             return payload.ToArray();
+        }
+        
+        private static List<RoutingAttributeWithData> GenerateRoutingLinkAttributes(CanDeviceProperties canDevProperties)
+        {
+            var linkAttributes = new List<RoutingAttributeWithData>();
+
+            if (canDevProperties.MaximumTransmissionUnit.HasValue)
+            {
+                linkAttributes.Add(new RoutingAttributeWithData((ushort)InterfaceLinkAttributeType.IFLA_MTU, canDevProperties.MaximumTransmissionUnit.Value));
+            }
+
+            return linkAttributes;
         }
 
         private static List<RoutingAttributeWithData> GenerateRoutingInfoAttributes(CanDeviceProperties canDevProperties)

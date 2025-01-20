@@ -276,6 +276,7 @@ namespace SocketCANSharp.Network
 
         /// <summary>
         /// Maximum Transmission Unit (MTU) of the interface.
+        /// Note: The caller must have CAP_NET_ADMIN capability for the setting of this property to be successful.
         /// </summary>
         public uint? MaximumTransmissionUnit
         {
@@ -283,6 +284,18 @@ namespace SocketCANSharp.Network
             {
                 InterfaceLinkAttribute mtuAttr = GetInterfaceLinkAttribute(InterfaceLinkAttributeType.IFLA_MTU);
                 return mtuAttr == null ? (uint?)null : BitConverter.ToUInt32(mtuAttr.Data, 0);
+            }
+            set
+            {
+                if (value.HasValue == false)
+                    throw new ArgumentNullException(nameof(value), "MTU cannot be set to null.");
+
+                var canDevProps = new CanDeviceProperties()
+                {
+                    MaximumTransmissionUnit = value,
+                };
+
+                SetLinkInfo(canDevProps);
             }
         }
 
