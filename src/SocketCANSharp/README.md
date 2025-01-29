@@ -115,28 +115,28 @@ using (var cgwSocket = new CanGatewaySocket())
 
 ## CAN Network Interface Support
 ```cs
-var can0 = CanNetworkInterface.GetAllInterfaces(false).First(iface => iface.Name.Equals("can0"));
+CanNetworkInterface can0 = CanNetworkInterface.GetAllInterfaces(false).First(iface => iface.Name.Equals("can0"));
 
 Console.WriteLine("Bringing Link Down...");
-iface.SetLinkDown();
+can0.SetLinkDown();
 
 Console.WriteLine("Configuring Interface...");
-iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
-iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_ONE_SHOT;
-iface.AutoRestartDelay = 5;
-iface.MaximumTransmissionUnit = SocketCanConstants.CAN_MTU;
+can0.BitTiming = new CanBitTiming() { BitRate = 125000 };
+can0.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_ONE_SHOT;
+can0.AutoRestartDelay = 5;
+can0.MaximumTransmissionUnit = SocketCanConstants.CAN_MTU;
 
 Console.WriteLine("Bringing Link Up...");
-iface.SetLinkUp();
+can0.SetLinkUp();
 
 Console.WriteLine("Reading Interface Properties...");
-Console.WriteLine($"Inteface Device Flags: {iface.DeviceFlags}");
-Console.WriteLine($"Inteface Operational Status: {iface.OperationalStatus}");
-Console.WriteLine($"Controller State: {iface.CanControllerState}");
-Console.WriteLine($"Auto-Restart Delay: {iface.AutoRestartDelay} ms");
-Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate} bit/s");
-Console.WriteLine($"Controller Mode Flags: {iface.CanControllerModeFlags}");
-Console.WriteLine($"MTU: {iface.MaximumTransmissionUnit}");
+Console.WriteLine($"Inteface Device Flags: {can0.DeviceFlags}");
+Console.WriteLine($"Inteface Operational Status: {can0.OperationalStatus}");
+Console.WriteLine($"Controller State: {can0.CanControllerState}");
+Console.WriteLine($"Auto-Restart Delay: {can0.AutoRestartDelay} ms");
+Console.WriteLine($"Bit Timing: {can0.BitTiming.BitRate} bit/s");
+Console.WriteLine($"Controller Mode Flags: {can0.CanControllerModeFlags}");
+Console.WriteLine($"MTU: {can0.MaximumTransmissionUnit}");
 ```
 
 ## Links
