@@ -263,6 +263,32 @@ using (var cgwSocket = new CanGatewaySocket())
 }
 ```
 
+### CAN Network Interface Support
+```cs
+var can0 = CanNetworkInterface.GetAllInterfaces(false).First(iface => iface.Name.Equals("can0"));
+
+Console.WriteLine("Bringing Link Down...");
+iface.SetLinkDown();
+
+Console.WriteLine("Configuring Interface...");
+iface.BitTiming = new CanBitTiming() { BitRate = 125000 };
+iface.CanControllerModeFlags = CanControllerModeFlags.CAN_CTRLMODE_LOOPBACK | CanControllerModeFlags.CAN_CTRLMODE_ONE_SHOT;
+iface.AutoRestartDelay = 5;
+iface.MaximumTransmissionUnit = SocketCanConstants.CAN_MTU;
+
+Console.WriteLine("Bringing Link Up...");
+iface.SetLinkUp();
+
+Console.WriteLine("Reading Interface Properties...");
+Console.WriteLine($"Inteface Device Flags: {iface.DeviceFlags}");
+Console.WriteLine($"Inteface Operational Status: {iface.OperationalStatus}");
+Console.WriteLine($"Controller State: {iface.CanControllerState}");
+Console.WriteLine($"Auto-Restart Delay: {iface.AutoRestartDelay} ms");
+Console.WriteLine($"Bit Timing: {iface.BitTiming.BitRate} bit/s");
+Console.WriteLine($"Controller Mode Flags: {iface.CanControllerModeFlags}");
+Console.WriteLine($"MTU: {iface.MaximumTransmissionUnit}");
+```
+
 ### Supported Environments
 Thorough testing has been done for x64, ARM32 and ARM64 on Linux. Support for Raw CAN, Broadcast Manager, and CAN Gateway have been confirmed as far back as Linux Kernel 4.9. Support for Alpine Linux has been verified.
 
