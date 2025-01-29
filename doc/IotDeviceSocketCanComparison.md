@@ -10,27 +10,28 @@ SocketCAN# is an independently developed and maintained project. It aims to make
 
 ## Supported Features
 
-As of SocketCAN# 0.11.0 and Iot.Device.Bindings 3.2.0:
+As of SocketCAN# 0.13.0 and Iot.Device.Bindings 3.2.0:
 
-| Feature                                | SocketCAN#             | Iot.Device.SocketCan | 
-|:---------------------------------------|:-----------------------|:---------------------| 
-| Raw CAN                                | :heavy_check_mark:     | :heavy_check_mark: | 
-| Standard Frame Format (11-bit CAN ID)  | :heavy_check_mark:     | :heavy_check_mark: | 
-| Extended Frame Format (29-bit CAN ID)  | :heavy_check_mark:     | :heavy_check_mark: | 
-| Remote Transimission Request (RTR)     | :heavy_check_mark:     | :heavy_check_mark: |
-| Error Message Frames                   | :heavy_check_mark:     | :heavy_check_mark: |
-| CAN ID Filtering                       | :heavy_check_mark:     | Limited - :heavy_exclamation_mark: |
-| Error Message Frame Filtering          | :heavy_check_mark:     | :x: | 
-| Disabling Local Loopback               | :heavy_check_mark:     | :x: | 
-| Enabling Receiving Own Messages        | :heavy_check_mark:     | :x: | 
-| Joining of Filters                     | :heavy_check_mark:     | :x: |
-| Classical CAN Frames                   | :heavy_check_mark:     | :heavy_check_mark: | 
-| CAN FD Frames                          | :heavy_check_mark:     | :x: | 
-| CAN XL Frames                          | :heavy_check_mark:     | :x: | 
-| CAN XL VCID Configuration              | :heavy_check_mark:     | :x: |
-| Broadcast Manager                      | :heavy_check_mark:     | :x: | 
-| ISO-TP (ISO 15765-2)                   | :heavy_check_mark:     | :x: | 
-| SAE J1939                              | :heavy_check_mark:     | :x: | 
-| Query Available CAN Network Interfaces | :heavy_check_mark:     | :x: | 
-| Read CAN Network Interface Attributes  | :heavy_check_mark:     | :x: | 
-| CAN-to-CAN Gateway                     | :heavy_check_mark:     | :x: | 
+| Feature                                 | SocketCAN#             | Iot.Device.SocketCan | 
+|:----------------------------------------|:-----------------------|:---------------------| 
+| Raw CAN                                 | :heavy_check_mark:     | :heavy_check_mark: | 
+| Standard Frame Format (11-bit CAN ID)   | :heavy_check_mark:     | :heavy_check_mark: | 
+| Extended Frame Format (29-bit CAN ID)   | :heavy_check_mark:     | :heavy_check_mark: | 
+| Remote Transimission Request (RTR)      | :heavy_check_mark:     | :heavy_check_mark: |
+| Error Message Frames                    | :heavy_check_mark:     | :heavy_check_mark: |
+| CAN ID Filtering                        | :heavy_check_mark:     | Limited - :heavy_exclamation_mark: |
+| Error Message Frame Filtering           | :heavy_check_mark:     | :x: | 
+| Disabling Local Loopback                | :heavy_check_mark:     | :x: | 
+| Enabling Receiving Own Messages         | :heavy_check_mark:     | :x: | 
+| Joining of Filters                      | :heavy_check_mark:     | :x: |
+| Classical CAN Frames                    | :heavy_check_mark:     | :heavy_check_mark: | 
+| CAN FD Frames                           | :heavy_check_mark:     | :x: | 
+| CAN XL Frames                           | :heavy_check_mark:     | :x: | 
+| CAN XL VCID Configuration               | :heavy_check_mark:     | :x: |
+| Broadcast Manager                       | :heavy_check_mark:     | :x: | 
+| ISO-TP (ISO 15765-2)                    | :heavy_check_mark:     | :x: | 
+| SAE J1939                               | :heavy_check_mark:     | :x: | 
+| Query Available CAN Network Interfaces  | :heavy_check_mark:     | :x: | 
+| Read CAN Network Interface Attributes   | :heavy_check_mark:     | :x: | 
+| Modify CAN Network Interface Attributes | :heavy_check_mark:     | :x: | 
+| CAN-to-CAN Gateway                      | :heavy_check_mark:     | :x: | 
