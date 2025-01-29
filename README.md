@@ -18,7 +18,7 @@ The classes such as `CanNetworkInterface`, `RawCanSocket`, and `IsoTpCanSocket` 
 | ISO-TP (ISO 15765-2) Socket      | 5.10   | 0.1[^2], 0.3              | 
 | SAE J1939 Socket                 | 5.4    | 0.1[^2], 0.8              |
 | CAN Network Interface Query      | 2.6.25 | 0.2                       |
-| CAN Network Interface Attributes | 2.6.31 | 0.10[^3]                  |
+| CAN Network Interface Attributes | 2.6.31 | 0.10[^3], 0.13            |
 | CAN-to-CAN Gateway               | 3.2    | 0.11                      |
 | Classical CAN                    | 2.6.25 | 0.1                       |
 | CAN FD                           | 3.6    | 0.1                       |
