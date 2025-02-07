@@ -376,6 +376,26 @@ namespace SocketCANSharp.Network
         /// <returns>Collection of CAN interfaces on the local system</returns>
         public static IEnumerable<CanNetworkInterface> GetAllInterfaces(bool includeVirtual)
         {
+            return GetAllInterfaces(CanInterfaceStartsWith, includeVirtual);
+        }
+
+        /// <summary>
+        /// Retrieves all CAN interfaces starting with specified name prefix, and optionally virtual interfaces.
+        /// </summary>
+        /// <param name="interfaceNamePrefix">Name prefix to include interfaces in the result.</param>
+        /// <param name="includeVirtual">Indicates whether virtual interfaces should be included or not.</param>
+        /// <returns>Collection of CAN interfaces on the local system</returns>
+        /// <exception cref="ArgumentNullException">Interface name prefix is null.</exception>
+        /// <exception cref="ArgumentException">Interface name prefix starts with <see cref="VirtualCanInterfaceStartsWith"/>.</exception>
+        public static IEnumerable<CanNetworkInterface> GetAllInterfaces(string interfaceNamePrefix, bool includeVirtual)
+        {
+            _ = interfaceNamePrefix ?? throw new ArgumentNullException(nameof(interfaceNamePrefix));
+
+            if (interfaceNamePrefix.StartsWith(VirtualCanInterfaceStartsWith))
+            {
+                throw new ArgumentException($"Name prefix cannot start with {VirtualCanInterfaceStartsWith}", nameof(interfaceNamePrefix));
+            }
+
             IntPtr ptr = LibcNativeMethods.IfNameIndex();
             if (ptr == IntPtr.Zero)
             {
@@ -385,23 +405,19 @@ namespace SocketCANSharp.Network
             var ifList = new List<CanNetworkInterface>();
             IntPtr iteratorPtr = ptr;
             try
-            {            
+            {
                 IfNameIndex i = Marshal.PtrToStructure<IfNameIndex>(iteratorPtr);
                 while (i.Index != 0 && i.Name != null)
                 {
-                    if (i.Name != null)
+                    if (i.Name.StartsWith(interfaceNamePrefix))
                     {
-                        if (i.Name.StartsWith(CanInterfaceStartsWith))
-                        {
-                            var canInterface = new CanNetworkInterface((int)i.Index, i.Name, false);
-                            ifList.Add(canInterface);
-                        }
-
-                        if (includeVirtual && i.Name.StartsWith(VirtualCanInterfaceStartsWith))
-                        {
-                            var canInterface = new CanNetworkInterface((int)i.Index, i.Name, true);
-                            ifList.Add(canInterface);
-                        }
+                        var canInterface = new CanNetworkInterface((int)i.Index, i.Name, false);
+                        ifList.Add(canInterface);
+                    }
+                    else if (includeVirtual && i.Name.StartsWith(VirtualCanInterfaceStartsWith))
+                    {
+                        var canInterface = new CanNetworkInterface((int)i.Index, i.Name, true);
+                        ifList.Add(canInterface);
                     }
 
                     iteratorPtr = IntPtr.Add(iteratorPtr, Marshal.SizeOf(typeof(IfNameIndex)));
