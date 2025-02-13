@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace SocketCANSharp
 {
@@ -251,6 +253,39 @@ namespace SocketCANSharp
         public static byte GetCanXlVCID(uint priority)
         {
             return (byte)((priority & SocketCanConstants.CANXL_VCID_MASK) >> SocketCanConstants.CANXL_VCID_OFFSET);
+        }
+
+        /// <summary>
+        /// Returns all network interfaces currently available on the host.
+        /// </summary>
+        /// <returns>Collection of network interfaces.</returns>
+        /// <exception cref="NetworkInformationException">The if_nameindex function call fails.</exception>
+        public static IEnumerable<IfNameIndex> GetAllInterfaces()
+        {
+            IntPtr ptr = LibcNativeMethods.IfNameIndex();
+            if (ptr == IntPtr.Zero)
+            {
+                throw new NetworkInformationException(LibcNativeMethods.Errno);
+            }
+
+            var ifList = new List<IfNameIndex>();
+            IntPtr iteratorPtr = ptr;
+            try
+            {            
+                IfNameIndex i = Marshal.PtrToStructure<IfNameIndex>(iteratorPtr);
+                while (i.Index != 0 && i.Name != null)
+                {
+                    ifList.Add(i);
+                    iteratorPtr = IntPtr.Add(iteratorPtr, Marshal.SizeOf(typeof(IfNameIndex)));
+                    i = Marshal.PtrToStructure<IfNameIndex>(iteratorPtr);
+                }
+            }
+            finally
+            {
+                LibcNativeMethods.IfFreeNameIndex(ptr);
+            }
+
+            return ifList;
         }
     }
 }

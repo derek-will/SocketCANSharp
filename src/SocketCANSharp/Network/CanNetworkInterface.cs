@@ -47,8 +47,8 @@ namespace SocketCANSharp.Network
     /// </summary>
     public class CanNetworkInterface
     {
-        private const string CanInterfaceStartsWith = "can";
-        private const string VirtualCanInterfaceStartsWith = "vcan";
+        private const string CanInterfaceKind = "can";
+        private const string VirtualCanInterfaceKind = "vcan";
 
         /// <summary>
         /// Index of the CAN interface.
@@ -376,41 +376,78 @@ namespace SocketCANSharp.Network
         /// <returns>Collection of CAN interfaces on the local system</returns>
         public static IEnumerable<CanNetworkInterface> GetAllInterfaces(bool includeVirtual)
         {
-            IntPtr ptr = LibcNativeMethods.IfNameIndex();
-            if (ptr == IntPtr.Zero)
-            {
-                throw new NetworkInformationException(LibcNativeMethods.Errno);
-            }
-
             var ifList = new List<CanNetworkInterface>();
-            IntPtr iteratorPtr = ptr;
-            try
-            {            
-                IfNameIndex i = Marshal.PtrToStructure<IfNameIndex>(iteratorPtr);
-                while (i.Index != 0 && i.Name != null)
-                {
-                    if (i.Name != null)
-                    {
-                        if (i.Name.StartsWith(CanInterfaceStartsWith))
-                        {
-                            var canInterface = new CanNetworkInterface((int)i.Index, i.Name, false);
-                            ifList.Add(canInterface);
-                        }
-
-                        if (includeVirtual && i.Name.StartsWith(VirtualCanInterfaceStartsWith))
-                        {
-                            var canInterface = new CanNetworkInterface((int)i.Index, i.Name, true);
-                            ifList.Add(canInterface);
-                        }
-                    }
-
-                    iteratorPtr = IntPtr.Add(iteratorPtr, Marshal.SizeOf(typeof(IfNameIndex)));
-                    i = Marshal.PtrToStructure<IfNameIndex>(iteratorPtr);
-                }
-            }
-            finally
+            
+            using (var rtNetlinkSocket = new RoutingNetlinkSocket())
             {
-                LibcNativeMethods.IfFreeNameIndex(ptr);
+                rtNetlinkSocket.ReceiveBufferSize = 32768;
+                rtNetlinkSocket.SendBufferSize = 32768;
+                rtNetlinkSocket.ReceiveTimeout = 1000;
+                rtNetlinkSocket.Bind(new SockAddrNetlink(0, 0));
+
+                NetworkInterfaceInfoRequest req = NetlinkUtils.GenerateRequestForLinkInfo();
+                int numBytesWritten = rtNetlinkSocket.Write(req);
+
+                byte[] rxBuffer = new byte[8192];
+                bool notEndOfDump = true;
+                while (notEndOfDump)
+                {
+                    int bytesRead = rtNetlinkSocket.Read(rxBuffer);
+                    byte[] dataReceived = rxBuffer.Take(bytesRead).ToArray();
+
+                    int offset = 0;
+                    int numBytes = dataReceived.Length;
+                    while (numBytes > 0)
+                    {
+                        byte[] headerData = dataReceived.Skip(offset).Take(NetlinkMessageMacros.NLMSG_HDRLEN).ToArray();
+                        offset += NetlinkMessageMacros.NLMSG_HDRLEN;
+                        NetlinkMessageHeader msgHeader = NetlinkMessageHeader.FromBytes(headerData);
+
+                        if (NetlinkMessageMacros.NLMSG_OK(msgHeader, numBytes) == false)
+                            break;
+
+                        numBytes -= (int)msgHeader.MessageLength;
+
+                        if (msgHeader.MessageType != NetlinkMessageType.RTM_NEWLINK)
+                        {
+                            notEndOfDump = msgHeader.MessageType != NetlinkMessageType.NLMSG_DONE;
+                            offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0);
+                            continue;
+                        }
+
+                        byte[] ifiData = dataReceived.Skip(offset).Take(NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, 0)).ToArray();
+                        offset += NetlinkMessageMacros.NLMSG_ALIGN(Marshal.SizeOf<InterfaceInfoMessage>());
+                        InterfaceInfoMessage interfaceInfo = InterfaceInfoMessage.FromBytes(ifiData);
+
+                        if (interfaceInfo.DeviceType == ArpHardwareIdentifier.ARPHRD_CAN)
+                        {
+                            byte[] rxMessagePayload = dataReceived.Skip(offset).Take(NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, Marshal.SizeOf<InterfaceInfoMessage>())).ToArray();
+                            List<InterfaceLinkAttribute> iflaList = NetlinkUtils.ParseInterfaceLinkAttributes(rxMessagePayload);
+                            InterfaceLinkAttribute ifNameAttr = iflaList.FirstOrDefault(ifla => ifla.Type == InterfaceLinkAttributeType.IFLA_IFNAME);
+                            if (ifNameAttr != null)
+                            {
+                                string ifName = Encoding.ASCII.GetString(ifNameAttr.Data).Trim('\0');
+                                InterfaceLinkAttribute linkInfo = iflaList.FirstOrDefault(ifla => ifla.Type == InterfaceLinkAttributeType.IFLA_LINKINFO);
+                                if (linkInfo != null)
+                                {
+                                    List<LinkInfoAttribute> liaList = NetlinkUtils.ParseNestedLinkInfoAttributes(linkInfo.Data);
+                                    LinkInfoAttribute kindAttr = liaList.FirstOrDefault(lia => lia.Type == LinkInfoAttributeType.IFLA_INFO_KIND);
+                                    if (kindAttr != null)
+                                    {
+                                        string kind = Encoding.ASCII.GetString(kindAttr.Data).Trim('\0');
+                                        if (string.Equals(kind, CanInterfaceKind) || (includeVirtual && string.Equals(kind, VirtualCanInterfaceKind)))
+                                        {
+                                            var canNetworkInterface = new CanNetworkInterface(interfaceInfo.InterfaceIndex, ifName, string.Equals(kind, VirtualCanInterfaceKind));
+                                            ifList.Add(canNetworkInterface);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        offset += NetlinkMessageMacros.NLMSG_PAYLOAD(msgHeader, Marshal.SizeOf<InterfaceInfoMessage>());
+                    }
+                }
             }
 
             return ifList;
@@ -442,7 +479,7 @@ namespace SocketCANSharp.Network
             if (ioctlResult == -1)
                 throw new NetworkInformationException(LibcNativeMethods.Errno);
 
-            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, ifr.Name.StartsWith(VirtualCanInterfaceStartsWith));
+            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, ifr.Name.StartsWith(VirtualCanInterfaceKind));
         }
 
         /// <summary>
@@ -467,7 +504,7 @@ namespace SocketCANSharp.Network
             if (ioctlResult == -1)
                 throw new NetworkInformationException(LibcNativeMethods.Errno);
 
-            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, ifr.Name.StartsWith(VirtualCanInterfaceStartsWith));
+            return new CanNetworkInterface(ifr.IfIndex, ifr.Name, ifr.Name.StartsWith(VirtualCanInterfaceKind));
         }
 
         /// <summary>

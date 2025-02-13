@@ -47,5 +47,9 @@ namespace SocketCANSharp.Network.Netlink
         /// Protocol Family Netlink.
         /// </summary>
         public const int PF_NETLINK = AF_NETLINK;
+        /// <summary>
+        /// Address Family Packet.
+        /// </summary>
+        public const int AF_PACKET = 17;
     }
 }

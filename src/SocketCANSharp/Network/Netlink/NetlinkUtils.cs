@@ -87,6 +87,18 @@ namespace SocketCANSharp.Network.Netlink
         }
 
         /// <summary>
+        /// Parse Interface Link Attributes (IFLA).
+        /// </summary>
+        /// <param name="buffer">Buffer</param>
+        /// <returns>Interface Link Attribute Collection</returns>
+        /// <exception cref="ArgumentNullException">Buffer is null</exception>
+        public static List<InterfaceLinkAttribute> ParseInterfaceLinkAttributes(byte[] buffer)
+        {
+            int offset = 0;
+            return ParseInterfaceLinkAttributes(buffer, ref offset);
+        }
+
+        /// <summary>
         /// Parse Nested Link Info Attributes.
         /// </summary>
         /// <param name="rxBuffer">Receive Buffer</param>
@@ -422,6 +434,30 @@ namespace SocketCANSharp.Network.Netlink
                 {
                     AddressFamily = NetlinkConstants.AF_NETLINK,
                     InterfaceIndex = index,
+                }
+            };
+        }
+
+        /// <summary>
+        /// Generates a Network Interface Information Request Message for all the available interfaces.
+        /// </summary>
+        /// <returns>Network Interface Request Message for all the available interfaces.</returns>
+        public static NetworkInterfaceInfoRequest GenerateRequestForLinkInfo()
+        {
+            return new NetworkInterfaceInfoRequest()
+            {
+                Header = new NetlinkMessageHeader()
+                {
+                    MessageLength = (uint)Marshal.SizeOf<NetworkInterfaceInfoRequest>(),
+                    MessageType = NetlinkMessageType.RTM_GETLINK,
+                    Flags = NetlinkMessageFlags.NLM_F_REQUEST | NetlinkMessageFlags.NLM_F_DUMP | NetlinkMessageFlags.NLM_F_ACK,
+                    SenderPortId = 0,
+                    SequenceNumber = 0,
+                },
+                Information = new InterfaceInfoMessage()
+                {
+                    AddressFamily = NetlinkConstants.AF_PACKET,
+                    InterfaceIndex = 0,
                 }
             };
         }
