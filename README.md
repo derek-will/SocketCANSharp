@@ -31,7 +31,7 @@ The classes such as `CanNetworkInterface`, `RawCanSocket`, and `IsoTpCanSocket` 
 [^2]: Low-level API only 
 [^3]: Read-only
 [^4]: Added 32-bit process support
-[^5]: Interface named-based search until 0.13 where it becomes a type-based search
+[^5]: Interface name-based search until 0.13 where it becomes a type-based search
 
 ### Raw CAN Support
 
