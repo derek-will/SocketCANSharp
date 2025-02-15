@@ -177,11 +177,11 @@ namespace SocketCANSharp
 
             uint canIdWithFlags = rawCanId;
             if (isEff)
-                canIdWithFlags = canIdWithFlags | (uint)CanIdFlags.CAN_EFF_FLAG;
+                canIdWithFlags |= (uint)CanIdFlags.CAN_EFF_FLAG;
             if (isRtr)
-                canIdWithFlags = canIdWithFlags | (uint)CanIdFlags.CAN_RTR_FLAG;
+                canIdWithFlags |= (uint)CanIdFlags.CAN_RTR_FLAG;
             if (isErr)
-                canIdWithFlags = canIdWithFlags | (uint)CanIdFlags.CAN_ERR_FLAG;
+                canIdWithFlags |= (uint)CanIdFlags.CAN_ERR_FLAG;
             return canIdWithFlags;
         }
 
