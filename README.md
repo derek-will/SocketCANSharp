@@ -17,7 +17,7 @@ The classes such as `CanNetworkInterface`, `RawCanSocket`, and `IsoTpCanSocket` 
 | BCM Socket                       | 2.6.25 | 0.1[^2][^1], 0.8[^4], 0.9 |
 | ISO-TP (ISO 15765-2) Socket      | 5.10   | 0.1[^2], 0.3              | 
 | SAE J1939 Socket                 | 5.4    | 0.1[^2], 0.8              |
-| CAN Network Interface Query      | 2.6.25 | 0.2                       |
+| CAN Network Interface Query[^5]  | 2.6.25 | 0.2, 0.13                 |
 | CAN Network Interface Attributes | 2.6.31 | 0.10[^3], 0.13            |
 | CAN-to-CAN Gateway               | 3.2    | 0.11                      |
 | Classical CAN                    | 2.6.25 | 0.1                       |
@@ -31,6 +31,7 @@ The classes such as `CanNetworkInterface`, `RawCanSocket`, and `IsoTpCanSocket` 
 [^2]: Low-level API only 
 [^3]: Read-only
 [^4]: Added 32-bit process support
+[^5]: Interface named-based search until 0.13 where it becomes a type-based search
 
 ### Raw CAN Support
 
