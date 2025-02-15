@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using NUnit.Framework;
 using SocketCANSharp;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SocketCANSharpTest
 {
@@ -191,6 +193,23 @@ namespace SocketCANSharpTest
             Assert.AreEqual(0x4B0222, SocketCanUtils.SetCanXlVCID(0x000222, 0x4B));
             Assert.AreEqual(0x4B0222, SocketCanUtils.SetCanXlVCID(0xEEE222, 0x4B));
             Assert.AreEqual(0x0, SocketCanUtils.SetCanXlVCID(0x1000800, 0x00));
+        }
+
+        [Test]
+        public void GetAllInterfaces_Test()
+        {
+            IEnumerable<IfNameIndex> netInterfaces = SocketCanUtils.GetAllInterfaces();
+
+            foreach(var netIf in netInterfaces)
+            {
+                Console.WriteLine(netIf);
+            }
+
+            Assert.GreaterOrEqual(netInterfaces.Count(), 4); // expecting at least vcan0, vcan1, vcan2, foobar
+            Assert.IsNotNull(netInterfaces.FirstOrDefault(i => i.Name.Equals("vcan0")));
+            Assert.IsNotNull(netInterfaces.FirstOrDefault(i => i.Name.Equals("vcan1")));
+            Assert.IsNotNull(netInterfaces.FirstOrDefault(i => i.Name.Equals("vcan2")));
+            Assert.IsNotNull(netInterfaces.FirstOrDefault(i => i.Name.Equals("foobar")));
         }
     }
 }

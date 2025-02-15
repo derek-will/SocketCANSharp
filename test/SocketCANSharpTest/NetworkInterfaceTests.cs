@@ -99,6 +99,12 @@ namespace SocketCANSharpTest
                 Assert.Greater(canInterface.Index, 0);
                 Assert.IsNotNull(canInterface.Name);
             }
+
+            Assert.GreaterOrEqual(collection.Count(), 4); // expecting at least vcan0, vcan1, vcan2, foobar
+            Assert.IsNotNull(collection.FirstOrDefault(i => i.Name.Equals("vcan0")));
+            Assert.IsNotNull(collection.FirstOrDefault(i => i.Name.Equals("vcan1")));
+            Assert.IsNotNull(collection.FirstOrDefault(i => i.Name.Equals("vcan2")));
+            Assert.IsNotNull(collection.FirstOrDefault(i => i.Name.Equals("foobar")));
         }
 
         [Test]

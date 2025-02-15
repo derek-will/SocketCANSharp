@@ -44,4 +44,11 @@ ip link set vcan2 mtu 72 # Try setting MTU to CANFD_MTU
 ip link set vcan2 mtu 2060 # Try setting MTU to CANXL_MTU
 ip link set up vcan2
 
+echo "Adding foobar device and setting link up."
+ip link add dev foobar type vcan
+ip link set dev foobar down # Put link down for configuring MTU
+ip link set foobar mtu 72 # Try setting MTU to CANFD_MTU
+ip link set foobar mtu 2060 # Try setting MTU to CANXL_MTU
+ip link set up foobar
+
 echo "Test environment setup script complete!"
