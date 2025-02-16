@@ -70,8 +70,9 @@ namespace CanGatewayConfigTool
                 cgwSocket.ReceiveTimeout = 1000;
                 cgwSocket.SendTimeout = 1000;
                 bcmCanSocket.Connect(vcan0);
-                var canFrame = new CanFrame(0x123, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
-                var frames = new CanFrame[] { canFrame };
+                var canFrame1 = new CanFrame(0x123, new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+                var canFrame2 = new CanFrame(0x222, new byte[] { 0x86, 0x75, 0x30, 0x90 });
+                var frames = new CanFrame[] { canFrame1, canFrame2 };
                 var config = new BcmCyclicTxTaskConfiguration()
                 {
                     Id = 0x123,
@@ -90,8 +91,18 @@ namespace CanGatewayConfigTool
                 {
                     try
                     {
+                        Console.WriteLine("Clearing all CGW Rules...");
+                        if (RemoveAllRules(cgwSocket))
+                        {
+                            Console.WriteLine("Successfully cleared all CGW Rules!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to clear all CGW Rules!");
+                        }
+
                         Console.WriteLine("Adding CGW Rule to append checksum of data to CAN Frame with CAN ID 0x123 when routed from vcan0 to vcan1...");
-                        var rule = new CgwCanToCanRule(CgwCanFrameType.ClassicalCAN)
+                        var rule1 = new CgwCanToCanRule(CgwCanFrameType.ClassicalCAN)
                         {
                             SourceIndex = (uint)vcan0.Index,
                             DestinationIndex = (uint)vcan1.Index,
@@ -101,34 +112,49 @@ namespace CanGatewayConfigTool
                             ChecksumXorConfiguration = new CgwChecksumXor(0, 3, 4, 0xCC),
                             UpdateIdentifier = 0xFFEEEEDD,
                         };
-                        
-                        if (AddRule(cgwSocket, rule))
-                        {
-                            Console.WriteLine("Successfully added CGW Rule!");
 
-                            Console.WriteLine("Reading vcan0 for CAN ID 0x123...");
+                        Console.WriteLine("Adding CGW Rule to change CAN ID of CAN Frame with CAN ID 0x222 to 0x555 when routed from vcan0 to vcan1...");
+                        var rule2 = new CgwCanToCanRule(CgwCanFrameType.ClassicalCAN)
+                        {
+                            SourceIndex = (uint)vcan0.Index,
+                            DestinationIndex = (uint)vcan1.Index,
+                            EnableLocalCanSocketLoopback = true,
+                            ReceiveFilter = new CanFilter(0x222, 0x7FF),
+                            SetModifier = new ClassicalCanGatewayModifier(CanGatewayModificationType.CGW_MOD_ID, new CanFrame(0x555, new byte[] { })),
+                            UpdateIdentifier = 0xBEE0BEE0,
+                        };
+                        
+                        if (AddRule(cgwSocket, rule1) && AddRule(cgwSocket, rule2))
+                        {
+                            Console.WriteLine("Successfully added CGW Rules!");
+
+                            Console.WriteLine("Reading vcan0 for CAN ID 0x123 and 0x222...");
                             using (var rawCanSocket = new RawCanSocket())
                             {
                                 rawCanSocket.ReceiveTimeout = 1000;
-                                rawCanSocket.CanFilters = new CanFilter[] { new CanFilter(0x123, 0x7ff) };
+                                rawCanSocket.CanFilters = new CanFilter[] { new CanFilter(0x123, 0x7ff), new CanFilter(0x222, 0x7ff) };
                                 rawCanSocket.Bind(new SockAddrCan(vcan0.Index));
-                                rawCanSocket.Read(out CanFrame vcan0Frame);
-                                Console.WriteLine($"{vcan0.Name}: 0x{vcan0Frame.CanId:X} {BitConverter.ToString(vcan0Frame.Data.Take(vcan0Frame.Length).ToArray())}");
+                                rawCanSocket.Read(out CanFrame vcan0Frame1);
+                                Console.WriteLine($"{vcan0.Name}: 0x{vcan0Frame1.CanId:X} {BitConverter.ToString(vcan0Frame1.Data.Take(vcan0Frame1.Length).ToArray())}");
+                                rawCanSocket.Read(out CanFrame vcan0Frame2);
+                                Console.WriteLine($"{vcan0.Name}: 0x{vcan0Frame2.CanId:X} {BitConverter.ToString(vcan0Frame2.Data.Take(vcan0Frame2.Length).ToArray())}");
                             }
 
-                            Console.WriteLine("Reading vcan1 for CAN ID 0x123...");
+                            Console.WriteLine("Reading vcan1 for CAN ID 0x123 and 0x555...");
                             using (var rawCanSocket = new RawCanSocket())
                             {
                                 rawCanSocket.ReceiveTimeout = 1000;
-                                rawCanSocket.CanFilters = new CanFilter[] { new CanFilter(0x123, 0x7ff) };
+                                rawCanSocket.CanFilters = new CanFilter[] { new CanFilter(0x123, 0x7ff), new CanFilter(0x555, 0x7ff) };
                                 rawCanSocket.Bind(new SockAddrCan(vcan1.Index));
-                                rawCanSocket.Read(out CanFrame vcan1Frame);
-                                Console.WriteLine($"{vcan1.Name}: 0x{vcan1Frame.CanId:X} {BitConverter.ToString(vcan1Frame.Data.Take(vcan1Frame.Length).ToArray())}");
+                                rawCanSocket.Read(out CanFrame vcan1Frame1);
+                                Console.WriteLine($"{vcan1.Name}: 0x{vcan1Frame1.CanId:X} {BitConverter.ToString(vcan1Frame1.Data.Take(vcan1Frame1.Length).ToArray())}");
+                                rawCanSocket.Read(out CanFrame vcan1Frame2);
+                                Console.WriteLine($"{vcan1.Name}: 0x{vcan1Frame2.CanId:X} {BitConverter.ToString(vcan1Frame2.Data.Take(vcan1Frame2.Length).ToArray())}");
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Failed to add CGW rule!");
+                            Console.WriteLine("Failed to add CGW rules!");
                         }
 
                         List<CgwCanToCanRule> ruleList = GetRules(cgwSocket);

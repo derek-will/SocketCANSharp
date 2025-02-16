@@ -192,7 +192,10 @@ namespace SocketCANSharp.Network.Netlink.Gateway
                 if (numBytes < NetlinkMessageMacros.NLMSG_HDRLEN)
                     throw new ArgumentOutOfRangeException(nameof(buffer), "Supplied buffer was expected to contain enough data to include the header, but did not.");
 
-                NetlinkMessageHeader header = NetlinkUtils.PeekAtHeader(buffer);
+                byte[] nlMsgHdrBuffer = new byte[NetlinkMessageMacros.NLMSG_HDRLEN];
+                Buffer.BlockCopy(buffer, offset, nlMsgHdrBuffer, 0, nlMsgHdrBuffer.Length);
+
+                NetlinkMessageHeader header = NetlinkMessageHeader.FromBytes(nlMsgHdrBuffer);
                 offset += NetlinkMessageMacros.NLMSG_HDRLEN;
                 if (header.Flags.HasFlag(NetlinkMessageFlags.NLM_F_MULTI) == false)
                     throw new ArgumentOutOfRangeException(nameof(buffer), "Data was expected to contain a header with the NLM_F_MULTI set, but did not.");
@@ -228,7 +231,7 @@ namespace SocketCANSharp.Network.Netlink.Gateway
                     if (rtCanMsg.GatewayType != CanGatewayType.CGW_TYPE_CAN_CAN)
                         throw new ArgumentOutOfRangeException(nameof(buffer), "Message was expected to contain Gateway Type of CGW_TYPE_CAN_CAN, but did not.");
 
-                    byte[] parseData = new byte[(int)header.MessageLength - offset];
+                    byte[] parseData = new byte[(int)header.MessageLength - NetlinkMessageMacros.NLMSG_HDRLEN - NetlinkMessageMacros.NLMSG_ALIGN(RoutingCanMessage.UnmanagedSize())];
                     if (buffer.Length - offset < parseData.Length)
                         throw new ArgumentOutOfRangeException(nameof(buffer), "Buffer does not contain enough data to contain the rtnetlink attribute data.");
 
