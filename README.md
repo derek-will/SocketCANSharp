@@ -299,13 +299,14 @@ SocketCAN# has been tested to run on Windows via the WSL (Windows Subsystem for 
 
 ### Example Code
 
-* CanBusSniffer : Simple CAN bus analyzer
-* IsoTpCommSimulator : ISO-TP communication simulation
-* ObjectOrientedDiagAppSimulator : Diagnostic Application Simulator using IsoTpCanSocket objects
-* J1939EngineSpeedTransmit : Simple application that sends the J1939 Engine Speed signal a couple of different ways using SocketCAN#
-* CanNetlinkReader : Simple application that reads out CAN interface information using Netlink through various options offered by the SocketCAN# library
+* CanBusSniffer : Simple CAN bus analyzer.
+* IsoTpCommSimulator : ISO-TP communication simulation.
+* ObjectOrientedDiagAppSimulator : Diagnostic Application Simulator using IsoTpCanSocket objects.
+* J1939EngineSpeedTransmit : Simple application that sends the J1939 Engine Speed signal a couple of different ways using SocketCAN#.
+* CanNetlinkReader : Simple application that reads out CAN interface information using Netlink through various options offered by the SocketCAN# library.
 * J1939Sniffer : Basic J1939 bus sniffer utility to illustrate how to use SocketCAN# to monitor a J1939 network.
 * CanGatewayConfigTool : Sample application which adds a CAN GW rule, tests it, and then clears all CAN GW rules.
+* CanNetlinkConfigTool : Example application which modifies and displays CAN interface information using Netlink through various options offered by SocketCAN#.
 
 
 ### Additional Information:
