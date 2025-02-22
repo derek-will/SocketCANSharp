@@ -4,13 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
     <AssemblyName>SocketCANSharp</AssemblyName>
-    <Version>0.12.0.0</Version>
+    <Version>0.13.0.0</Version>
     <Authors>Derek Will</Authors>
     <Company></Company>
     <Title>SocketCAN#</Title>
     <Product>SocketCAN#</Product>
     <PackageId>SocketCANSharp</PackageId>
-    <FileVersion>0.12.0.0</FileVersion>
+    <FileVersion>0.13.0.0</FileVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Description>.NET managed wrapper for SocketCAN on Linux</Description>
     <Summary>.NET managed wrapper for SocketCAN on Linux</Summary>
@@ -18,7 +18,7 @@
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/derek-will/SocketCANSharp</PackageProjectUrl>
     <!--<PackageIconUrl></PackageIconUrl>-->
-    <PackageTags>CAN-bus;ISO-TP;ISO15765;J1939;CAN_GW</PackageTags>
+    <PackageTags>CAN-bus;ISO-TP;ISO15765;J1939;CAN_GW;CAN-FD;CAN-XL</PackageTags>
     <!--<PackageReleaseNotes></PackageReleaseNotes>-->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
